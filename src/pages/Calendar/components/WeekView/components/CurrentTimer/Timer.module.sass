@@ -1,0 +1,25 @@
+@import "src/styles/helpers"
+.timerContainer
+  position: absolute
+  height: 0
+  z-index: 10
+  pointer-events: none
+  +x
+    left: calc(8px + (100% - 46px) * var(--current-day-index) / var(--total-days)) !important // перезаписываем инлайн стили
+
+.timeMarker
+  position: absolute
+  left: 0
+  top: -4px
+  width: 8px
+  height: 8px
+  background: #EF4444
+  border-radius: 50%
+
+.timeLine
+  position: absolute
+  left: 0
+  right: 0
+  top: 0
+  height: 2px
+  background: #EF4444

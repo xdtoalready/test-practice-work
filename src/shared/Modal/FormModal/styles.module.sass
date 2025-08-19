@@ -1,0 +1,73 @@
+.modal
+  background: #fff
+  border-radius: 8px
+  padding: 24px
+
+  &.lg
+    width: 800px
+    max-width: 90vw
+
+  &.md
+    width: 600px
+    max-width: 90vw
+
+  &.sm
+    width: 400px
+    max-width: 90vw
+
+.modalContent
+  margin-bottom: 24px
+
+.modalFooter
+  display: flex
+  justify-content: flex-end
+  gap: 12px
+  margin-top: 24px
+
+.invalidField
+  input, .dropdown, textarea
+    border-color: #ff4d4f !important
+    &:focus
+      box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.2)
+
+.errorSummary
+  margin-top: 16px
+  padding: 12px
+  background: #fff2f0
+  border: 1px solid #ffccc7
+  border-radius: 4px
+
+.errorItem
+  color: #ff4d4f
+  font-size: 14px
+  margin-bottom: 4px
+  &:last-child
+    margin-bottom: 0
+
+.cancelButton, .submitButton
+  padding: 8px 16px
+  border-radius: 4px
+  font-weight: 500
+  cursor: pointer
+  transition: all 0.2s
+
+.cancelButton
+  background: #f0f0f0
+  border: 1px solid #d9d9d9
+  &:hover
+    background: #e0e0e0
+
+.submitButton
+  background: #1890ff
+  border: 1px solid #1890ff
+  color: white
+  &:hover:not(:disabled)
+    background: #40a9ff
+    border-color: #40a9ff
+
+  &_disabled
+    opacity: 0.5
+    cursor: not-allowed
+    &:hover
+      background: #1890ff
+      border-color: #1890ff

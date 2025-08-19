@@ -1,0 +1,53 @@
+.component 
+  position: relative
+  width: 18px
+  height: 24px
+
+
+
+  span 
+    position: absolute
+    width: 10px
+    height: 2px
+    background-color: #6F767E
+    border-radius: 24px
+    transition: transform 0.3s, width 0.3s
+
+    &:nth-child(1) 
+      top: 15%
+      width: 33%
+  
+
+    &:nth-child(2) 
+      top: 45%
+      width: 66%
+
+
+    &:nth-child(3)
+      width: 99%
+      top: 75%
+
+  
+
+
+  &.active 
+    span 
+      &:nth-child(1) 
+        width: 99%
+    
+
+      &:nth-child(2)
+        width: 66%
+    
+
+      &:nth-child(3) 
+        width: 33%
+.flex
+  display: flex
+  svg
+    width: 17px !important
+
+  
+.margin
+  margin-bottom: auto
+  margin-top: auto

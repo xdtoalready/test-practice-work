@@ -1,0 +1,74 @@
+@import ../../../styles/helpers
+
+.taskList
+  //overflow-y: auto
+  padding-bottom: 24px
+  height: calc( 100vh - 96px - 40px - 105px)
+  overflow-x: auto
+  overflow-y: hidden
+  display: flex
+  white-space: nowrap
+  //scroll-behavior: smooth
+  //justify-content: space-around
+  //justify-content:
+  gap: 24px
+  scrollbar-width: none
+  &::-webkit-scrollbar
+    width: 0
+.column 
+  max-width: 320px
+
+
+.task 
+  padding: 10px
+  margin-bottom: 10px
+  background-color: #f9f9f9
+
+  cursor: pointer
+  &_stageTitle,&_deadline
+    +body1-m
+    color: $n4
+    text-overflow: ellipsis
+    overflow: hidden
+    white-space: nowrap
+    font-weight: 500
+  &_description
+    +body1-s
+    text-wrap: pretty
+    white-space: break-spaces
+    margin-top: 5px
+    margin-bottom: 12px
+
+
+
+
+  &_footer
+    margin-top: 16px
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+
+.divider
+  min-width: 320px
+  height: 4px
+  border-radius: 0px
+  padding: 0px
+.header
+  +base1-s
+  font-size: 15px
+.counts
+  color: $n4
+
+.scroll
+  overflow-y: auto
+  max-height: 100%
+  scrollbar-width: none
+  &::-webkit-scrollbar
+    width: 0
+
+.avatars
+  display: flex
+  flex-direction: column
+  >div:not(:first-child)
+    position: relative
+    top: -16px

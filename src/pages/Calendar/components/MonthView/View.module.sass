@@ -1,0 +1,85 @@
+@import "src/styles/helpers"
+.monthView
+  display: flex
+  flex-direction: column
+  height: 100%
+  background: #fff
+
+.weekDays
+  display: grid
+  grid-template-columns: repeat(7, 1fr)
+  background: $n
+  border-bottom: 1px solid #e2e8f0
+
+.weekDay
+  padding: 8px
+  border: 1px solid $n3
+  border-left: unset
+  border-bottom: unset
+  &:last-child
+    border-right: unset
+
+
+  text-align: center
+  font-weight: 500
+  color: $n7
+
+.grid
+  flex: 1
+  display: flex
+  flex-direction: column
+
+.week
+  flex: 1
+  display: grid
+  grid-template-columns: repeat(7, 1fr)
+  border-bottom: 1px solid #e2e8f0
+
+  &:last-child
+    border-bottom: none
+
+.day
+  border-right: 1px solid #e2e8f0
+  min-height: 120px
+  padding: 8px
+  display: flex
+  flex-direction: column
+  min-width: 0
+  width: 100%
+
+  &:last-child
+    border-right: none
+
+
+  &.weekend
+    background: $n1
+    .dayNumber,
+    .dayName
+      color: $n4
+  &.otherMonth
+    background: #f7f9fc
+    .dayNumber,
+    .dayName
+      color: #a0aec0
+
+.dayHeader
+  display: flex
+  align-items: center
+  margin-bottom: 8px
+  gap: 4px
+
+.dayNumber
+  font-size: 14px
+  font-weight: 500
+  color: #2d3748
+
+.dayName
+  font-size: 12px
+  color: #718096
+
+.businessList
+  flex: 1
+  overflow-y: auto
+  min-height: 0
+  width: 100%
+  min-width: 0

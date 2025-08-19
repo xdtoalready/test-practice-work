@@ -1,0 +1,142 @@
+@import "src/styles/helpers"
+.calendar_wrapper
+  //background: white
+  //display: contents
+  //border-radius: 12px
+  //box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15)
+  //padding: 16px
+  position: relative
+  left: -220px
+  top: 54px
+
+  >div>div[class*=react-datepicker]
+    box-shadow: 2px 2px 2px 2px $n2
+
+
+  div[class*=react-datepicker]
+    right: auto
+
+    //left: 30px
+
+  div[class*=react-datepicker__month]
+    margin-bottom: 18px
+    border-block: unset
+    border-bottom: 1px solid $n3
+
+  .react-datepicker__month-container
+    width: 100%
+
+  .react-datepicker__header
+    background: white
+    border: none
+    padding-top: 0
+
+  .react-datepicker__current-month
+    font-size: 20px
+    font-weight: 500
+    margin-bottom: 20px
+    text-align: center
+    border: none
+    padding: 0
+
+  .react-datepicker__day-names
+    margin-bottom: 8px
+
+  .react-datepicker__day-name
+    color: #9CA3AF
+    width: 40px
+    font-size: 14px
+    font-weight: 500
+
+  .react-datepicker__day
+    width: 40px
+    height: 40px
+    line-height: 40px
+    margin: 0
+    font-size: 14px
+    color: #000
+
+    &:hover
+      background: #F3F4F6
+      border-radius: 50%
+
+
+  div[class*=react-datepicker__day--in-range]
+    background: #F3F4F6
+    border-radius: unset
+    color: #000
+  div[class*=react-datepicker__day--selected],
+  div[class*=react-datepicker__day--range-start],
+  div[class*=react-datepicker__day--range-end]
+    border-radius: 50%
+    background-color: #FF6A55 !important
+    color: #fcfcfc
+
+  .react-datepicker__day--outside-month
+    color: #9CA3AF
+
+  .react-datepicker__navigation
+    top: 12px
+
+    &--previous
+      left: 12px
+
+    &--next
+      right: 12px
+
+.reset_button
+  //width: 100%
+  float: right
+  margin-top: 8px
+  padding: 8px 16px
+  border: none
+  background: white
+  color: #000
+  border-radius: 6px
+  font-size: 13px
+  font-weight: 700
+  line-height: 24px
+  letter-spacing: -0.01em
+  text-align: left
+
+  cursor: pointer
+  border: 1px solid #E5E7EB
+
+  &:hover
+    background: #F3F4F6
+
+// filters.module.sass
+.filters
+  display: inline-flex
+  flex-direction: row
+  background-color: $n2
+  border-radius: 8px
+  margin-bottom: 10px
+  padding: 8px
+  position: relative
+
+.date_selector
+  display: flex
+  align-items: center
+  gap: 8px
+  padding: 8px 12px
+  border-radius: 8px
+  cursor: pointer
+  transition: background-color 0.2s
+
+  &:hover
+    background-color: #F3F4F6
+
+  &.active
+    background-color: #EFEFEF
+
+.calendar_icon
+  color: #6B7280
+  width: 16px
+  height: 16px
+
+.date_range
+  color: #000
+  font-size: 14px
+.reset_container
+  button

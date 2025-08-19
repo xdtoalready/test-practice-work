@@ -1,0 +1,116 @@
+@import ../../styles/helpers
+
+@mixin modalSizing
+    width: fit-content
+    min-width: 200px
+    max-width: 422px
+    height: fit-content
+    padding: 32px 18px
+    margin-left: auto
+    margin-right: auto
+    background: #fff
+    border-radius: 8px
+    //transform: translateY(-50%)
+
+.appModal
+  display: flex
+  position: fixed
+  top: 0
+  left: 0
+  width: 100%
+  height: 100%
+  padding: 48px 24px
+  background: rgba(#111315,.5)
+  animation: showModal .4s forwards
+  overflow: auto
+  z-index: 999
+  .addButtons
+    >div
+      cursor: pointer
+    align-items: center
+    display: flex
+    flex-direction: row
+    margin-left: auto
+    gap: 32px
+    +body1-s
+    color: $n4
+    .download,.delete
+      cursor: pointer
+      svg
+        margin-left: 8px
+
+        fill: $n4
+  +m
+    padding: 16px
+  &__closeIcon
+    position: absolute
+    right: 10px
+    top: 4px
+
+  &__inner
+    width: 100vw
+    max-width: 420px
+    margin-left: auto
+    margin-right: auto
+    background: #fff
+    position: relative
+    &__xl
+      @include modalSizing
+      width: inherit
+      max-width: calc(100vw - 364px)
+      margin-top: 5vh
+    &__lg
+      @include modalSizing
+      width: inherit
+      max-width: calc(100vw - 534px)
+      margin-top: 5vh
+      //padding: 52px 24px
+      min-width: 322px
+
+      .appModal__closeIcon
+        position: absolute
+        right: 24px
+        top: 18px
+        +t
+          right: 18px
+          top: 12px
+      +t
+        //padding: 20px 16px
+        max-width: calc(100vw - 334px)
+      +m
+
+        max-width: calc(100vw - 134px)
+      +s
+        max-width: calc(100vw - 0px)
+
+    &__md
+      @include modalSizing
+      width: inherit
+      max-width: 764px
+      margin-top: 5vh
+
+    &__md_up
+      @include modalSizing
+      width: inherit
+      max-width: 1164px
+      margin-top: 5vh
+
+    &__sm
+      @include modalSizing
+      margin-top: 30vh
+
+.buttons
+  display: flex
+  flex-direction: row
+  +m
+    flex-direction: column
+  gap: 8px
+  & .button
+    padding: 0 8px
+    a
+      font-size: 15px
+  .left
+    display: flex
+    gap: 16px
+
+

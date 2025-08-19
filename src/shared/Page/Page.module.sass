@@ -1,0 +1,55 @@
+@import ../../styles/helpers
+
+.page
+    overflow-x: hidden
+    padding: 96px 0 0 0
+    +x
+        padding: 80px 0 0 0
+    +d
+        padding-left: 12px
+    +t
+        overflow: hidden
+    +m
+        padding-left: 12px
+    +s
+        padding-left: 12px
+
+.sidebar
+
+    +r(100)
+        transform: translateX(-100%)
+        transition: transform .3s
+        &.visible
+            transform: translateX(0)
+
+.inner
+
+    display: flex
+    flex-direction: column
+    min-height: calc(100vh - 96px)
+    padding: 40px
+    +x
+        padding: 32px 24px
+    +m
+        padding: 24px 16px
+
+.container
+
+    display: flex
+    flex-direction: column
+    flex-grow: 1
+    width: 100%
+    margin: 0 auto
+    &.wide
+        max-width: 100%
+
+.title
+    display: flex
+    justify-content: space-between
+    margin-bottom: 24px
+    +m
+        margin-bottom: 16px
+
+.disabled
+    transform: translateX(-200%)
+

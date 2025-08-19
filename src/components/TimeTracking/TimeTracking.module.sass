@@ -1,0 +1,69 @@
+@import ../../styles/helpers
+
+.timeTrackingList
+  margin-top: 1rem
+  max-height: 600px
+  overflow-y: auto
+
+  //@include custom-scrollbar
+
+.dateGroup
+  margin-bottom: 24px
+
+  &:last-child
+    margin-bottom: 0
+
+.dateHeader
+  font-size: 16px
+  color: #6F767E
+  margin-bottom: 16px
+
+.container
+  font-weight: 500
+  line-height: 18px
+  font-size: 13px
+  color: $n7
+  display: flex
+  flex-direction: row
+  width: 100%
+  min-width: 0
+  margin-bottom: 8px
+
+.sender
+  img
+    width: 32px
+    height: 32px
+    border-radius: 50px
+
+.details
+  flex: 1
+  min-width: 0
+  padding: 0 24px
+  display: flex
+  flex-direction: column
+  +m
+    padding: 0 1px
+
+  & > span
+    font-weight: 500
+    color: $shades2
+    word-break: break-word
+
+  .tracking_info
+    padding-top: 4px
+    display: flex
+    flex-direction: column
+    gap: 8px
+
+    .time, .cost
+      display: flex
+      align-items: center
+      gap: 8px
+
+.rightSide
+  position: relative
+  div[class*=TableMenu_contextMenu]
+    top: 30px
+  .hours
+    flex-shrink: 0
+    color: $shades2

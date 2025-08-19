@@ -1,0 +1,27 @@
+@import ../../../../../../styles/helpers
+
+.name
+  display: flex
+
+  //justify-content: space-between
+
+  .link
+    flex-basis: 26px
+    flex-grow: 0.8
+    text-overflow: ellipsis
+    overflow: hidden
+    white-space: nowrap
+    margin-right: 0.5rem
+    &:hover
+      cursor: pointer
+      color: $p3
+
+
+
+.services
+  &:not(:first-of-type)
+    margin-top: 1.5rem
+
+.servicesCell
+  display: flex
+  flex-direction: column

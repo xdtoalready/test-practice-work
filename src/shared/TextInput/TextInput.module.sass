@@ -1,0 +1,367 @@
+@import ../../styles/helpers
+
+
+.field
+    &.fieldBeforeIcon
+        .input
+            padding-left: 32px // Отступ для beforeIcon
+
+.beforeIcon
+    position: absolute
+    right: 48px
+    top: 50%
+    transform: translateY(-50%)
+    display: flex
+    align-items: center
+    justify-content: center
+    pointer-events: all // Чтобы можно было кликнуть на иконку
+
+.wrap
+    position: relative
+
+    // Основная иконка справа
+    .icon
+        position: absolute
+        right: 8px
+        top: 50%
+        transform: translateY(-50%)
+.field
+
+    &.fieldIcon
+        .input
+            padding-left: 48px
+
+    &.fieldCurrency
+        .input
+            padding-left: 58px
+            background: none
+            border-color: $n3
+            &:focus
+                border-color: $shades1
+            +dark
+                border-color: $n6
+                &:focus
+                    border-color: $n5
+    &.fieldCopy
+        .input
+            padding-right: 48px
+    &.error
+        .icon
+            svg
+                fill: $p3
+        .wrap
+
+            &:after
+                content: ""
+                position: absolute
+                top: 0
+                right: 0
+                bottom: 0
+                width: 48px
+                background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none' viewBox='0 0 24 24'%3E%3Cpath d='M12 15a1 1 0 0 0 1-1V9a1 1 0 1 0-2 0v5a1 1 0 0 0 1 1zm7.675 2.504L12.87 5.563a1 1 0 0 0-1.738 0L4.327 17.504A1 1 0 0 0 5.196 19h13.61a1 1 0 0 0 .869-1.495zM14.607 4.573c-1.151-2.019-4.062-2.019-5.213 0L2.589 16.514C1.45 18.514 2.894 21 5.196 21h13.61c2.302 0 3.746-2.486 2.606-4.485L14.607 4.573z' fill-rule='evenodd' fill='%23ff6a55'/%3E%3Cpath d='M13 17a1 1 0 1 1-2 0 1 1 0 1 1 2 0z' fill='%23ff6a55'/%3E%3C/svg%3E") no-repeat 50% 50% / 24px auto
+        .input
+            padding-right: 48px
+            background: rgba($s1, .25)
+            border-color: transparent
+            color: $p3
+
+            +dark
+                &:focus
+                    border-color: $p3
+                    color: $p3
+            &::placeholder
+                color: $p3
+    &.success
+        .wrap
+            &:after
+                content: ""
+                position: absolute
+                top: 0
+                right: 0
+                bottom: 0
+                width: 48px
+                background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M20.707 6.293a1 1 0 0 1 0 1.414l-8.586 8.586a3 3 0 0 1-4.243 0l-3.586-3.586a1 1 0 0 1 1.414-1.414l3.586 3.586a1 1 0 0 0 1.414 0l8.586-8.586a1 1 0 0 1 1.414 0z' fill='%2383bf6e'/%3E%3C/svg%3E") no-repeat 50% 50% / 24px auto
+        .input
+            padding-right: 48px
+            background: $n
+            border-color: $shades1
+            +dark
+                background: $n8
+
+.label
+    margin-bottom: 14px
+    +body1-m
+    color: $n4
+    +dark
+        color: $n3
+
+.tooltip
+    position: relative
+    top: -1px
+    svg
+        fill: $shades1
+
+.wrap
+    position: relative
+
+.input
+    &::-webkit-outer-spin-button,&::-webkit-inner-spin-button
+        -webkit-appearance: none
+        margin: 0
+    width: 100%
+    height: 48px
+    padding: 0 10px
+    border-radius: 12px
+    border: 2px solid transparent
+    background: $n2
+    +inter
+    +base1-s
+    color: $n7
+    transition: all .2s
+    +dark
+        border-color: $n6
+        background: $n6
+        color: $n1
+    +placeholder
+        color: $shades1
+        +dark
+            color: $shades1
+    &:focus
+        border-color: $shades1
+        background: $n
+        +dark
+            border-color: $n5
+            background: $n8
+.textarea
+    display: flex
+    padding: 1rem
+    display: block
+    width: 100%
+    //overflow: hidden
+    //line-height: 20px
+    resize: none
+    transition: all .2s
+    overflow: hidden
+    +d
+        //min-height: 40px
+//.textareaContainer
+//    position: relative
+//    width: 100%
+//    display: flex
+
+//.textarea
+//    width: 100%
+//    min-height: 48px
+//    padding: 14px
+//    border-radius: 12px
+//    border: 2px solid transparent
+//    background: $n2
+//    font-family: 'Inter', sans-serif
+//    font-size: 16px
+//    line-height: 1.5
+//    color: $n7
+//    transition: all .2s
+//    resize: none
+//    overflow: hidden
+//
+//    &.hasActions
+//        padding-right: 48px // Оставляем место для actions
+//        transition: padding-right .2s ease
+//
+//    &:focus
+//        border-color: $shades1
+//        background: $n
+//        outline: none
+//
+//    +dark
+//        border-color: $n6
+//        background: $n6
+//        color: $n1
+//
+//        &:focus
+//            border-color: $n5
+//            background: $n8
+//
+//    +placeholder
+//        color: $shades1
+//        +dark
+//            color: $shades1
+
+.icon,
+.copy
+    position: absolute
+    top: 0
+    bottom: 0
+    display: flex
+    justify-content: center
+    align-items: center
+    width: 48px
+
+.icon
+    left: 0
+    pointer-events: none
+    svg
+        fill: $n4
+
+.copy_actions
+    cursor: pointer
+    right: 0
+    svg
+        fill: $n4
+        transition: fill .2s
+    &:hover
+        svg
+            fill: $p1
+
+.currency
+    position: absolute
+    top: 2px
+    left: 2px
+    bottom: 2px
+    display: flex
+    justify-content: center
+    align-items: center
+    width: 46px
+    padding-top: 1px
+    border-radius: 10px 0 0 10px
+    background: $n2
+    color: $n7
+    +dark
+        background: $n6
+        color: $n4
+
+.trash
+    cursor: pointer
+    right: 0
+    svg
+        fill: $n4
+        transition: fill .2s
+    &:hover
+        svg
+            fill: $p3
+
+.see
+    align-self: baseline
+    cursor: pointer
+    right: 0
+    &:hover
+
+    svg
+        margin-top: 8px
+
+        +m
+            margin-top: 6px
+        fill: $n4
+        transition: fill .2s
+.see_active
+    svg
+        fill: $p1
+        transition: fill .2s
+
+.edit
+    cursor: pointer
+    right: 0
+    svg
+        fill: $n4
+        transition: fill .2s
+    &:hover
+        svg
+            fill: $p1
+.edit_active
+    svg
+        fill: $p1
+        transition: fill .2s
+.close
+    cursor: pointer
+    right: 0
+    svg
+        fill: $n4
+        transition: fill .2s
+    &:hover
+        svg
+            fill: $n8
+.wrap_hovered
+    background: #F4F4F4
+
+.actions
+    +m
+        display: none !important
+
+.dots_loader
+    display: none
+    justify-content: center
+    align-items: center
+    margin-right: 1.25rem
+    +m
+        display: ruby
+    //height: 100px // Можно настроить по необходимости
+
+    .dot
+        width: 5px
+        height: 5px
+        margin: 0 2px
+        background-color: #6F767E // Цвет точек (серый)
+        border-radius: 50%
+        //animation: bounce 1.4s infinite both
+
+        //&:nth-child(1)
+        //    animation-delay: -0.32s
+        //
+        //&:nth-child(2)
+        //    animation-delay: -0.16s
+
+.dots_container
+    margin-top: auto
+    margin-bottom: auto
+    padding: 5px
+    [class*='react-tooltip']
+        background: #FFFFFF
+        opacity: 1
+        .actions
+            display: flex !important
+            .edit,.see,.submit,.close,.delete,.copy_actions,.trash
+                display: flex
+                flex-basis: 0
+            p
+                +body1-s
+                margin-left: 4px
+                color: $n7
+
+            flex-direction: column
+            align-items: start
+
+    .actions
+        display: none
+        //display: flex !important
+
+.noMinWidth
+    min-width: auto !important
+
+.add
+    cursor: pointer
+    &:hover
+        svg
+            fill: $n5
+    display: flex
+    svg
+        margin-top: 6px
+        margin-right: 6px
+    +m
+        margin-left: 6px
+
+@media (max-width: 1600px)
+.noMinWidth
+    margin-bottom: 0 !important
+.required
+    color: $ph1 // Задайте красный цвет для звездочки
+    margin-left: 4px // Немного отступа от текста метки
+.errorMessage
+    color: $n4
+    +body1-m
+    margin-top: 8px
+
+
+.errorInput
+    border-color: #ee7373 !important  // Цвет границы, например красный
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.47)
+// Дополнительная подсветка

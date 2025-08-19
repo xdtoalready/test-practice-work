@@ -1,0 +1,91 @@
+@import ../../../../styles/helpers
+
+.card_title
+  +title1-s
+.head
+  display: flex
+.etap
+  +body2-s
+  &:hover
+    +link
+.card
+  flex-shrink: 1
+  flex-basis: 100%
+  +t
+    display: none
+.cards
+  margin-bottom: 16px
+  display: flex
+  flex-direction: row
+  gap: 8px
+  +t
+    >div:nth-of-type(2)
+      display: none
+.secondCard
+  flex-shrink: 1.5
+  max-height: 280px
+  flex-basis: 460px
+
+.button
+  display: inline-flex
+  flex-direction: row
+  +d
+    span
+      min-width: 80px
+  span
+    font-size: 13px
+    min-width: 125px
+    text-align: start
+  padding: 12px
+  height: 40px
+  a
+    padding: 0
+    height: 40px
+  svg
+    padding-right: 4px
+    fill: $n4
+  &_title
+    height: 24px
+    padding-left: 0
+    span
+      font-size: 13px
+      padding: 0
+
+    a
+      height: 42px
+    svg
+      fill: $n1
+      padding-right: 0px
+.buttons
+  display: flex
+  flex-direction: column
+  gap: 8px
+  >*
+    max-width: fit-content
+
+.header
+  >div
+    .edit
+      margin-left: 16px
+      cursor: pointer
+    +title1-s
+    font-size: 24px
+  margin-bottom: 16px
+  display: flex
+  flex-direction: row
+  justify-content: space-between
+
+.gridContainer
+  display: grid
+  grid-template-columns: 5fr 2fr
+  gap: 16px
+  .infoCards
+
+    .infoCard
+      max-height: fit-content
+      margin-bottom: 16px
+  .inProgress
+    color: $p2
+  .closed
+    color: $p3
+

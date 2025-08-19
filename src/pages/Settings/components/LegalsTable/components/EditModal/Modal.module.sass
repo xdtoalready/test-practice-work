@@ -1,0 +1,159 @@
+@import ../../../../../../styles/helpers
+
+.name
+  +title1-s
+  color: $n7
+  margin-bottom: 24px
+
+
+.textarea
+  textarea
+    font-weight: 500 !important
+    background-color: white !important
+    border-color: $n3
+
+    margin-bottom: 24px
+.dropdown
+  margin-bottom: 16px
+.input
+  min-width: 160px
+
+  //div[class*='selection']
+  //  font-weight: 500 !important
+  z-index: 3
+  input
+    //font-weight: 500 !important
+    //background-color: white !important
+    border-color: $n3
+
+  margin-bottom: 24px
+  &>div
+    +body1-m
+    color: $n4
+    font-weight: 500
+    margin-bottom: 8px
+.flex
+  div[class*='datepicker_wrapper']
+    input
+      font-weight: 600 !important
+  &__lowerGap
+    .input
+    z-index: 0
+  display: flex
+  flex-direction: row
+  gap: 25px
+  +m
+    gap: 0px
+    flex-direction: column
+    &>div
+      margin-bottom: 24px
+
+  &>div
+    flex: 1
+  &>.flexBig
+    flex: 0 0 63.1%
+    border-right: 1px solid $n3
+    padding-right: 24px
+.dualTime
+  column-gap: 13px
+.label
+  color: $n4
+  +body1-m
+  margin-bottom: 8px
+.buttons
+  display: flex
+  flex-direction: row
+  gap: 8px
+  & .button
+    padding: 0 8px
+    a
+      font-size: 15px
+.addZIndex
+  z-index: 4
+  position: relative
+.lowZIndex
+  z-index: 2
+  position: relative
+.client
+  &_label
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+    +link
+    &>div:last-of-type
+      a
+        &:hover
+          color: darken($p3,10)
+
+.switch
+  margin-bottom: 24px
+
+.stageModal
+  &>div:nth-child(2)>div>div:nth-child(4)
+    margin-top: 25px
+
+@media (max-width: 1600px)
+  .dualTimeWrap
+    flex-direction: column
+    gap: 10px
+.react-datepicker-wrapper
+  display: none !important
+@media (max-width: 1200px)
+  .stageModal
+    &>div:nth-child(2)>div>div:nth-child(4)
+      margin-top: 0
+
+  div[class*='react-datepicker-wrapper']
+    margin-bottom: 15px
+
+  .dualTimeWrap
+    flex-direction: column
+    gap: 10px
+
+  .stageModal
+    .flex
+      &>div
+        margin-bottom: 0
+      div[class*='datepicker_wrapper']
+        margin-bottom: 0
+
+  .stageModal
+    .dualTime
+      flex-direction: row
+    flex-direction: column
+    .flexBig
+      padding-right: 0
+      border-right: none
+      border-bottom: 1px solid $n3
+    .flex
+      .input
+        margin-bottom: 5px
+.radio_buttons
+  display: flex
+  flex-direction: row
+  gap: 8px
+.radio_container
+  label
+    margin-bottom: 14px
+    +body1-m
+    color: $n4
+    +dark
+      color: $n3
+  display: flex
+  flex-direction: column
+
+.errorInput
+  input
+    border-color: #ff5454 !important // Красная рамка при ошибке
+
+.checkbox
+  margin-bottom: 32px
+  &_mainLegal
+    +body1-m
+  *[class*=_inner]
+    display: flex
+    flex-direction: column-reverse
+    span[class*=text]
+      padding-left: 0
+      padding-bottom: 4px
+

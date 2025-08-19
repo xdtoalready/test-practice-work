@@ -1,0 +1,12 @@
+@import ../../../../../../styles/helpers
+
+.container
+  a>div
+    margin-bottom: 4px
+  +caption1
+  &:hover
+    +link
+
+  >:nth-child(2)
+    +caption2-m
+    color: $shades2

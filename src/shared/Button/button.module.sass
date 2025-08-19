@@ -1,0 +1,86 @@
+@import '../../styles/helpers'
+
+.control
+  display: block
+  cursor: pointer
+
+  &.primary
+    color: white
+    &:hover
+      background: darken($p3, 10%)
+  &.secondary_outline
+    border: unset
+    background-color: white
+    .button
+      color: $p3
+    &:hover
+      background: darken(white, 2%)
+
+  &.secondary
+    box-sizing: border-box
+    border: 2px $n3 solid
+    background-color: $n1
+    color: $n8
+    .button
+      padding-bottom: 2px
+      color: $n8
+
+    &:hover
+      background: $n2
+
+
+//+m
+//  display: none
+
+.isNotSmallTable
+  +m
+    display: none
+
+.button
+  background: padding-box
+  display: flex
+  align-items: center
+  margin-left: auto
+
+
+
+.adaptive
+  cursor: pointer
+  display: none
+  +m
+    transform: rotate(0deg)
+    &:hover
+      transform: rotate(90deg)
+    display: flex
+    align-self: center
+    padding: 0
+    border-radius: 50px
+    width: 24px
+    height: 24px
+
+.smallButton
+  cursor: pointer
+  transform: rotate(0deg)
+  &:hover
+    transform: rotate(90deg)
+  display: flex
+  align-self: center
+  padding: 0
+  border-radius: 50px
+  width: 24px
+  height: 24px
+
+  &.secondary_outline
+    background-color: white
+    color: $p3
+
+  &.primary
+    background-color: $p3
+    color: white
+
+  &.secondary
+    background-color: grey
+    color: black
+.disabled
+  cursor: not-allowed
+  filter: grayscale(0.20)

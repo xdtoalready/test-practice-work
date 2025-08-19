@@ -1,0 +1,63 @@
+@import ../../../../styles/helpers
+
+.row
+  display: flex
+  +t
+    display: grid
+
+.col
+  &:first-child
+    flex: 0 0 calc(100% - 520px)
+    width: calc(100% - 520px)
+    padding-right: 8px
+    +x
+      flex: 0 0 calc(100% - 404px)
+      width: calc(100% - 404px)
+    +d
+      flex: 0 0 calc(100% - 380px)
+      width: calc(100% - 488px)
+    +t
+      display: grid
+      order: 2
+      width: 100%
+      margin-bottom: 8px
+      padding-right: 0
+
+  &:nth-child(2)
+    flex-shrink: 0
+    width: 520px
+    +x
+      width: 404px
+    +d
+      width: 380px
+    +t
+      display: grid
+      order: 1
+      width: 100%
+  >:not(:last-child)
+    margin-bottom: 8px
+
+.card
+
+  font-size: 18px
+  &_status
+    display: flex
+    flex-direction: row
+
+
+.dropdown
+  display: none
+  +t
+    border-radius: 4px
+    align-items: center
+    display: block
+    background: $n1
+    margin-bottom: 0.5rem
+    path
+
+      transform: scale(1.5)
+    &_inner
+      padding: 16px
+      align-items: center
+      justify-content: space-between !important
+      margin-top: 24px

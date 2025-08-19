@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "baseUrl": "."
+  },
+  "include": ["src,public"],
+  "paths": {
+    "@pages/*": ["src/pages/*"],
+    "@shared/*": ["src/shared/*"],
+    "@styles/*": ["src/styles/*"],
+    "@public/*": ["public/*"]
+  },
+  "jsx": "react-jsx",
+  "exclude":["node_modules", "build"]
+    }

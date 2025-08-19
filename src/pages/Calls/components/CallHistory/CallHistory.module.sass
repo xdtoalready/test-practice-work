@@ -1,0 +1,89 @@
+@import "../../../../styles/helpers"
+
+.callHistory
+  display: flex
+  flex-direction: column
+  gap: 16px
+
+.historyTitle
+  font-size: 18px
+  font-weight: 600
+  margin-bottom: 16px
+
+.dateGroup
+  display: flex
+  flex-direction: column
+
+.dateHeader
+  padding: 8px 0
+  font-size: 14px
+  color: $n4
+  font-weight: 500
+  +dark
+    color: $n3
+
+.callItem
+  display: flex
+  align-items: center
+  //padding: 12px 8px
+  border-radius: 8px
+  transition: background-color 0.2s
+  margin-bottom: 16px
+
+  &:hover
+    cursor: pointer
+    .callInfo
+
+      color: $p3
+
+.callIcon
+  display: flex
+  align-items: center
+  justify-content: center
+  margin-right: 12px
+  //+dark
+  //  background-color: $n6
+
+.callInfo
+  flex: 1
+  min-width: 0
+  +caption1
+
+.callName
+  font-weight: 600
+  font-size: 15px
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+  +dark
+    color: $n1
+
+.callCompany
+  font-size: 13px
+  color: $n4
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+
+.callTime
+  font-size: 13px
+  color: $n4
+  +caption1
+
+  margin-left: 12px
+
+.loaderContainer
+  display: flex
+  justify-content: center
+  padding: 32px
+
+.error
+  color: $p3
+  padding: 16px
+  text-align: center
+
+.emptyState
+  padding: 32px 16px
+  text-align: center
+  color: $n4
+  font-size: 14px

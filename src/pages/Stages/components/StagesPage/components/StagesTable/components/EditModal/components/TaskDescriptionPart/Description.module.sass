@@ -1,0 +1,100 @@
+@import ../../../../../../../../../../styles/helpers
+.buttons
+  flex-wrap: wrap
+  @media only screen and (max-width: "970px")
+    &>div:last-of-type
+      width: 100%
+    div[class*='Badge_container']
+      padding-left: unset
+    div[class*='Badge_status']
+     width: 100%
+  margin-bottom: 24px
+  display: flex
+  flex-direction: row
+  justify-content: space-between
+  &_actions
+    @media only screen and (max-width: '970px')
+      margin-bottom: 16px
+
+    @media only screen and (max-width: '840px')
+
+      justify-content: space-between
+      width: 100%
+    display: flex
+    flex-direction: row
+    //gap: 12px
+    > div
+     //padding: 0 8px
+     a
+       font-size: 15px
+
+.input
+  div[class*='label']
+    font-weight: 500
+    font-size: 15px
+    line-height: 24px
+
+  div[class*='selection']
+    font-weight: 500 !important
+  z-index: 3
+  &_label
+    margin-bottom: 8px
+  input
+    font-weight: 500 !important
+    background-color: white !important
+    border-color: $n3
+
+
+  margin-bottom: 24px
+
+.template_label
+  display: flex
+  flex-direction: row
+  justify-content: space-between
+  a
+    color: $p3
+    &:hover
+      color: darken($p3,10%)
+
+.textarea
+  textarea
+    background-color: $n
+    border-color: $n3
+    font-weight: 500
+    &:focus
+      border-color: $shades1
+
+.label_bold
+  +title1-s
+  color: $n7
+
+.border_container
+
+  @media only screen and (max-width: '840px')
+    border-right: unset
+    padding-right: 0px
+  padding-right: 24px
+  border-bottom: 1px $n3 solid
+  border-right: 1px $n3 solid
+.border_container_comment
+  padding-top: 24px
+  padding-right: 24px
+  @media only screen and (max-width: '840px')
+    padding-right: 0px
+    padding-top: 0px
+    border-bottom: unset
+    border-right: unset
+  border-bottom: 1px transparent solid
+  border-right: 1px $n3 solid
+.comment_list
+  @media only screen and (max-width: '840px')
+    border-right: unset
+  padding-top: 12px
+  padding-right: 28px
+  >div
+    margin-top: unset
+  border-right: 1px $n3 solid
+.loader
+  position: relative
+  left: 50%
+  top: 50%

@@ -1,0 +1,108 @@
+@import '../../../styles/helpers'
+@import "../../../pages/Calendar/Calendar.module"
+
+.typeSelector
+  width: 240px
+  //background-color: $color-background-secondary
+  padding: 24px 16px
+  padding-top: unset
+  display: flex
+  flex-direction: column
+
+.typeSelectorTitle
+  +title1-s
+  margin-bottom: 24px
+
+.typeList
+  display: flex
+  flex-direction: column
+  gap: 8px
+
+.typeItem
+  display: flex
+  align-items: center
+  padding: 8px 12px
+  border-radius: 8px
+  cursor: pointer
+  transition: all 0.3s ease
+
+  &:hover
+    background-color: rgba(0, 0, 0, 0.05)
+
+.typeIconWrapper
+  width: 40px
+  height: 40px
+  display: flex
+  align-items: center
+  justify-content: center
+  margin-right: 12px
+  border-radius: 8px
+
+.typeIcon
+  //color: $color-text-secondary
+
+.typeLabel
+  font-size: 14px
+
+.selected
+  background-color: rgba(0, 0, 0, 0.1)
+  color: $n7 !important
+  .typeIconWrapper
+    //background-color: rgba(0, 0, 0, 0.05)
+
+// Business type specific styles (matching your business.module.sass)
+.business
+  &.selected
+    background-color: $color-business
+    color: white
+
+    .typeIcon
+      color: white
+
+.call
+  &.selected
+    background-color: $color-call
+    color: white
+
+    .typeIcon
+      color: white
+
+.brainstorm
+  &.selected
+    background-color: $color-brainstorm
+    color: white
+
+    .typeIcon
+      color: white
+
+.meeting
+  &.selected
+    background-color: $color-meeting
+    color: white
+
+    .typeIcon
+      color: white
+
+.personal
+  &.selected
+    background-color: $color-personal
+    color: white
+
+    .typeIcon
+      color: white
+
+.holiday
+  &.selected
+    background-color: $color-holiday
+    color: white
+
+    .typeIcon
+      color: white
+
+.letter
+  &.selected
+    background-color: $color-letter
+    color: white
+
+    .typeIcon
+      color: white

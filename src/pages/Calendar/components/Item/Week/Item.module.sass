@@ -1,0 +1,42 @@
+@import "../../../Calendar.module"
+
+.weekItemSimple
+  position: relative
+  background: white
+  border-radius: 4px
+  padding: 4px 8px
+  margin-bottom: 4px
+  cursor: pointer
+  min-height: 24px
+  box-sizing: border-box
+  z-index: 1
+  transform: translateX(0px)
+  transition: transform 0.2s ease-in
+  &:hover
+    transform: translateX(15px)
+    transition: transform 0.2s ease-out
+
+  &.isFinished
+    backdrop-filter: contrast(0.85)
+    -webkit-backdrop-filter: contrast(0.85)
+
+  &.dragging
+    opacity: 0.5
+    pointer-events: none !important
+    z-index: 100
+
+  &:hover
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)
+
+.content
+  height: 100%
+
+.time
+  font-size: 11px
+  color: #666
+
+.title
+  font-size: 12px
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis

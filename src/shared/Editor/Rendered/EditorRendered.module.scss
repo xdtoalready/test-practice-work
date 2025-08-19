@@ -1,0 +1,48 @@
+@import "src/styles/helpers";
+.editorRenderer {
+  position: relative;
+  width: 100%;
+
+  :global(.jodit-container) {
+    border: none !important;
+    background-color: inherit !important;
+  }
+  :global(.jodit-workplace) {
+    padding-top: 16px;
+    background-color: $n !important;
+  }
+  :global(.jodit-wysiwyg){
+    background-color: inherit !important;
+    padding-top: unset !important;
+    padding-bottom: unset !important;
+
+
+  }
+  :global(.jodit-selected-image){
+      outline:none !important
+}
+  :global(.jodit-selected-image){
+    outline:none !important
+  }
+  :global(.jodit-image-popup){
+    display:none !important
+  }
+  &.limitedHeight {
+    overflow: hidden;
+  }
+
+  .content {
+    width: 100%;
+
+
+    .gradient {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+      pointer-events: none;
+    }
+  }
+}

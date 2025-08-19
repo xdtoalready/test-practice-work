@@ -1,0 +1,173 @@
+@import ../../../styles/helpers
+
+.search
+    position: relative
+    flex-shrink: 0
+    margin-left: 2rem
+    width: 324px
+    z-index: 1000
+    +xw
+        width: 12rem
+
+    +a
+        position: absolute
+        left: -4px
+        right: 0
+        top: 80px
+        width: calc(100% - 26px)
+        padding: 12px 16px
+        background: $n
+        box-shadow: 0 8px 12px rgba($n8, .05)
+        +dark
+            background: $n8
+    &.active
+
+        //display: block
+        //.start,
+        .result
+            visibility: hidden
+            opacity: 0
+        .direction,
+        .close
+            visibility: visible
+            opacity: 1
+        .body
+            max-height: 400px
+            overflow-y: auto
+            visibility: visible
+            opacity: 1
+            pointer-events: auto
+
+
+.head
+    position: relative
+    z-index: 2
+
+.start,
+.direction,
+.result,
+.close
+    position: absolute
+    top: 50%
+    transform: translateY(-50%)
+    transition: all .2s
+    svg
+        transition: fill .2s
+
+.start
+    left: 12px
+    svg
+        fill: $n4
+    &:hover
+        svg
+            fill: $n7
+
+.result
+    right: 8px
+    width: 56px
+    height: 32px
+    background: $n
+    border-radius: 8px
+    box-shadow: inset 0px -1px 2px rgba(0, 0, 0, 0.05), inset 0px -1px 1px rgba(0, 0, 0, 0.04), inset 0px 2px 0px rgba(255, 255, 255, 0.25)
+    font-size: 16px
+    font-weight: 600
+    color: $n7
+    +dark
+        background: $n7
+        box-shadow: inset 0px -1px 2px rgba(0, 0, 0, 0.05), inset 0px -1px 1px rgba(0, 0, 0, 0.04), inset 0px 1px 0px rgba(255, 255, 255, 0.08)
+        color: $n1
+    +a
+        display: none
+    &:hover
+        color: $p1
+
+.direction
+    left: 10px
+    svg
+        fill: $p1
+    &:hover
+        transform: translate(-2px,-50%)
+
+.close
+    right: 18px
+    width: 32px
+    height: 32px
+    +a
+        right: 0px
+        padding-left: 10px
+    svg
+        fill: $shades1
+    &:hover
+        svg
+            fill: $p3
+
+.direction,
+.close
+    visibility: hidden
+    opacity: 0
+
+.input
+    height: 40px
+    width: 100%
+    padding: 0 40px
+    background: $n2
+    border: 2px solid transparent
+    border-radius: 12px
+    +base1-s
+    color: $n7
+    transition: all .2s
+    &::placeholder
+        color: $shades1
+    &:focus
+        border-color: $p1
+        background: $n
+        +dark
+            background: $n8
+    +m
+        margin-right: 16px
+
+.body
+    position: absolute
+    top: -12px
+    left: -12px
+    right: 0px
+    padding: 84px 12px 12px
+    width: calc(100% + 24px)
+    border: 1px solid transparent
+    box-shadow: 0px 0px 14px -4px rgba(0, 0, 0, 0.05), 0px 32px 48px -8px rgba(0, 0, 0, 0.1)
+    background: $n
+    border-radius: 16px
+    visibility: hidden
+    opacity: 0
+    transition: all .2s
+    +m
+        top: 100%
+        left: 0
+        right: 0
+        max-height: calc(100vh - 152px)
+        padding: 16px 8px
+        border-radius: 0
+        border-top: 1px solid $n3
+        box-shadow: 0 12px 32px rgba($n8, .05)
+        overflow: auto
+    +dark
+        background: $n7
+        border-color: $n6
+        
+
+.box
+    &:not(:last-child)
+        margin-bottom: 24px
+        padding-bottom: 24px
+        border-bottom: 1px solid $n3
+        +dark
+            border-color: $n6
+        +m
+            margin-bottom: 16px
+            padding-bottom: 16px
+
+.category
+    margin-bottom: 12px
+    padding-left: 12px
+    +caption1
+    color: $n4

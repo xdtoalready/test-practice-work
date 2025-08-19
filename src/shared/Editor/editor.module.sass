@@ -1,0 +1,196 @@
+@import '../../styles/helpers'
+
+.editorContainer
+  width: 100%
+  position: relative
+
+:global
+  .jodit-workplace
+    background-color: transparent !important
+  .jodit-default
+    background-color: $n !important
+  .comment-jodit
+    padding-top: 3px
+    background-color: $n2 !important
+    border-radius: 12px !important
+    border: 2px solid transparent !important
+    &:focus-within
+      padding-top: 3px
+      background-color: $n !important
+      border-radius: 12px !important
+      border: 2px solid $shades1 !important
+  .jodit-container
+    border-radius: 12px !important
+
+    background-color: transparent 
+    border: 2px solid $n3
+    overflow: hidden
+    width: 100% !important
+    +dark
+      border-color: $n6
+      background: $n6
+
+    &:focus-within
+      border-color: $shades1
+      +dark
+        border-color: $n5
+  .jodit-toolbar-button__trigger
+    display: inline-flex
+  // Стили для Jodit в обычном и темном режиме
+  .jodit-ui-button[data-ref="upload"], .jodit-drag-and-drop__file-box
+    display: none !important
+  // Принудительное отображение всех кнопок в панели инструментов
+  .jodit-toolbar-button
+    //display: block !important
+    visibility: visible !important
+
+  .jodit-container .jodit-wysiwyg
+    padding: 24px 12px 0px 12px !important
+  // Особенно кнопку ссылки
+  .jodit-toolbar-button[data-name="link"]
+    display: block !important
+    visibility: visible !important
+    opacity: 1 !important
+
+  // Стили для ссылок в редакторе
+  .jodit-wysiwyg a
+    color: $p1 !important
+    text-decoration: underline !important
+    cursor: pointer !important
+
+    &:hover
+      opacity: 0.8
+      text-decoration: none !important
+
+  // Стили для диалогов
+  .jodit-dialog-box
+    z-index: 100001 !important
+
+  // Стили для панели инструментов
+  .jodit-toolbar
+    background: $n2
+    border-bottom: 1px solid $n3
+    +dark
+      background: $n6
+      border-color: $n6
+
+  .jodit-toolbar-button
+    &:hover
+      background-color: $n3
+      +dark
+        background-color: $n5
+
+  .jodit-ui-group
+    display: flex !important
+    visibility: visible !important
+  .jodit-toolbar-editor-collection
+    border: none !important
+  .jodit-toolbar__box
+    background-color: $n !important
+    border-bottom: unset !important
+    display: flex !important
+    flex-wrap: wrap !important
+    visibility: visible !important
+  div[class*=comment_input]
+    .jodit-placeholder, .jodit-wysiwyg
+      padding: 12px !important
+  .jodit-placeholder
+    padding: 24px 12px 0px 12px !important
+    color: $shades1
+    +dark
+      color: $shades1
+
+  .jodit-container__resizer
+    display: block !important
+    height: 10px !important // Make it a bit bigger
+    background-color: rgba(0, 0, 0, 0.1) // Make it slightly visible
+    bottom: -5px !important
+    position: absolute !important
+    width: 100% !important
+
+    &:hover
+      background-color: rgba(0, 0, 0, 0.2) // More visible on hover
+
+  // Make sure no Jodit styles are hiding the resize handle
+  .jodit .jodit-container__resizer
+    display: block !important
+    visibility: visible !important
+
+  :global(.jodit-container)
+
+
+    // Ensure the editor area has proper padding at the bottom
+    :global(.jodit-wysiwyg)
+      word-break: break-word !important
+
+      // padding-bottom: 24px !important
+      font-weight: normal !important
+
+      p
+        font-weight: normal !important
+
+
+      b, strong
+        font-weight: bold !important
+
+
+.jodit-wysiwyg 
+  ul 
+    list-style-type: disc !important
+    padding-left: 40px !important
+    margin: 1em 0 !important
+
+
+  ol 
+    list-style-type: decimal !important
+    padding-left: 40px !important
+    margin: 1em 0 !important
+
+
+  li 
+    display: list-item !important
+
+.jodit-container .jodit-wysiwyg img[style*="float: left"] 
+  clear: left
+  display: inline
+  float: left
+  margin: 5px 10px 10px 0
+
+
+.jodit-container .jodit-wysiwyg img[style*="float: right"] 
+  clear: right
+  display: inline
+  float: right
+  margin: 5px 0 10px 10px
+
+
+/* Fix for paragraphs around floated images */
+.jodit-container .jodit-wysiwyg p
+  overflow: auto /* This helps with text wrapping around floated elements */
+
+:global
+  .jodit-toolbar__box:not(:empty) .jodit-toolbar-editor-collection::after
+    background-color: $n1 !important
+  .jodit-color-picker__native
+    display: none !important
+  .jodit-icon
+      width: inherit !important
+      height: inherit !important
+  .jodit-icon_table
+    fill: transparent !important
+  .jodit-toolbar-button
+    width: 42px
+  .jodit-toolbar-editor-collection .jodit-toolbar-button
+    width: fit-content
+  .jodit-toolbar-select[data-ref="paragraph"]
+    justify-content: left !important
+    min-width: unset !important
+    .jodit-icon
+      width: 25px !important
+      height: 24px !important
+    .jodit-toolbar-select__text
+      display: none !important
+
+.rotate
+  transform: rotate(-90deg)
+

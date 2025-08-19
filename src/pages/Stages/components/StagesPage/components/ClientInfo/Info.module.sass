@@ -1,0 +1,63 @@
+@import ../../../../../../styles/helpers
+
+.header
+  +title1-s
+  margin-bottom: 24px
+.hours
+  align-items: center
+  display: flex
+  flex-direction: row
+  gap: 8px
+  &_actual
+    color: $s6
+    svg
+      fill: $s6
+    &_true
+      color: $p2
+      svg
+        fill: $p2
+.container
+  height: 100%
+  +d
+    margin-bottom: 8px
+
+.dropdown
+  display: none
+  +d
+    border-radius: 4px
+    align-items: center
+    display: block
+    background: $n1
+    margin-bottom: 0.5rem
+    path
+
+      transform: scale(1.5)
+    &_inner
+      padding: 16px
+      align-items: center
+      justify-content: space-between !important
+      margin-top: 24px
+    &_header
+      margin-bottom: 8px
+      border-right: 4px
+.delMargin
+  margin-bottom: 0px
+  margin-top: 0px
+.card
+  height: 100%
+
+.head
+  margin-bottom: 24px
+
+  +m
+    margin-bottom: 24px
+
+.title
+  +title1-s
+  margin-bottom: 24px
+  margin-right: auto
+  +m
+    line-height: 40px
+.divider
+  padding-bottom: 12px
+  border-bottom: 1px solid $n3

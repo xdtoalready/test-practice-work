@@ -1,0 +1,123 @@
+@import "../../../../styles/helpers"
+
+.dialPad
+  display: flex
+  flex-direction: column
+  padding: 16px
+
+.inputContainer
+  display: flex
+  flex-direction: row
+  align-items: center
+  position: relative
+  margin-bottom: 24px
+  gap:  16px
+
+.dropdownContainer
+  width: 100%
+
+.dropdown
+  width: 100%
+
+.dropdownHead
+  background-color: $n2
+  padding-right: 80px
+  +dark
+    background-color: $n6
+    border-color: $n5
+    color: $n1
+
+.inputControls
+  display: flex
+  gap: 12px
+  z-index: 5
+
+.controlButton
+  //width: 32px
+  //height: 32px
+  display: flex
+  align-items: center
+  justify-content: center
+  border: none
+  background: none
+  cursor: pointer
+  color: $n4
+  svg
+    fill: $n4
+
+  &:hover
+    color: $n7
+    fill: $n7
+    svg
+      fill: $n7
+    +dark
+      color: $n1
+
+  &.active
+    svg
+      fill: $p3
+    color: $p3
+
+.keypad
+  display: flex
+  flex-direction: column
+  gap: 12px
+  margin-bottom: 24px
+  animation: fadeIn 0.3s ease
+
+@keyframes fadeIn
+  from
+    opacity: 0
+    transform: translateY(-10px)
+  to
+    opacity: 1
+    transform: translateY(0)
+
+.keypadRow
+  display: flex
+  justify-content: space-between
+
+.keypadButton
+  width: 104px
+  height: 43px
+  border: none
+
+  color: $n7
+  cursor: pointer
+  transition: all 0.2s
+  display: flex
+  align-items: center
+  justify-content: center
+  +base1-s
+  +dark
+    background-color: $n6
+    color: $n1
+
+  &:hover
+    background-color: $n3
+    +dark
+      background-color: $n5
+
+.callButton
+  height: 48px
+  border-radius: 12px
+  background-color: $p3
+  border: none
+  color: white
+  font-size: 16px
+  font-weight: 600
+  cursor: pointer
+  transition: background-color 0.2s
+
+  &:hover
+    background-color: darken($p3, 5%)
+
+  &:disabled
+    background-color: $n3
+    color: $n4
+    cursor: not-allowed
+
+.settings
+  padding: 16px
+  +base1-s
+  color: $n7

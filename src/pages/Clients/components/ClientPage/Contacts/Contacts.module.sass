@@ -1,0 +1,87 @@
+@import ../../../../../styles/helpers
+
+.card
+  min-height: 150px
+  padding: 0
+  padding-bottom: 24px
+  >div:first-child
+    margin-bottom: -12px
+    padding: 24px
+    display: flex
+    flex-basis: 100%
+    flex-direction: row
+    justify-content: space-between
+  >div:last-of-type
+    font-weight: 500
+.edit
+  width: 24px
+  height: 24px
+  &_active
+    fill: darken(#6F767E,0)
+.dropdown
+    padding: 0px 24px
+.messengers
+  &_container
+    padding-left: 24px
+    padding-top: 12px
+    p
+      margin-bottom: 4px
+      color: $n7
+      font-weight: 600
+  display: flex
+  gap: 14px
+.input
+    font-weight: 500
+    background: none
+    padding: 0px 24px
+    border: none
+    //height: 30px
+    border-radius: 0px
+    &:focus
+      background: none
+    +m
+      height: 40px
+
+.name
+  +title1-s
+  color: $n7
+  margin-bottom: 24px
+  width: 100%
+  display: flex
+  gap: 16px
+
+.flex
+  div[class*='datepicker_wrapper']
+    input
+      font-weight: 600 !important
+  &__lowerGap
+    .input
+    z-index: 0
+  display: flex
+  flex-direction: row
+  gap: 25px
+  +m
+    gap: 0px
+    flex-direction: column
+    &>div
+      margin-bottom: 24px
+
+  &>div
+    flex: 1
+  &>.flexBig
+    flex: 0 0 63.1%
+    border-right: 1px solid $n3
+    padding-right: 24px
+
+.inputModal
+  margin-top: 0.5rem
+  min-width: 160px
+
+  //div[class*='selection']
+  //  font-weight: 500 !important
+  z-index: 3
+  input
+    //font-weight: 500 !important
+    //background-color: white !important
+    border-color: $n3
+

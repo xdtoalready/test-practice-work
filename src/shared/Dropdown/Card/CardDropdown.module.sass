@@ -1,0 +1,32 @@
+@import ../../../styles/helpers
+
+.header
+  display: flex
+  justify-content: flex-start
+  flex-direction: row
+  gap: 12px
+.chevron
+  transform: rotate(0deg)
+  transition-duration: .3s
+
+  &_active
+    transform: rotate(180deg)
+
+.body
+  &-enter
+    opacity: 1
+  &-exit
+    opacity: 0
+  //opacity: 0
+  //display: none
+  //transition: opacity 0.5s ease-in-out
+  //transition-delay: 0s /* задержка анимации */
+  &_active
+    //opacity: 1
+    //display: block
+
+.container
+  padding-bottom: 12px
+  margin-bottom: 12px
+  div[class*=TextInput_field]
+    flex-basis: 100%

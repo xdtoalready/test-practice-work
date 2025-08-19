@@ -1,0 +1,18 @@
+@import "src/styles/helpers"
+.flexDiv
+  display: flex
+  gap: 19px
+  +m
+    display: initial
+  &>div
+    flex: 1
+  
+.grow
+  flex-grow: 1
+.header
+  width: 100%
+  margin-bottom: 24px
+  display: flex
+  gap: 16px
+  &>p
+    +title1-s

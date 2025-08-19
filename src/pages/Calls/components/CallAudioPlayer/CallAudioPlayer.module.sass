@@ -1,0 +1,86 @@
+@import "../../../../styles/helpers"
+.audioPlayerContainer
+  display: flex
+  align-items: center
+  height: 36px
+  padding: 9px 12px
+  background: rgba(244, 244, 244, 1)
+  border-radius: 4px
+  width: 100%
+  max-width: 80%
+  margin-left: auto
+
+.audioPlayer
+  display: flex
+  align-items: center
+  width: 100%
+  gap: 8px
+
+.playButton
+  flex: 0 0 24px
+  display: flex
+  align-items: center
+  justify-content: center
+  width: 24px
+  height: 24px
+  background: none
+  border: none
+  cursor: pointer
+  padding: 0
+
+.timeCurrent, .timeDuration
+  +caption1
+  flex-shrink: 0
+  white-space: nowrap
+
+.progressContainer
+  display: flex
+  height: 4px
+  min-width: 0
+  flex: 1 1 auto
+  min-width: 0
+  padding: 0 4px
+
+.progressBar
+  -webkit-appearance: none
+  margin: 0
+  padding: 0
+  background: rgba(111, 118, 126, 0.4)
+  border-radius: 2px
+  outline: none
+  cursor: pointer
+  width: 100%
+
+  &::-webkit-slider-thumb
+    -webkit-appearance: none
+    width: 0
+    height: 0
+    opacity: 0
+
+  &::-webkit-slider-thumb
+    -webkit-appearance: none
+    width: 12px
+    border-radius: 50%
+    background: #FFFFFF
+    border: 1px solid rgba(111, 118, 126, 0.4)
+    cursor: pointer
+    position: relative
+    z-index: 2
+
+  &.playing
+    &::-webkit-slider-thumb
+      height: 4px
+      border-color: #FF6B00
+
+    &::-webkit-slider-runnable-track
+      background: linear-gradient(to right, #FF6B00 var(--progress), transparent var(--progress))
+      border-radius: 2px
+
+  &.paused
+    &::-webkit-slider-thumb
+      height: 4px
+      border-color: rgba(111, 118, 126, 1)
+
+    &::-webkit-slider-runnable-track
+      background: linear-gradient(to right, rgba(111, 118, 126, 1) var(--progress), transparent var(--progress))
+      border-radius: 2px

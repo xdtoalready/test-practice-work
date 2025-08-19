@@ -1,0 +1,32 @@
+@import ../../../styles/helpers
+
+.inputGroup
+  margin-bottom: 24px
+.label
+  display: flex
+  flex-direction: row
+  justify-content: space-between
+  align-items: center
+.input
+  &:not(:last-of-type)
+    margin-bottom: 8px
+  div[class*='label']
+    font-weight: 500
+    font-size: 15px
+    line-height: 24px
+
+  div[class*='selection']
+    font-weight: 500 !important
+  z-index: 3
+  &_label
+    svg
+      fill: $n4
+    font-weight: 500
+    color: $n4
+    font-size: 15px
+    line-height: 24px
+    margin-bottom: 8px
+  input
+    font-weight: 500 !important
+    background-color: white !important
+    border-color: $n3

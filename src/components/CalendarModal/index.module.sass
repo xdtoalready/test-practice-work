@@ -1,0 +1,194 @@
+@import '../../styles/helpers'
+.name
+  display: flex
+  justify-content: space-between
+  align-items: center
+  font-size: 20px
+  font-weight: 600
+  margin-bottom: 24px
+.flexBusiness
+  flex-grow: 1.2
+.entityLink
+  +base1-s
+  color: $n6
+  flex-grow: 2
+  color: inherit
+  cursor: pointer
+
+
+  &:hover
+    color: $p3
+
+
+.flex
+  display: flex
+  gap: 16px
+  margin-bottom: 16px
+
+  & > *
+    flex: 1
+
+.addZIndex
+  z-index: 10
+  position: relative
+
+.lowZIndex
+  z-index: unset
+  div[class*=Dropdown_dropdown]
+    z-index: unset
+
+.addButtons
+  display: flex
+  gap: 16px
+  margin-right: 16px
+
+.download, .delete
+  display: flex
+  align-items: center
+  gap: 8px
+  cursor: pointer
+
+  &:hover
+    opacity: 0.7
+
+.delete
+  //color: $color-error
+
+
+
+.gridContainer
+  display: grid
+  column-gap: 20px
+  grid-template-columns: 1fr 0.4fr
+  grid-template-areas: "description type" "comment type"
+
+  +x
+    display: flex
+    flex-direction: column
+  @media only screen and (max-width: '840px')
+    grid-template-columns: 1fr
+    grid-template-areas: "description" "type" "comment"
+    .itemDescription
+      grid-area: description
+      margin-bottom: 24px
+
+    .itemType
+      border-bottom: 1px $n3 solid
+      margin-bottom: 24px
+      grid-area: type
+
+    .comment
+      grid-area: comment
+
+  .itemDescription
+    grid-area: description
+
+  .itemType
+    grid-area: type
+
+  .comment
+    grid-area: comment
+
+.comments
+  margin-bottom: 12px
+  div[class*=Filters_component],>div
+    background-color: $n
+  border-right: 1px solid $n3
+
+
+.businessTypePart
+  display: flex
+  flex-direction: column
+
+//.businessTypeSelector
+//  display: flex
+//  gap: 8px
+//  margin-bottom: 16px
+//
+//.businessTypeItem
+//  padding: 8px 12px
+//  border-radius: 8px
+//  cursor: pointer
+//  //background-color: $color-background-secondary
+//  transition: all 0.3s ease
+//
+//  &:hover
+//    background-color: rgba(0, 0, 0, 0.05)
+//
+//  &.selected
+//    //background-color: $color-primary
+//    color: white
+
+
+.input
+  div[class*='label']
+    font-weight: 500
+    font-size: 15px
+    line-height: 24px
+
+  div[class*='selection']
+    font-weight: 500 !important
+  z-index: 3
+  &_label
+    margin-bottom: 8px
+  input
+    font-weight: 500 !important
+    background-color: white !important
+    border-color: $n3
+
+
+  margin-bottom: 24px
+
+
+.comment_list
+  @media only screen and (max-width: '840px')
+    border-right: unset
+  padding-top: 12px
+  padding-right: 28px
+  >div
+    margin-top: unset
+  border-right: 1px $n3 solid
+.loader
+  position: relative
+  left: 50%
+  top: 50%
+
+.timeDropdownCont
+  display: flex
+  &:nth-child(1)
+    flex-grow: 2
+
+  flex-direction: row
+  align-items: baseline
+  .timeDropdown
+    align-self: baseline
+  span
+    display: block
+    padding-right: 16px
+    +base2
+
+.fake
+  flex: unset
+
+.border_container
+
+  @media only screen and (max-width: '840px')
+    border-right: unset
+    padding-right: 0px
+  padding-right: 24px
+  border-bottom: 1px $n3 solid
+  border-right: 1px $n3 solid
+.border_container_comment
+  padding-top: 24px
+  padding-right: 24px
+  @media only screen and (max-width: '840px')
+    padding-right: 0px
+    padding-top: 0px
+    border-bottom: unset
+    border-right: unset
+  border-bottom: 1px transparent solid
+  border-right: 1px $n3 solid
+
+
+.switch
+  margin-bottom: 24px

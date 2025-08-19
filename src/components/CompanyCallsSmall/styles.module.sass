@@ -1,0 +1,50 @@
+@import "src/styles/helpers"
+
+.typeCell
+  display: flex
+  flex-direction: column
+
+.callDate
+  margin-top: 8px
+  +caption1
+
+.contactInfo
+  flex-direction: column
+
+  .phoneLink
+      +caption2-m
+      color: $shades2
+
+  a
+    margin-bottom: 4px
+
+.fioContainer
+  display: flex
+  flex-direction: column
+
+  span:first-child
+    margin-bottom: 4px
+
+  .phoneLink
+    +caption2-m
+    color: $shades2
+
+.durationCell
+  font-weight: 500
+
+.phone
+  color: $n7
+
+.phoneLink
+  cursor: pointer
+
+  &:hover
+    color: $p3
+
+
+.info
+  color: $shades2
+
+.container
+  max-height: 500px
+  overflow: scroll

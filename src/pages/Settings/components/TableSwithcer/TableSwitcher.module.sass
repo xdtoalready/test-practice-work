@@ -1,0 +1,25 @@
+@import "src/styles/helpers"
+.switcher
+  display: inline-flex
+  flex-direction: row
+  background-color: $n
+  border-radius: 8px
+  margin-bottom: 10px
+  padding: 8px
+  .active
+    .button
+      padding: 0
+      border: none
+      background-color: #EFEFEF
+      >div
+        color: $n8 !important
+  .button
+    padding: 0
+
+    border: none
+    background-color: $n
+    >div
+      color: $n4 !important
+
+  .active
+    color: red

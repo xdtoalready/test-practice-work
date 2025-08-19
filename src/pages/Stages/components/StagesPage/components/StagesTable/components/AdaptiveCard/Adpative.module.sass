@@ -1,0 +1,35 @@
+@import ../../../../../../../../styles/helpers
+.container
+  display: none
+  +d
+    display: flex
+    flex-direction: column
+    width: 100%
+
+.card
+  color: $n7
+  padding: 16px
+  margin-bottom: 12px
+  width: 100%
+
+.name
+
+.status
+  &_adaptiveStatus
+    font-size: 18px !important
+//padding: 0
+.avatar
+  width: 32px
+  height: 32px
+.footer
+  margin-top: 2.5rem
+  display: flex
+  justify-content: space-between
+  align-items: center
+.header
+  &>*:last-of-type
+    margin-right: 4px
+  display: flex
+  justify-content: space-between
+.deadline
+  color: $n4

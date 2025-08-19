@@ -1,0 +1,94 @@
+@import "../../../../../../../../styles/helpers"
+.services_container
+  display: flex
+  flex-direction: column
+  gap: 24px
+  margin-top: 24px
+
+
+.service_item
+  border-top: 1px solid $n3
+  padding-top: 24px
+
+  //background: #F8F9FA
+  //border-radius: 12px
+  //padding: 16px
+
+.service_header
+  display: flex
+  justify-content: space-between
+  align-items: center
+  margin-bottom: 16px
+
+.service_title
+  +body1-s
+
+
+.delete_button
+  display: flex
+  align-items: center
+  gap: 8px
+  background: none
+  border: none
+  color: #FF6A55
+  cursor: pointer
+  padding: 8px
+  border-radius: 6px
+  transition: background-color 0.2s
+
+  &:hover
+    background-color: rgba(255, 106, 85, 0.1)
+
+  svg
+    width: 16px
+    height: 16px
+
+.service_grid
+  display: flex
+  flex-direction: column
+  gap: 16px
+
+
+.input_group
+  display: flex
+  flex-direction: row
+  gap: 8px
+  &>div
+    flex-basis: 100%
+  &:not(:last-child)
+    margin-bottom: 16px
+
+
+.add_service_button
+  display: flex
+  align-items: center
+  gap: 8px
+  +body1-s
+  background: none
+  border: none
+  cursor: pointer
+  border-top: 1px solid $n3
+  padding: 24px
+  padding-left: 0
+
+
+.add_button
+    width: 20px
+    height: 20px
+    padding-left: 0
+    span
+      font-size: 13px
+      padding: 0
+    svg
+
+    a
+      height: 42px
+    svg
+      fill: $n1
+      padding-right: 0px
+
+
+
+    svg
+      width: 16px
+      height: 16px

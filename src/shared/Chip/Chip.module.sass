@@ -1,0 +1,26 @@
+@import "src/styles/helpers"
+.chip
+  padding: 8px 12px 4px 0px
+  border-radius: 16px
+  background: var(--neutral-100)
+  color: var(--neutral-500)
+  font-size: 12px
+  font-weight: 500
+  border: none
+  cursor: pointer
+  transition:  0.2s
+  white-space: nowrap
+
+
+  &.active
+    text-decoration: underline
+    text-decoration-color: $p3
+    text-decoration-thickness: 2px
+
+  &:hover:not(.active)
+    text-decoration: underline
+    text-decoration-color: $n7
+
+  &.disabled
+    opacity: 0.5
+    cursor: not-allowed

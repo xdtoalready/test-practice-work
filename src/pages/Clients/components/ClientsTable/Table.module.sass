@@ -1,0 +1,19 @@
+@import ../../../../styles/helpers
+.badge
+  max-width: 10rem
+
+.table
+  table
+    td,th
+      padding-left: 1rem
+      padding-right: 1rem
+.tableContainer
+  display: grid
+  grid-template-columns: 4fr 1fr
+  grid-column-gap: 20px
+  +d
+    display: flex
+    flex-direction: column
+  >div:first-of-type
+    grid-column-start: 1
+    grid-column-end: 3

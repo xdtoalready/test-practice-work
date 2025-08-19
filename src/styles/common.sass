@@ -1,0 +1,134 @@
+// common styles
+.rtf
+    //bottom: 0px !important
+    //right: 0px !important
+    margin: 0 !important
+    .rtf--mb__c
+        padding: 0 !important
+* 
+    scrollbar-width: thin /* Firefox */
+    scrollbar-color: #888 transparent /* Firefox */
+    ::-webkit-scrollbar-button
+        display: none
+        height: 0
+        width: 0
+
+    ::-webkit-scrollbar
+        width: 4px
+        height: 4px
+    ::-webkit-scrollbar-button:single-button
+        background-color: rgb(64, 64, 64)
+
+        display: block
+        background-size: 10px
+        background-repeat: no-repeat
+    ::-webkit-scrollbar-button:single-button:vertical:decrement 
+        height: 12px
+        width: 16px
+        background-position: center 4px
+        background-image: url("data:image/svg+xmlutf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='rgb(96, 96, 96)'><polygon points='50,00 0,50 100,50'/></svg>")
+
+
+    ::-webkit-scrollbar-button:single-button:vertical:decrement:hover
+        background-image: url("data:image/svg+xmlutf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='rgb(112, 112, 112)'><polygon points='50,00 0,50 100,50'/></svg>")
+
+
+    ::-webkit-scrollbar-button:single-button:vertical:decrement:active
+        background-image: url("data:image/svg+xmlutf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='rgb(128, 128, 128)'><polygon points='50,00 0,50 100,50'/></svg>")
+
+
+
+
+
+
+    ::-webkit-scrollbar-track
+        background: transparent
+
+
+    ::-webkit-scrollbar-thumb
+        background-color: #888
+        border-radius: 8px
+        border: 1px solid transparent
+        background-clip: content-box
+
+
+    ::-webkit-scrollbar-thumb:hover
+        background-color: #555
+
+
+body
+
+    overflow-x: hidden
+    min-width: 375px
+    background: $n2
+    +inter
+    +base1-s
+    -webkit-font-smoothing: antialiased
+    -moz-osx-font-smoothing: grayscale
+    letter-spacing: -.01em
+    color: $n7
+    +dark-body
+        background: $n8
+        color: $n1
+
+a
+    text-decoration: none
+
+svg,
+img
+    vertical-align: middle
+button
+    background: none
+    border: none
+
+button,
+input,
+textarea
+    +inter
+
+.desktop
+    &-hide
+        +d
+            display: none !important
+    &-show
+        display: none !important
+        +d
+            display: block !important
+    &-text-right
+        +d
+            text-align: right
+
+.tablet
+    &-hide
+        +t
+            display: none !important
+    &-show
+        display: none !important
+        +t
+            display: block !important
+            
+.mobile
+    &-hide
+        +m
+            display: none !important
+    &-show
+        display: none !important
+        +m
+            display: block !important
+
+.recharts-rectangle.recharts-tooltip-cursor
+    +dark-common
+        fill: $n6
+
+.recharts-curve.recharts-tooltip-cursor
+    +dark-common
+        stroke: $n5
+
+.recharts-sector
+    +dark-common
+        stroke: $n7
+
+.passwords.link
+    color: $p3
+    :hover
+        color: darken($p3, 12)

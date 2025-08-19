@@ -1,0 +1,69 @@
+stages:
+  - pull_prod
+  - build_prod
+  - clear_prod
+  - pull_stage
+  - build_stage
+  - clear_stage
+
+pull_code_prod:
+  stage: pull_prod
+  tags:
+    - crm
+  only:
+    - main
+  script:
+    - cd /home/web/crm-frontend/prod
+    - sudo -H -u web git pull
+
+build_prod:
+  stage: build_prod
+  tags:
+    - crm
+  only:
+    - main
+  script:
+    - cd /home/web/crm-frontend/prod
+    - /usr/bin/docker compose -p crm-prod -f docker-compose.stage.yml up --build -d
+
+clear_prod:
+  stage: clear_prod
+  tags:
+    - crm
+  only:
+    - main
+  script:
+    - cd /home/web
+    - docker image prune -af
+    - docker builder prune -af
+
+pull_code_stage:
+  stage: pull_stage
+  tags:
+    - crm
+  only:
+    - dev
+  script:
+    - cd /home/web/crm-frontend/stage
+    - sudo -H -u web git pull
+
+build_stage:
+  stage: build_stage
+  tags:
+    - crm
+  only:
+    - dev
+  script:
+    - cd /home/web/crm-frontend/stage
+    - /usr/bin/docker compose -p crm-stage -f docker-compose.stage.yml up --build -d
+
+clear_stage:
+  stage: clear_stage
+  tags:
+    - crm
+  only:
+    - dev
+  script:
+    - cd /home/web
+    - docker image prune -af
+    - docker builder prune -af

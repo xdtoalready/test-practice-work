@@ -1,0 +1,49 @@
+@import "src/styles/helpers"
+.textarea
+  width: 100%
+  padding: 14px
+  border-radius: 12px
+  border: 2px solid transparent
+  background: $n2
+  font-family: 'Inter', sans-serif
+  font-size: 16px
+  line-height: 1.5
+  color: $n7
+  transition: all .2s
+  resize: none
+  overflow: hidden
+
+  // Стили для однострочного инпута
+  &.singleLine
+    height: 48px
+    min-height: 48px
+    padding-top: 12px
+    padding-bottom: 12px
+
+  // Стили для многострочного инпута
+  &.multiLine
+    min-height: 48px
+    height: auto
+
+  &.hasActions
+    padding-right: 48px
+    transition: padding-right .2s ease
+
+  &:focus
+    border-color: $shades1
+    background: $n
+    outline: none
+
+  +dark
+    border-color: $n6
+    background: $n6
+    color: $n1
+
+    &:focus
+      border-color: $n5
+      background: $n8
+
+  +placeholder
+    color: $shades1
+    +dark
+      color: $shades1

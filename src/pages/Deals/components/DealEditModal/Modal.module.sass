@@ -1,0 +1,74 @@
+@import '../../../../styles/helpers'
+
+.name
+  +title1-s
+  color: $n7
+  margin-bottom: 24px
+  &_flex
+    gap: 16px
+    display: flex
+
+.input
+  min-width: 160px
+  margin-bottom: 24px
+  z-index: 3
+
+  input
+    border-color: $n3
+
+  & > div
+    +body1-m
+    color: $n4
+    font-weight: 500
+    margin-bottom: 8px
+
+.flex
+  display: flex
+  flex-direction: row
+  gap: 25px
+
+  +m
+    gap: 0px
+    flex-direction: column
+    & > div
+      margin-bottom: 24px
+
+  & > div
+    flex: 1
+
+.textarea
+  textarea
+    font-weight: 500
+    background-color: white
+    border-color: $n3
+    margin-bottom: 24px
+
+.source
+  &_row
+    display: flex
+    flex-direction: row
+    gap: 16px
+    margin-bottom: 24px
+
+    & > div
+      flex: 1
+
+.price
+  &_input
+    input
+      text-align: right
+      &::placeholder
+        text-align: left
+
+.selector
+  margin-bottom: 24px
+
+  &_label
+    +body1-m
+    color: $n4
+    margin-bottom: 8px
+
+@media (max-width: 768px)
+  .source_row
+    flex-direction: column
+    gap: 24px

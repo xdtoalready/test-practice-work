@@ -1,0 +1,90 @@
+@import ../../styles/helpers
+
+.field
+  margin-bottom: 24px
+  &.fieldIcon
+    .input
+      padding-left: 48px
+
+  &.error
+    .input
+      padding-right: 48px
+      background: rgba($s1, .25)
+      border-color: #ee7373
+      color: $p3
+      box-shadow: 0 0 5px rgba(255, 0, 0, 0.47)
+
+.label
+  margin-bottom: 14px
+  +body1-m
+  color: $n4
+  +dark
+    color: $n3
+  .required
+    color: $ph1
+    margin-left: 4px
+
+.wrap
+  position: relative
+
+.input
+  width: 100%
+  height: 48px
+  padding: 0 10px
+  border-radius: 12px
+  border: 2px solid transparent
+  background: $n2
+  +inter
+  +base1-s
+  color: $n7
+  transition: all .2s
+  +dark
+    border-color: $n6
+    background: $n6
+    color: $n1
+  +placeholder
+    color: $shades1
+    +dark
+      color: $shades1
+  &:focus
+    border-color: $shades1
+    background: $n
+    +dark
+      border-color: $n5
+      background: $n8
+  &:disabled
+    background: $n2
+    color: $n4
+    cursor: not-allowed
+
+.actions
+  position: absolute
+  right: 2px
+  top: 50%
+  transform: translateY(-50%)
+  display: flex
+  gap: 8px
+  padding: 0 8px
+
+  button
+    background: none
+    border: none
+    padding: 4px
+    cursor: pointer
+    color: $n4
+    transition: color .2s
+
+    &:hover
+      color: $p1
+
+    &:disabled
+      color: $n3
+      cursor: not-allowed
+
+@media (max-width: 767px)
+  .field
+    margin-bottom: 16px
+
+  .actions
+    padding: 0 4px
+    gap: 4px

@@ -1,0 +1,44 @@
+@import ../../../styles/helpers
+
+.container
+  font-weight: 500
+  line-height: 18px
+  font-size: 13px
+  color: $n7
+  display: flex
+  flex-direction: row
+  width: 100%
+  min-width: 0
+.sender
+  img
+    width: 32px
+    height: 32px
+    border-radius: 50px
+.call
+  flex: 1
+  min-width: 0
+  padding: 0 24px
+  display: flex
+  flex-direction: column
+  +m
+    padding: 0 1px
+
+  &>span
+    font-weight: 500
+    color: $shades2
+    word-break: break-word
+
+  .record
+    padding-top: 4px
+    display: flex
+    gap: 8px
+    align-items: center
+
+.hours
+  flex-shrink: 0
+  color: $shades2
+
+.rightSide
+  position: relative
+  div[class*=TableMenu_contextMenu]
+    top: 30px

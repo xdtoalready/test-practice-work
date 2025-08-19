@@ -1,0 +1,73 @@
+@import ../../../styles/helpers
+
+.container
+  background-color: inherit
+  font-weight: 500
+  line-height: 18px
+  font-size: 13px
+  color: $n7
+  display: flex
+  flex-direction: row
+  width: 100%
+  min-width: 0
+.sender
+  img
+    width: 32px
+    height: 32px
+    border-radius: 50px
+.files
+  margin-top: 0.75rem
+  display: flex
+  gap: 14px
+  flex-wrap: wrap
+.comment
+  background: inherit
+  flex: 1
+  min-width: 0
+  padding: 0 24px
+  display: flex
+  flex-direction: column
+  +m
+    padding: 0 1px
+
+  &>span
+    font-weight: 500
+    color: $shades2
+    word-break: break-word
+
+  .comment_text
+    padding-top: 4px
+    word-break: break-word
+    overflow-wrap: break-word
+    width: 100%
+
+    h1
+      padding-top: 4px
+      word-break: break-word
+
+.hours
+  flex-shrink: 0
+  color: $shades2
+
+.rightSide
+  position: relative
+  div[class*=TableMenu_contextMenu]
+    top: 30px
+.inLk
+  border-radius: 12px
+  background: #ffeac6
+.inTask
+  padding: 12px
+
+.inLkFlag
+  position: absolute
+  bottom: 0
+  right: 0
+  background: $p3
+  display: block
+  content: ' '
+  width: 16px
+  height: 16px
+  border-top-left-radius: 4px
+  border-bottom-right-radius: 8px
+

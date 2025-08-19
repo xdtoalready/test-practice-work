@@ -1,0 +1,50 @@
+@import ../../../../../styles/helpers
+
+.card
+  min-height: 150px
+  padding: 0
+  padding-bottom: 24px
+  >div:first-child
+    margin-bottom: 0px
+    padding: 24px
+    display: flex
+    flex-basis: 100%
+    flex-direction: row
+    justify-content: space-between
+  >div:last-of-type
+    font-weight: 500
+.edit
+  width: 24px
+  height: 24px
+  &_active
+    fill: darken(#6F767E,0)
+.dropdown
+    padding: 0px 24px
+.messengers
+  &_icon
+    cursor: pointer
+  &_container
+    padding-left: 24px
+    padding-top: 12px
+    p
+      margin-bottom: 4px
+      color: $n7
+      font-weight: 600
+  display: flex
+  gap: 14px
+
+.fioInput
+  background: none
+  padding: 0px 24px
+  border: none
+  height: 30px
+  //overflow: hidden
+  //min-height: 20px
+  &:focus
+    background: none
+    color: $n7
+  padding-left: 0
+
+.contaianer_divide
+  &:not(:last-of-type)
+    border-bottom: 1px solid $n3

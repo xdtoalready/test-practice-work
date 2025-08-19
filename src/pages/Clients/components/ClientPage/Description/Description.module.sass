@@ -1,0 +1,31 @@
+@import ../../../../../styles/helpers
+
+.card
+  +w
+    min-height: 300px
+  +x
+    min-height: 240px
+  >div:first-child
+    margin-bottom: 12px
+  .title
+
+    display: flex
+    flex-basis: 100%
+    flex-direction: row
+    justify-content: space-between
+  >div:last-of-type
+    font-weight: 500
+.edit
+  &_container
+    *
+      cursor: pointer
+    &>:first-of-type
+      margin-right: 0.5rem
+  cursor: pointer
+  width: 24px
+  height: 24px
+  &_active
+    fill: darken(#6F767E,0)
+
+
+

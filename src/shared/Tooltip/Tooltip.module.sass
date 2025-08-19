@@ -1,0 +1,41 @@
+@import ../../styles/helpers
+.tooltip_container
+    z-index: 99
+.tooltip
+    display: inline-block
+    margin-left: 4px
+    cursor: pointer
+    .tooltipWpapper
+        padding: 3px 12px
+        border-radius: 4px
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1), inset 0px 0px 1px #000000
+        font-size: 12px
+        font-weight: 600
+
+.tooltipContent
+    +dark
+        background: $n8
+        border-color: $n6
+    &:before
+        content: ""
+        position: absolute
+        right: 1rem
+        bottom: 100%
+        width: 20px
+        height: 10px
+        //background: url("data:image/svg+xml,%3Csvg stroke-width='#{3px}' border-color='#{$p3}' xmlns='http://www.w3.org/2000/svg' width='20' height='10' fill='none' viewBox='0 0 20 10'%3E%3Cpath d='M6.927 1.687L0 10h20l-6.927-8.313a4 4 0 0 0-6.146 0z' fill='%23fff'/%3E%3C/svg%3E") no-repeat 50% 50% / 100% auto
+        //box-shadow: 0 0 0 1px $p3
+        +x
+            right: 1rem
+        +m
+            right: 1.3rem
+        +dark
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='10' fill='none' viewBox='0 0 20 10'%3E%3Cpath d='M6.927 1.687L0 10h20l-6.927-8.313a4 4 0 0 0-6.146 0z' fill='%23111315'/%3E%3C/svg%3E")
+
+    width: max-content
+    z-index: 20
+    position: absolute
+    background: $n1
+    border-radius: 8px
+    border: $p3 1px solid
+    padding: 0.5rem 1rem

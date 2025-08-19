@@ -1,0 +1,31 @@
+@import ../../../../../../styles/helpers
+
+.taskDatesAndStatus
+  display: flex
+  align-items: center
+  gap: 12px
+  align-self: center
+.taskName
+  display: flex
+  gap: 20px
+  align-items: center
+  +base2
+  color: $n7
+  &_secondary
+    font-weight: 500
+  &_primary
+    display: inline
+    a
+      color: $p3
+    &:hover
+      a
+        color: darken($p3,10)
+
+.dateDeadline
+  display: flex
+  flex-direction: row
+  gap: 8px
+.button
+  svg
+    top: 1.5px
+    left: 5.8px !important

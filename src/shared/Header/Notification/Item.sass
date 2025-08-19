@@ -1,0 +1,27 @@
+@import "src/styles/helpers"
+.notification-block
+  width: 100%
+  p
+    padding: inherit
+  &>p
+    .link
+      color: $p3
+      cursor: pointer
+    &>span + a
+      margin-left: 4px
+
+
+  +body1-m
+  .notification-header
+    &__bold
+      +body1-s
+  .notification-header__link
+    color: $p3
+    &:hover
+      color: lighten($p3,10)
+
+  .notification-description
+    word-break: break-word
+    color: $n4
+    padding: 6px 10px
+    background-color: $n2

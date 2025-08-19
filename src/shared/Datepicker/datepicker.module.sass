@@ -1,0 +1,82 @@
+@import ../../styles/helpers
+
+.clearIcon
+  cursor: pointer
+  color: #6F767E
+  transition: color 0.2s ease
+
+  &:hover
+    color: #FF6A55
+
+.datepicker_label
+  margin-bottom: 8px
+.datepicker_input
+  min-width: 163px
+  &__placeholder
+    background-color: $n2
+
+  background-color: white
+  border-color: $n3
+  padding-left: 10px !important
+.datepicker_wrapper
+
+  div[class*=TextInput_icon]
+    right: 0
+    left: unset
+
+
+.calendar_container
+  position: relative
+  padding: 1rem
+  background: white
+  border-radius: 8px
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1)
+
+.range_inputs
+  display: flex
+  gap: 1rem
+  margin-bottom: 1rem
+
+.reset_button
+  width: 100%
+  padding: 0.5rem
+  margin-top: 1rem
+  background: #f0f0f0
+  border: none
+  border-radius: 4px
+  cursor: pointer
+  &:hover
+    background: #e0e0e0
+
+.calendar_popup
+  position: absolute
+  top: 100%
+  left: 0
+  z-index: 1000
+  margin-top: 0.5rem
+
+.datepicker_wrapper
+  flex: 1
+
+.hasError
+  .datepicker_input
+    border-color: #ee7373 !important  // Цвет границы, например красный
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.47)
+
+.errorMessage
+  color: $n4
+  +body1-m
+  margin-top: 8px
+
+.error
+  &.active .head
+    box-shadow: unset
+  .head
+    &:hover
+      box-shadow: 0 0 5px rgba(255, 0, 0, 0.47)
+
+    border-radius: 12px
+    border: 2px solid
+    border-color: #ee7373 !important  // Цвет границы, например красный
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.47)
+

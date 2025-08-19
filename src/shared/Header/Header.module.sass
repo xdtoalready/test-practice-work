@@ -1,0 +1,172 @@
+@import ../../styles/helpers
+
+.header
+    .logo
+        +m
+            margin: auto
+    button
+        border: none
+        background: none
+
+    p
+        +w
+        margin: 0
+        padding: 0.5rem 1rem
+        border-radius: 8px
+        cursor: pointer
+
+
+
+    position: fixed
+    top: 0
+    left: 0px
+    right: 0
+    z-index: 10
+    display: flex
+    align-items: center
+    padding: 24px 40px
+    background: $n1
+    box-shadow: inset 1px 0px 0px $n2, inset 0 -1px 0px $n3
+    +x
+        left: 0px
+        padding: 16px 24px
+    +d
+        left: 0px
+    +m
+        left: 0
+        padding: 16px 24px 16px 16px
+    +dark
+        background: $n7
+        box-shadow: inset 1px 0px 0px $n8, inset 0 -1px 0px $n8
+    .links
+        +xw
+            margin: 0 1rem
+        +w
+            align-items: center
+            +caption1
+        +base1-s
+        //+title2
+        color: $shades2
+        margin: 0 3rem
+        width: 100%
+        display: flex
+        justify-content: space-between
+        +w
+            margin: 0 1rem
+        +x
+
+            display: none
+        +d
+            margin: 0 2rem
+
+
+
+
+.burger 
+    display: none
+    flex-direction: column
+    justify-content: center
+    align-items: center
+    width: 48px
+    height: 48px
+    margin-right: auto
+
+    // Расположение и отображение кнопки
+    +x
+        display: flex
+
+
+    // Стили для палочек
+    .bar 
+        width: 16px
+        height: 2px
+        border-radius: 2px
+        background: $n4 // Основной цвет
+        margin: 2px 0 // Расстояние между палочками
+
+        &:hover 
+            background: $n5 // Цвет при наведении
+    
+
+
+
+// Изменение цвета всех палочек при наведении на кнопку
+.burger:hover .bar 
+    background: $n5
+
+
+.control
+    display: flex
+    align-items: center
+    margin-left: auto
+    +m
+        margin-left: 0
+
+.control .button,
+.control > div,
+.buttonSearch
+    background: none
+    border: none
+    &:not(:last-child)
+        margin-right: 24px
+
+.button
+
+    &.active
+        background: $n3
+        color: $n6
+
+.buttonSearch
+    display: none
+    width: 48px
+    height: 48px
+    +m
+        display: inline-block
+    svg
+        fill: $n4
+        transition: fill .2s
+    &.active
+        svg
+            fill: $n7
+            +dark
+                fill: $n1
+
+.control .button
+    +x
+        display: none
+.visible
+    //visibility: visible !important
+.search
+    +m
+        visibility: hidden
+        opacity: 0
+        transition: all .2s
+        &.visible
+            visibility: visible
+            opacity: 1
+
+.btns
+    display: flex
+    align-items: center
+    margin-left: auto
+    +m
+        margin-left: 0
+.none
+    display: none
+.icon
+    display: block
+.buttonWithIcon
+    display: none
+    +m
+        display: inline-block
+.link
+    margin-right: 32px
+    +button1
+    color: $n7
+    transition: color .2s
+    +m
+        margin-right: 24px
+    +dark
+        color: $n1
+    &:hover
+        color: $p1

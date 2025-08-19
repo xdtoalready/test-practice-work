@@ -1,0 +1,359 @@
+@import ../../../styles/helpers
+.disabled
+    pointer-events: none
+    cursor: not-allowed
+.label
+    min-height: 20px
+    margin-bottom: 12px
+    +base2
+    color: $n4
+    +dark
+        color: $n3
+
+.tooltip
+    position: relative
+    top: -1px
+    svg
+        fill: $shades1
+
+.dropdown
+    position: relative
+    z-index: 3
+    &.active
+        z-index: 10
+        .head
+            box-shadow: inset 0 0 0 2px $shades1
+            background: $n
+
+            +dark
+                box-shadow: inset 0 0 0 2px $n5
+                background: $n8
+                color: $n1
+            &:before
+                transform: rotate(180deg)
+        .body
+            &::-webkit-scrollbar
+                width: 0
+                height: 0
+            max-width: 380px
+
+            overflow: auto
+            -ms-overflow-style: none
+            scrollbar-width: none
+            max-height: 280px
+            visibility: visible
+
+            opacity: 1
+            transform: translateY(0)
+            .noOptions
+                +body1-s
+                text-align: center
+                padding: 8px 0px
+
+
+.small
+    display: flex
+    .input
+        width: 60px
+    .head
+        height: 48px
+        padding: 0 40px 0 16px
+        line-height: 46px
+        &:before
+            width: 40px
+            background-size: 16px auto
+    .option
+        padding: 4px 16px
+
+.statusDropdown
+    min-width: 120px
+
+    .head
+        height: 34px
+        padding: 0 40px 0 16px
+        display: flex
+        flex-direction: row
+        align-items: center
+        justify-content: center
+        box-shadow: none
+        border-radius: 4px
+
+    .body
+        box-shadow: 0px 40px 64px -12px rgba(0, 0, 0, 0.08), 0px 0px 14px -4px rgba(0, 0, 0, 0.05), 0px 32px 48px -8px rgba(0, 0, 0, 0.1)
+
+    &.blue,&.status-task-aqua
+        .head
+            background: #e3f7ff
+            &:hover
+                box-shadow: inset 0 0 0 2px #29B6F3
+
+            .chevron
+                background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M12.707 15.707l-.094.083a1 1 0 0 1-1.32-.083h0l-6-6-.083-.094a1 1 0 0 1 1.497-1.32h0L12 13.585l5.293-5.292.094-.083a1 1 0 0 1 1.32 1.497h0l-6 6z' fill='%2329B6F3'/%3E%3C/svg%3E") no-repeat 50% 50% / 18px auto
+
+            .selection
+                color: #29B6F3
+    &.status-yellow, &.status-task-yellow
+        .head
+            background: #fff3dc
+            &:hover
+                box-shadow: inset 0 0 0 2px #E4A52B
+
+            .chevron
+                background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M12.707 15.707l-.094.083a1 1 0 0 1-1.32-.083h0l-6-6-.083-.094a1 1 0 0 1 1.497-1.32h0L12 13.585l5.293-5.292.094-.083a1 1 0 0 1 1.32 1.497h0l-6 6z' fill='%23E4A52B'/%3E%3C/svg%3E") no-repeat 50% 50% / 18px auto
+
+            .selection
+                color: #E4A52B
+
+        &.status-grey, &.status-task-disabled
+            .head
+                background: $n3
+                &:hover
+                    box-shadow: inset 0 0 0 2px #272B30
+
+                .chevron
+                    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M12.707 15.707l-.094.083a1 1 0 0 1-1.32-.083h0l-6-6-.083-.094a1 1 0 0 1 1.497-1.32h0L12 13.585l5.293-5.292.094-.083a1 1 0 0 1 1.32 1.497h0l-6 6z' fill='%23272B30'/%3E%3C/svg%3E") no-repeat 50% 50% / 18px auto
+
+                .selection
+                    color: #272B30
+
+    &.status-green,&.status-task-green
+        .head
+            background: #eafae4
+            &:hover
+                box-shadow: inset 0 0 0 2px #83BF6E
+
+            .chevron
+                background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M12.707 15.707l-.094.083a1 1 0 0 1-1.32-.083h0l-6-6-.083-.094a1 1 0 0 1 1.497-1.32h0L12 13.585l5.293-5.292.094-.083a1 1 0 0 1 1.32 1.497h0l-6 6z' fill='%2383BF6E'/%3E%3C/svg%3E") no-repeat 50% 50% / 18px auto
+
+            .selection
+                color: #83BF6E
+    &.status-green-dark,&.status-task-dark-green
+        .head
+            background: #26842A
+            &:hover
+                box-shadow: inset 0 0 0 2px #26842A
+
+            .chevron
+                background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M12.707 15.707l-.094.083a1 1 0 0 1-1.32-.083h0l-6-6-.083-.094a1 1 0 0 1 1.497-1.32h0L12 13.585l5.293-5.292.094-.083a1 1 0 0 1 1.32 1.497h0l-6 6z' fill='%2383BF6E'/%3E%3C/svg%3E") no-repeat 50% 50% / 18px auto
+
+            .selection
+                color: lighten(#26842A,60)
+    &.status-light-green,&.status-task-light-green
+        .head
+            background: #B5E4CA
+            &:hover
+                box-shadow: inset 0 0 0 2px #B5E4CA
+
+            .chevron
+                background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M12.707 15.707l-.094.083a1 1 0 0 1-1.32-.083h0l-6-6-.083-.094a1 1 0 0 1 1.497-1.32h0L12 13.585l5.293-5.292.094-.083a1 1 0 0 1 1.32 1.497h0l-6 6z' fill='%2383BF6E'/%3E%3C/svg%3E") no-repeat 50% 50% / 18px auto
+
+            .selection
+                color: darken(#B5E4CA,40)
+
+    &.status-purple
+        .head
+            background: #eaf3ff
+            &:hover
+                box-shadow: inset 0 0 0 2px #2A85FF
+
+            .chevron
+                background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M12.707 15.707l-.094.083a1 1 0 0 1-1.32-.083h0l-6-6-.083-.094a1 1 0 0 1 1.497-1.32h0L12 13.585l5.293-5.292.094-.083a1 1 0 0 1 1.32 1.497h0l-6 6z' fill='%232A85FF'/%3E%3C/svg%3E") no-repeat 50% 50% / 18px auto
+
+            .selection
+                color: #2A85FF
+
+    &.status-red-dark, &.status-task-red-dark
+        .head
+            background: darken(#fff1ee,10)
+            &:hover
+                box-shadow: inset 0 0 0 2px $s6
+
+            .chevron
+                background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M12.707 15.707l-.094.083a1 1 0 0 1-1.32-.083h0l-6-6-.083-.094a1 1 0 0 1 1.497-1.32h0L12 13.585l5.293-5.292.094-.083a1 1 0 0 1 1.32 1.497h0l-6 6z' fill='%23FF6A55'/%3E%3C/svg%3E") no-repeat 50% 50% / 18px auto
+
+            .selection
+                color: $s6
+    &.status-task-blue
+        .head
+            background: #eaf3ff
+            &:hover
+                box-shadow: inset 0 0 0 2px $p1
+
+            .chevron
+                background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M12.707 15.707l-.094.083a1 1 0 0 1-1.32-.083h0l-6-6-.083-.094a1 1 0 0 1 1.497-1.32h0L12 13.585l5.293-5.292.094-.083a1 1 0 0 1 1.32 1.497h0l-6 6z' fill='%23FF6A55'/%3E%3C/svg%3E") no-repeat 50% 50% / 18px auto
+
+            .selection
+                color: $p1
+    &.status-task-red, &.status-red
+        .head
+            background: #fff1ee
+            &:hover
+                box-shadow: inset 0 0 0 2px $p3
+
+            .chevron
+                background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M12.707 15.707l-.094.083a1 1 0 0 1-1.32-.083h0l-6-6-.083-.094a1 1 0 0 1 1.497-1.32h0L12 13.585l5.293-5.292.094-.083a1 1 0 0 1 1.32 1.497h0l-6 6z' fill='%23FF6A55'/%3E%3C/svg%3E") no-repeat 50% 50% / 18px auto
+
+            .selection
+                color: $p3
+
+
+.head
+    position: relative
+    height: 48px
+    padding: 0 48px 0 12px
+    border-radius: 12px
+    box-shadow: inset 0 0 0 2px $n3
+    font-size: 14px
+    font-weight: 600
+    line-height: 48px
+    color: $n7
+    cursor: pointer
+    -webkit-tap-highlight-color: rgba(0,0,0,0)
+    user-select: none
+    display: flex
+    flex-direction: column
+    justify-content: center
+    transition: all .2s
+    &_placeholder
+        background-color: $n2
+    //&:before
+    //    content: ""
+    //    position: absolute
+    //    top: 0
+    //    right: 0
+    //    bottom: 0
+    //    width: 48px
+    //    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M12.707 15.707l-.094.083a1 1 0 0 1-1.32-.083h0l-6-6-.083-.094a1 1 0 0 1 1.497-1.32h0L12 13.585l5.293-5.292.094-.083a1 1 0 0 1 1.32 1.497h0l-6 6z' fill='%236f767e'/%3E%3C/svg%3E") no-repeat 50% 50% / 24px auto
+    //    transition: transform .2s
+    &:hover
+        box-shadow: inset 0 0 0 2px $shades1
+    +dark
+        box-shadow: inset 0 0 0 2px $n6
+        background: none
+        color: $n4
+        &:hover
+            box-shadow: inset 0 0 0 2px $n5
+
+.selection
+    //+base1-s
+    overflow: hidden
+    text-overflow: ellipsis
+    white-space: nowrap
+    +base1-s
+    line-height: unset
+    &_placeholder
+        color: #9A9FA5
+        font-size: 15px
+        font-weight: 600
+
+
+
+
+.body
+    //max-width: 460px
+    //width: 340px
+
+    position: absolute
+    top: calc(100% + 2px)
+    left: 0
+    right: 0
+    padding: 8px 0
+    border-radius: 12px
+    background: $n
+    box-shadow: inset 0 0 0 2px $n3, 0 4px 12px rgba($n2, .1)
+    visibility: hidden
+    opacity: 0
+    transform: translateY(3px)
+    transition: all .2s
+    +dark
+        background: $n8
+        box-shadow: inset 0 0 0 2px $n5, 0 4px 12px rgba($n8, .1)
+    &.bodyUp
+        top: auto
+        bottom: calc(100% + 2px)
+
+.option
+    padding: 8px 12px
+    +base2
+    color: $n4
+    transition: color .2s
+    cursor: pointer
+    -webkit-tap-highlight-color: rgba(0,0,0,0)
+    &:hover
+        background: $n3
+        color: $n6
+        +dark
+            color: $n1
+    &.selectioned
+        color: $n7
+        +dark
+            color: $p1
+.chevron
+    content: ""
+    position: absolute
+    top: 0
+    right: 0
+    bottom: 0
+    width: 48px
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M12.707 15.707l-.094.083a1 1 0 0 1-1.32-.083h0l-6-6-.083-.094a1 1 0 0 1 1.497-1.32h0L12 13.585l5.293-5.292.094-.083a1 1 0 0 1 1.32 1.497h0l-6 6z' fill='%236f767e'/%3E%3C/svg%3E") no-repeat 50% 50% / 24px auto
+    transition: transform .2s
+
+
+.up
+    transform: rotate(180deg)
+.left
+    left: -36px
+    right: unset
+    transform: rotate(90deg)
+
+.right
+    right: -36px
+    left: unset
+    transform: rotate(-90deg)
+.noMinWidth
+    min-width: auto !important
+
+@media (max-width: 1600px)
+    .noMinWidth
+        margin-bottom: 0 !important
+.input
+    width: 100%
+    border: none
+    background: none
+    outline: none
+    padding: 0
+    font-size: inherit
+    color: inherit
+
+    &_placeholder
+        color: #9CA3AF
+
+.loader_container
+    display: flex
+    justify-content: center
+    align-items: center
+    padding: 16px
+    min-height: 100px
+
+.required
+    color: $ph1 // Задайте красный цвет для звездочки
+    margin-left: 4px // Немного отступа от текста метки
+
+.error
+
+    &.active .head
+        box-shadow: unset
+    .head
+        &:hover
+          box-shadow: 0 0 5px rgba(255, 0, 0, 0.47)
+
+        border-radius: 12px
+        border: 2px solid
+        border-color: #ee7373 !important  // Цвет границы, например красный
+        box-shadow: 0 0 5px rgba(255, 0, 0, 0.47)
+
+.errorMessage
+    color: $n4
+    +body1-m
+    margin-top: 4px
+    margin-bottom: 8px

@@ -1,0 +1,94 @@
+@import ../helpers
+
+[class^="status"]
+    display: inline-block
+    padding: 4px 8px
+    // background: rgba($dark3, .1)
+    border-radius: 6px
+    //font-size: 12px
+    //line-height: 24px
+    //font-weight: 700
+    // color: $dark2
+
+.status-green
+    background: #EAFAE5
+    color: $p2
+    +dark-common
+        background: rgba(#83BF6E, .15) 
+
+.status-green-dark
+    background: $s4
+    color: $n7
+
+.status-red
+    background: #FFE7E4
+    color: $p3
+    +dark-common
+        background: rgba($p3, .15) 
+
+.status-red-dark
+    background: #FFE7E4
+    color: $s6
+
+.status-purple
+    background: #CABDFF
+    color: $p4
+
+.status-blue
+    background: $s3 !important
+    color: $p1 !important
+
+.status-yellow
+    background: #fff3dc
+    color: #E4A52B
+.status-disabled
+    background: $n2
+    color: $n4
+
+.status-grey
+    background: $n3
+    color: $n6
+
+.status-brown
+    background: #e8bc53
+    color: #9a6d09
+
+.status-pink
+    background: #f1a9ff
+    color: #9944b4
+
+.status-aqua
+    background: rgba(#29B6F3, 0.15) !important
+    color: #29B6F3 !important
+
+.status-light-green
+    background: rgba(#B5E4CA, 0.15)
+    color: darken(#B5E4CA, 35%)
+
+.status-dark-green
+    background: rgba(#26842A, 0.15)
+    color: #26842A
+
+
+.status-task-green
+    background: $p2
+.status-task-yellow
+    background: $s5
+.status-task-red
+    background: $p3
+.status-task-red-dark
+    background: $s6
+.status-task-blue
+    background: $p1
+.status-task-aqua
+    background: #29B6F3
+.status-task-light-green
+    background: #B5E4CA
+.status-task-dark-green
+    background: #26842A
+.status-task-brown
+    background: #e8bc53
+.status-task-pink
+    background: #9944b4
+.status-task-disabled
+    background: $n4

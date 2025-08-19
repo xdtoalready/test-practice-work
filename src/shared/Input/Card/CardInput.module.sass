@@ -1,0 +1,92 @@
+@import ../../../styles/helpers
+
+.container
+  &_labeled
+    margin-top: 8px
+    textarea
+      font-weight: 500
+      //max-width: calc(100% - 130px)
+    &:hover
+      svg
+        display: block
+      [class*="actions"]
+        display: flex
+      background: $n2
+    display: flex
+    div:last-child
+      flex-grow: 10
+    div:first-child
+      font-weight: 500
+      padding-right: 0px
+      margin-bottom: 0px
+      flex-basis: 120px
+      //&:hover
+      //  background: none
+
+
+.input
+  background: none
+  padding: 0px 24px
+  border: none
+  height: 30px
+  //overflow: hidden
+  //min-height: 20px
+  &:focus
+    background: none
+    color: $n7
+
+  border-radius: 0px
+  &_email
+    color: $p3
+
+.wrap
+  display: flex
+  gap: 10px
+  &:hover
+    svg
+      display: block
+    [class*="actions"]
+      display: flex
+    background: $n2
+  input
+
+    font-weight: 500
+.label
+  color: $n7
+  padding: 0px 24px
+  padding-top: 12px
+  margin-bottom: 0px
+.actions
+  display: none
+  gap: 10px
+  align-items: center
+  &>:last-of-type
+    margin-right: 8px
+
+.label_multiple
+  &_override
+    [class*='dots_loader']
+      +a
+        margin-right: 1.15rem
+      +s
+        margin-right: 0.95rem
+    padding-right: 0px
+  //display: none
+  svg
+    display: none
+  &>div
+    display: flex
+    justify-content: space-between
+    align-items: center
+  padding-left: 24px
+  padding-right: 24px
+  &:hover
+    svg
+      display: block
+    background: $n2
+.flex
+  flex-basis: 100%
+
+.classInput_override
+  font-weight: 600 !important
+  padding-left: 0

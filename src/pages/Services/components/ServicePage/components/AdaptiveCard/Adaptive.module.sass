@@ -1,0 +1,24 @@
+@import ../../../../../../styles/helpers
+
+.container
+  width: 100%
+  display: none
+  +t
+    display: flex
+    flex-direction: column
+
+.header
+  display: flex
+  flex-direction: column
+  +title1-s
+  p
+    flex-basis: 60px
+.etap
+  +body2-s
+  &:hover
+    +link
+.deadline
+  margin-bottom: 1rem
+.status
+  width: 100%
+  text-align: center

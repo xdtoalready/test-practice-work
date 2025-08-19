@@ -1,0 +1,84 @@
+@import ../../styles/helpers
+
+.label
+  margin-bottom: 8px
+  +body1-m
+  +dark
+  color: $n4
+  display: flex
+.selector_input
+  font-size: 16px
+.selector__container
+
+  &__control
+    min-height: 48px !important
+    margin-bottom: 24px
+    border: none !important
+    border-radius: 12px !important
+    background: $n !important
+    box-shadow: inset 0 0 0 2px #EFEFEF !important
+    &.hasValue
+      background: $n2 !important
+    &__placeholder
+      font-size: 16px
+      color: $shades1 !important
+
+    &_focused
+      min-height: 48px !important
+      margin-bottom: 24px
+      border: none !important
+      box-shadow: inset 0 0 0 2px #9A9FA5 !important
+      border-radius: 12px !important
+    &_menu
+      +m
+        max-width: 230px
+      max-width: 460px
+      width: 340px !important
+      z-index: 9 !important
+    &_menuList
+      font-size: 16px
+      &__option
+        background-color: $n1 !important
+        font-size: 14px !important
+        font-weight: 600 !important
+        line-height: (24/14) !important
+        color: $n4 !important
+        &:hover
+          color: $n6 !important
+          background-color: $n2 !important
+    &_values
+      width: 180px
+      padding-right: 48px !important
+      div[class*=multiValue]
+        max-width: calc(100%) !important
+      &__label
+
+        font-family: 'Inter', sans-serif !important
+        font-size: 15px !important
+        font-weight: 500
+        //line-height: 24px
+        //letter-spacing: -.015em
+        color: $n7 !important
+
+.hasError
+  .selector__container__control
+    border-color: #ee7373 !important
+    &:hover
+      border-color: #ee7373 !important
+    &:focus-within
+      box-shadow: 0 0 5px rgba(255, 0, 0, 0.47)
+
+.error
+  border-color: #ee7373 !important
+  border: 2px solid #ee7373 !important
+  box-shadow: 0 0 5px rgba(255, 0, 0, 0.47) !important
+
+.errorMessage
+
+  color: $n4
+  +body1-m
+  margin-top: -16px
+  margin-bottom: 16px
+.required
+  color: $ph1 // Задайте красный цвет для звездочки
+  margin-left: 4px // Немного отступа от текста метки

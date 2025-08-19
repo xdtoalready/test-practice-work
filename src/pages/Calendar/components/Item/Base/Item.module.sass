@@ -1,0 +1,82 @@
+@import "src/styles/helpers"
+@import "../../../Calendar.module"
+.businessItem
+  padding: 4px 8px
+  border-radius: 4px
+  margin-bottom: 4px
+  border: 1px solid transparent
+  font-size: 12px
+  cursor: pointer
+  user-select: none
+  position: relative
+  &.isFinished
+    backdrop-filter: contrast(0.85)
+    -webkit-backdrop-filter: contrast(0.85)
+  +caption2-m
+
+
+  &.business
+    background: $color-business
+    border-color: $color-business-border
+
+  &.call
+    background: $color-call
+    border-color: $color-call-border
+
+  &.brainstorm
+    background: $color-brainstorm
+    border-color: $color-brainstorm-border
+
+  &.meeting
+    background: $color-meeting
+    border-color: $color-meeting-border
+
+  &.personal
+    background: $color-personal
+    border-color: $color-personal-border
+
+  &.holiday
+    background: $color-holiday
+    border-color: $color-holiday-border
+
+  &.letter
+    background: $color-letter
+    border-color: $color-letter-border
+
+  &.dragging
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)
+    transform: scale(1.02)
+    z-index: 1
+
+.time
+  font-size: 10px
+  color: #666
+  //margin-bottom: 2px
+
+
+.title
+  &.finished span
+    text-decoration: line-through
+    text-decoration-color: #8d8e90
+    color: #8d8e90
+  span
+    overflow: hidden
+    text-overflow: ellipsis
+  min-width: 80px
+  justify-content: space-between
+  display: flex
+  align-items: end
+  white-space: nowrap
+  flex-wrap: wrap
+
+
+
+
+.smallTime
+  &.title
+    min-width: auto
+  .time
+    font-size: 6px
+.disableTime
+  .time
+    display: none

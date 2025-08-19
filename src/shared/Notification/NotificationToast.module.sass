@@ -1,0 +1,57 @@
+.toast
+  display: flex
+  flex-direction: row
+  align-items: flex-start
+  position: relative
+  width: 412px
+  padding: 16px
+  margin-bottom: 8px
+  background: #ffffff
+  border-radius: 8px
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15)
+  animation: slideIn 0.3s ease-out
+  transition: opacity 0.3s ease-out
+  z-index: 1000
+
+  &.closing
+    opacity: 0
+
+.header
+  display: flex
+  align-items: center
+  margin-bottom: 8px
+
+.icon
+  width: 24px
+  height: 24px
+  margin-right: 8px
+  border-radius: 4px
+
+.title
+  flex: 1
+  margin: 0
+  font-size: 14px
+  font-weight: 600
+  color: #333
+
+.close
+  background: none
+  border: none
+  font-size: 18px
+  cursor: pointer
+  color: #999
+  padding: 0
+  margin-left: 8px
+
+.body
+  font-size: 13px
+  color: #666
+  line-height: 1.4
+
+@keyframes slideIn
+  from
+    transform: translateY(-20px)
+    opacity: 0
+  to
+    transform: translateY(0)
+    opacity: 1

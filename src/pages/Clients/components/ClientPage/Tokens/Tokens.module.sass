@@ -1,0 +1,34 @@
+@import ../../../../../styles/helpers
+
+.card
+  min-height: 150px
+  padding: 0
+  padding-bottom: 24px
+  +t
+    margin-bottom: 0.5rem
+  >div:first-child
+    margin-bottom: -12px
+    padding: 24px
+    display: flex
+    flex-basis: 100%
+    flex-direction: row
+    justify-content: space-between
+  >div:last-of-type
+    font-weight: 500
+.dropdown
+  padding: 0px 24px
+.urlInput
+  background: none
+  border: none
+  padding-left: 0
+  height: 30px
+  &:focus
+    background: none
+    color: $n7
+.contaianer_divide
+  &:not(:last-of-type)
+    border-bottom: 1px solid $n3
+.maxHeight
+  max-height: 30px
+.label
+  font-weight: 600

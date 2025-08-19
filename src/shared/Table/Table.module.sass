@@ -1,0 +1,338 @@
+@import ../../styles/helpers
+.card
+    padding-top: 12px !important
+    display: block
+    +d
+        display: none
+    &_smallTable
+        +m
+            border-bottom-right-radius: 0px !important
+            border-bottom-left-radius: 0px !important
+        +x
+            display: block
+        padding-top: 24px !important
+.wrapper
+
+    &.smallTable
+        +m
+            display: none
+    //background-color: $n
+    height: calc(100vh - 96px - 12rem)
+    margin: 0 -22px
+    thead
+        border-collapse: separate
+        border-spacing: 0 1rem
+    td
+        >*
+            padding-left: 0.8rem
+            //padding-right: 0.5rem
+    th
+
+        vertical-align: middle
+        color: $shades2
+    th,td
+        vertical-align: middle
+        text-align: left
+        padding: 0.5rem 2rem 0.8rem 2rem
+    +w
+        th,td
+            padding: 0.5rem 0.8rem 0.8rem 0.8rem
+    tbody
+        tr
+            border-top: 1px $n3 solid
+            border-bottom: 1px $n3 solid
+.smallTable
+    height: 100%
+    th,td
+        text-align: left
+        padding: 0.5rem 2rem 0.8rem 1rem
+    padding-top: 24px !important
+    tbody
+        tr
+            border-top: 1px $n3 solid
+            border-bottom: none
+    +t
+        margin: 0
+.headerCol
+    white-space: nowrap
+    &:first-child
+        span
+        padding-top: 12px
+        padding-bottom: 12px
+    &_wrapper
+        &:hover
+            transition-duration: 0.3s
+            border-radius: 8px
+            background-color: $n2
+            .flex
+                svg
+                    fill: #a7abaf
+                .component
+                    span
+                        background-color: #a7abaf
+
+        user-select: none
+        padding-left: 0.8rem
+        padding-right: 0.5rem
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+.activeSorting
+    border-radius: 8px
+    background-color: $n2
+.table
+    display: table
+    width: 100%
+.sortingArrow
+    &::before,&::after
+        content: ""
+        position: absolute
+        top: 50%
+        right: 0
+        width: 20px
+        height: 2px
+        background-color: #333
+        transform-origin: right center
+        transition: transform 0.3s
+    &::before
+        transform: translateY(-6px)
+    &::after
+        transform: translateY(6px)
+
+    //transform: rotate(0deg)
+    //transition-duration: .3s
+.down::before
+    transform: translateY(0) rotate(45deg)
+.down::after
+    transform: translateY(0) rotate(-45deg)
+    //transform: rotate(-180deg)
+
+    +t
+        display: block
+
+.row
+    display: table-row
+    +t
+        display: none
+
+.col
+    position: relative
+    display: table-cell
+    padding: 0 12px 16px
+    vertical-align: middle
+    +caption1
+    color: $n4
+    &:after
+        content: ""
+        position: absolute
+        left: 0
+        bottom: 0
+        right: 0
+        height: 1px
+        background: $n3
+        +dark
+            background: $n6
+    &:first-child
+        width: 56px
+        font-size: 0
+        &:after
+            left: 12px
+    &:last-child
+        padding-right: 164px
+        &:after
+            right: 12px
+
+.foot
+    margin-top: 20px
+    text-align: center
+    +t
+        margin-top: 0
+    .button
+        .loader
+            transform: scale(.8)
+            margin: 0 18px 0 8px
+.disable_header
+    display: contents
+    &:first-of-type
+        tr:nth-of-type(2)
+            td
+                padding-top: 14px
+                padding-bottom: 10px
+                vertical-align: bottom
+
+    &:not(:first-child)
+        tr
+            &:nth-child(1)
+                td
+                    //padding-top: 2rem
+
+    tr
+        &:last-child
+            border-bottom: 1px $n3 solid
+        &:nth-child(1)
+            td
+                padding-top: 0
+                padding-bottom: 0
+            border-top: none
+            //border-bottom: none
+        &:nth-child(2)
+            border-top: none
+
+    &:last-of-type
+        tr
+            &:last-child
+                border-bottom: none
+
+
+.flexCol
+    display: flex
+
+
+.component
+    position: relative
+    width: 14px
+    height: 16px
+
+
+
+    span
+        position: absolute
+        width: 10px
+        height: 2px
+        background-color: #6F767E
+        border-radius: 24px
+        transition: transform 0.3s, width 0.3s
+
+        &:nth-child(1)
+            top: 15%
+            width: 33%
+
+
+        &:nth-child(2)
+            top: 45%
+            width: 66%
+
+
+        &:nth-child(3)
+            width: 99%
+            top: 75%
+
+
+
+
+    &.active
+        span
+            &:nth-child(1)
+                width: 99%
+
+
+            &:nth-child(2)
+                width: 66%
+
+
+            &:nth-child(3)
+                width: 33%
+.flex
+    display: flex
+    svg
+        width: 17px !important
+
+
+.margin
+    margin-left: 8px
+    margin-bottom: auto
+    margin-top: auto
+.editButton
+    cursor: pointer
+    svg[name='edit']
+        &:hover
+            fill: #6F767E
+    svg[name='check-circle']
+        &:hover
+            fill: darken(#FF6A55,10)
+.menuTd
+    position: relative
+    width: 24px
+    >div
+        cursor: pointer
+
+        display: block
+        float: left
+        //margin-bottom: 16px
+.pagingTable
+    height: 100%
+.pagingCard
+    .page
+        &.active
+            color: $ph1
+        &:hover
+            cursor: pointer
+            color: $p3
+    .pagesCount
+        display: flex
+        flex-direction: row
+        gap: 30px
+        align-items: center
+    margin-top: 8px
+    color: $n7
+    .pagination
+        display: flex
+        justify-content: center
+.divider_line
+    align-self: center
+    display: block
+    background-color: $n3
+    width: 24px
+    height: 1px
+    transform: rotate(90deg)
+    &.left
+        margin-right: 20px
+    &.right
+        margin-left: 20px
+
+
+.dots 
+    padding: 0 8px
+    cursor: default
+    color: $n8
+
+
+.pagesCount 
+    display: flex
+    align-items: center
+    gap: 4px
+
+
+.page 
+    padding: 4px 8px
+    cursor: pointer
+    border-radius: 4px
+    min-width: 32px
+    text-align: center
+
+
+.page:hover:not(.active) 
+    background-color: rgba(111, 118, 126, 0.1)
+
+.table_loader
+    left: 32px
+    top: 16px
+
+.page.active 
+    //background-color: #2A85FF
+    color: white
+
+//th
+//    white-space: nowrap
+//    &:not([style*="width"])
+//        width: auto
+//    &:not([style*="min-width"])
+//        min-width: unset
+//
+//td
+//    white-space: nowrap
+//    &:not([style*="width"])
+//        width: auto
+//    &:not([style*="min-width"])
+//        min-width: unset
+

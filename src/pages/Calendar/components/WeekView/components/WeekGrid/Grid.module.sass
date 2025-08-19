@@ -1,0 +1,73 @@
+@import "src/styles/helpers"
+
+.timeGrid
+  position: relative
+  display: flex
+  flex-direction: column
+  min-height: 736px // 16 hours * 46px
+
+.gridStructure
+  position: absolute
+  top: 0
+  left: 0
+  width: 100%
+  height: 100%
+  z-index: 1
+
+.eventsContainer
+  position: absolute
+  top: 0
+  left: 0
+  width: 100%
+  height: 100%
+  z-index: 2
+  pointer-events: none
+
+.hourRow
+  display: flex
+  height: 46px
+  min-height: 46px
+  position: relative
+
+.lastRow
+  .timeCell
+    flex: 1
+    border-bottom: unset
+    position: relative
+
+.timeGutter
+  width: 46px
+  top: 8px
+  position: relative
+  flex-shrink: 0
+  display: flex
+  align-items: end
+  justify-content: center
+  color: #64748B
+  font-size: 12px
+
+.timeCell
+  flex: 1
+  border-right: 1px solid #E2E8F0
+  //border-bottom: 1px solid #E2E8F0
+  position: relative
+  height: 46px
+  cursor: pointer
+
+.dayColumn
+  position: absolute
+  top: 0
+  bottom: 0
+  padding: 8px
+  box-sizing: border-box
+  pointer-events: all
+  display: flex
+  flex-direction: column
+  overflow-y: auto
+  padding-top: 16px
+
+.timeGroup
+  display: flex
+  flex-direction: column
+  margin-bottom: 4px
+  width: calc(100% - 16px) // accounting for padding
