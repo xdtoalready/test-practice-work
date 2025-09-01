@@ -88,7 +88,7 @@ const CommentsList = ({
           <div key={date} className={styles.dateGroup}>
             <h3 className={styles.dateHeader}>{date}</h3>
             {dateComments.map((comment) => (
-              <div className={styles.container}>
+              <div key={`comment-${comment.id}-${comment.isVisibleInLK}`} className={styles.container}>
                 {comment.type === 'Call' ? (
                   <Call
                     call={comment}
