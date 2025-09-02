@@ -54,6 +54,8 @@ const Comment = ({
             <Icon fill={'#6F767E'} name={'more-horizontal'} size={28} />
           </div>
         )}
+        {/* {Boolean(comment.isVisibleInLK) && <div className={styles.inLkFlag}/>} */}
+
         {Boolean(comment.isVisibleInLK) && <div className={styles.inLkFlag}/>}
 
         {tableMenuOpen && (

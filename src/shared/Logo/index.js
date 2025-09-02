@@ -14,8 +14,8 @@ const Index = () => {
       <Link className={styles.logo} to="/">
         <Image
           className={styles.pic}
-          src={isSmallLogo ? '/leadbro/Logo_small.png' : '/leadbro/Logo.svg'}
-          srcDark={isSmallLogo ? '/leadbro/Logo_small.png' : '/leadbro/Logo.svg'}
+          src={isSmallLogo ? '/leadbro/Logo_small.jpg' : '/leadbro/Logo.svg'}
+          srcDark={isSmallLogo ? '/leadbro/Logo_small.jpg' : '/leadbro/Logo.svg'}
           alt="Core"
         />
       </Link>

@@ -15,6 +15,7 @@ import { CalendarStore } from '../pages/Calendar/calendar.store';
 import { CallsStore } from '../pages/Calls/stores';
 import NotificationsStore from './notification.store';
 import { ActsStore } from '../pages/Documents/stores/acts.store';
+import { ReportsStore } from '../pages/Documents/stores/reports.store';
 export class RootStore {
   constructor() {
     this.appStore = new AppStore(this);
@@ -31,6 +32,7 @@ export class RootStore {
     this.legalsStore = new LegalsStore(this);
     this.billsStore = new BillsStore(this);
     this.actsStore = new ActsStore(this);
+    this.reportsStore = new ReportsStore(this);
     this.dealsStore = new DealsStore(this);
     this.timeTrackingStore = new TimeTrackingStore(this);
     this.calendarStore = new CalendarStore(this);

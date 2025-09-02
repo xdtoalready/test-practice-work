@@ -3,7 +3,7 @@ import NotificationToast from '../shared/Notification/Toast';
 import './NotificationProviderStyles.scss'
 
 const NotificationContext = createContext();
-export const REMOVE_DELAY = 5000;
+export const REMOVE_DELAY = 500000;
 export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
   const [visibleMenu,setVisibleMenu] = useState(false);

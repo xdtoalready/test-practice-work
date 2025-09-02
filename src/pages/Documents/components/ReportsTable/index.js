@@ -1,8 +1,5 @@
 import { observer } from 'mobx-react';
-
 import React, {
-  useCallback,
-  useEffect,
   useMemo,
   useRef,
   useState,
@@ -10,48 +7,30 @@ import React, {
 import usePagingData from '../../../../hooks/usePagingData';
 import TableLink from '../../../../shared/Table/Row/Link';
 import useStore from '../../../../hooks/useStore';
-import useBillsApi from '../../api/bills.api';
+import useReportsApi from '../../api/reports.api';
 import Table from '../../../../shared/Table';
 import Badge, { statusTypes } from '../../../../shared/Badge';
 import styles from './Table.module.sass';
 import TextLink from '../../../../shared/Table/TextLink';
-import BillsStats from './components/BillsStats';
-import useQueryParam from '../../../../hooks/useQueryParam';
-import { formatDateToQuery } from '../../../../utils/formate.date';
-import { format, startOfDay, sub } from 'date-fns';
+import ReportsStats from './components/ReportsStats';
 import ConfirmationModal from '../../../../components/ConfirmationModal';
 import { handleError, handleInfo } from '../../../../utils/snackbar';
-import TaskFilter from '../../../Tasks/components/TaskFilter';
-import BillsTableFilter from './components/BillsFilters/BillsTableFilter';
-import BillsFilter from './components/BillsFilters/BillsFilter';
 import { FiltersProvider } from '../../../../providers/FilterProvider';
-import { createTaskFilters } from '../../../Tasks/tasks.filter.conf';
-import { createBillsFilters } from '../../filters/bills.filter.conf';
+import { createReportsFilters } from '../../filters/reports.filter.conf';
 import { LoadingProvider } from '../../../../providers/LoadingProvider';
 import { getQueryParam } from '../../../../utils/window.utils';
-import { createActsFilter } from '../../filters/acts.filter.conf';
-import useActsApi from '../../../Acts/acts.api';
-import EditModal from '../../../Acts/components/ActsTable/components/EditModal';
 import useAppApi from '../../../../api';
 
-export const formatDateForUrl = (date) => {
-  return format(date, 'yyyy-MM-dd');
-};
-
-const ActsTable = observer(({currentSwitcher}) => {
-  const { actsStore } = useStore();
-  const docApi = useBillsApi();
-  const api = useActsApi();
-  const appApi = useAppApi()
+const ReportsTable = observer(({ currentSwitcher }) => {
+  const { reportsStore } = useStore();
+  const api = useReportsApi();
+  const appApi = useAppApi();
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [currentAct, setCurrentAct] = useState(null);
-  const [actToDelete, setActToDelete] = useState(null);
-  const periodCalendarRef = useRef();
-  const periodSelectorRef = useRef();
+  const [currentReport, setCurrentReport] = useState(null);
+  const [reportToDelete, setReportToDelete] = useState(null);
 
   const handleFilterChange = async (filters) => {
-    if (filters?.date_range && !getQueryParam('date_range')) return;
-    await api.getActs(Number(currentPage),currentSwitcher);
+    await api.getReports(Number(currentPage));
   };
 
   const {
@@ -61,34 +40,34 @@ const ActsTable = observer(({currentSwitcher}) => {
     paginatedData,
     itemsPerPage,
     handlePageChange,
-  } = usePagingData(actsStore, handleFilterChange, () =>
-    actsStore?.getActs(1,currentSwitcher),
-);
+  } = usePagingData(reportsStore, handleFilterChange, () =>
+    reportsStore?.getReports(),
+  );
 
-  const handleEdit = (bill) => {
-    setCurrentAct(bill);
+  const handleEdit = (report) => {
+    setCurrentReport(report);
     setEditModalOpen(true);
   };
 
   const handleDelete = async (id) => {
     try {
-      await api.deleteAct(id, currentPage);
-      handleInfo('Услуга удалена');
+      await api.deleteReport(id, currentPage);
+      handleInfo('Отчет удален');
     } catch (error) {
       handleError('Ошибка при удалении:', error);
     }
   };
 
-  const handleDownload = (urlToBill) => {
-    window.open(urlToBill, '_blank');
+  const handleDownload = (urlToReport) => {
+    window.open(urlToReport, '_blank');
   };
 
   const getActions = (data) => [
-    { label: 'Скачать', onClick: () => handleDownload(data.stampedBill) },
+    { label: 'Скачать', onClick: () => handleDownload(data.downloadUrl) },
     { label: 'Редактировать', onClick: () => handleEdit(data) },
     {
       label: 'Удалить',
-      onClick: () => setActToDelete(data.id),
+      onClick: () => setReportToDelete(data.id),
       disabled: data.id === 0,
     },
   ];
@@ -96,7 +75,7 @@ const ActsTable = observer(({currentSwitcher}) => {
   const cols = useMemo(
     () => [
       {
-        Header: 'Номер акта',
+        Header: 'Номер отчета',
         id: 'number',
         accessor: 'number',
         width: '15%',
@@ -118,23 +97,14 @@ const ActsTable = observer(({currentSwitcher}) => {
           </span>
         ),
       },
-      // {
-      //   Header: 'План. дата оплаты',
-      //   id: 'paymentDate',
-      //   width: '15%',
-      //   accessor: 'paymentDate',
-      //   Cell: ({ row }) => (
-      //     <span>{new Date(row.original.paymentDate).toLocaleDateString()}</span>
-      //   ),
-      // },
       {
-        Header: 'Сумма',
-        id: 'sum',
+        Header: 'Период',
+        id: 'period',
         width: '15%',
-        accessor: 'sum',
-        Cell: ({ row }) => {
-          return <span>{row.original.sum.toLocaleString()} руб.</span>;
-        },
+        accessor: 'period',
+        Cell: ({ row }) => (
+          <span>{row.original.period}</span>
+        ),
       },
       {
         Header: 'Клиент',
@@ -151,15 +121,23 @@ const ActsTable = observer(({currentSwitcher}) => {
           );
         },
       },
-
+      {
+        Header: 'Тип услуги',
+        id: 'serviceType',
+        width: '15%',
+        accessor: 'serviceType',
+        Cell: ({ row }) => (
+          <span>{row.original.serviceType}</span>
+        ),
+      },
       {
         Header: 'Статус',
-        id: 'signed',
+        id: 'status',
         Cell: ({ row }) => (
           <Badge
             classname={styles.badge}
             status={row.original.status}
-            statusType={statusTypes.acts}
+            statusType={statusTypes.reports}
           />
         ),
       },
@@ -175,43 +153,33 @@ const ActsTable = observer(({currentSwitcher}) => {
             settingsSwithcerValue={currentSwitcher}
             beforeTable={() => (
               <div>
-                {/*<BillsTableFilter />*/}
-                <BillsStats />
+                <ReportsStats />
               </div>
             )}
             switchers={[
-              {key:'bill',to:'?filter=bill',name:'Счета'},
-              {key:'act',to:'?filter=act',name:'Акты'},
-              {key:'report',to:'?filter=report',name:'Отчеты'},
+              { key: 'bill', to: '?filter=bill', name: 'Счета' },
+              { key: 'act', to: '?filter=act', name: 'Акты' },
+              { key: 'report', to: '?filter=report', name: 'Отчеты' },
             ]}
-            // cardComponent={(data) => (
-            //   <AdaptiveCard data={data} statusType={statusTypes.bills} />
-            // )}
-
             headerActions={{
               sorting: true,
               settings: true,
               add: {
                 action: () => setEditModalOpen(true),
-                title: 'Добавить акт',
+                title: 'Создать отчет',
               },
               filter: {
                 classNameBody: styles.filter_container,
                 title: 'Фильтр',
                 hasFirstCall: false,
-                config: createActsFilter({
-                  appApi,
-                  periodSelectorRef,
-                  periodCalendarRef,
-                }),
+                config: createReportsFilters({ appApi }),
                 onChange: (filters) => {
                   handlePageChange(1);
                   return handleFilterChange(filters);
                 },
               },
             }}
-            title="Акты
-           "
+            title="Отчеты"
             data={paginatedData}
             columns={cols}
             actions={getActions}
@@ -224,25 +192,23 @@ const ActsTable = observer(({currentSwitcher}) => {
             }}
           />
         </div>
+        {/* EditModal будет добавлен позже */}
         {editModalOpen && (
-          <EditModal
-            actId={currentAct?.id ?? null}
-            onClose={() => {
-              setEditModalOpen(false);
-              setCurrentAct(null);
-            }}
-          />
+          <div>
+            {/* Placeholder для модалки редактирования */}
+            <button onClick={() => setEditModalOpen(false)}>Закрыть</button>
+          </div>
         )}
-        {actToDelete !== null && (
+        {reportToDelete !== null && (
           <ConfirmationModal
-            isOpen={actToDelete !== null}
-            onClose={() => setActToDelete(null)}
+            isOpen={reportToDelete !== null}
+            onClose={() => setReportToDelete(null)}
             onConfirm={() => {
-              handleDelete(actToDelete).then(() => {
-                setActToDelete(null);
+              handleDelete(reportToDelete).then(() => {
+                setReportToDelete(null);
               });
             }}
-            label="Вы уверены, что хотите удалить акт?"
+            label="Вы уверены, что хотите удалить отчет?"
           />
         )}
       </LoadingProvider>
@@ -250,4 +216,4 @@ const ActsTable = observer(({currentSwitcher}) => {
   );
 });
 
-export default ActsTable;
+export default ReportsTable;

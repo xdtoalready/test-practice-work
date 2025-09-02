@@ -173,6 +173,7 @@ const BillsTable = observer(({currentSwitcher}) => {
             switchers={[
               {key:'bill',to:'?filter=bill',name:'Счета'},
               {key:'act',to:'?filter=act',name:'Акты'},
+              {key:'report',to:'?filter=report',name:'Отчеты'},
             ]}
             beforeTable={() => (
               <div>
