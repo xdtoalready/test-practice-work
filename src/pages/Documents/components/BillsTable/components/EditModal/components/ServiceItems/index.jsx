@@ -16,6 +16,21 @@ const ServiceItems = ({ items = [], onChange }) => {
     };
     onChange(newItems);
   };
+
+  // Функция для обработки изменения количества с учетом единицы измерения
+  const handleQuantityChange = (index, value, measurementUnit) => {
+    let parsedValue;
+    if (measurementUnit === 'hours') {
+      parsedValue = parseFloat(value);
+    } else {
+      parsedValue = parseInt(value);
+    }
+    if (isNaN(parsedValue)) {
+      parsedValue = '';
+    }
+    handleItemChange(index, 'quantity', parsedValue);
+  };
+
   console.log(items);
 
   const addItem = () => {
@@ -85,23 +100,24 @@ const ServiceItems = ({ items = [], onChange }) => {
                 placeholder="Кол-во услуг"
                 value={item.quantity}
                 type="number"
+                step={item.measurementUnit === 'hours' ? '0.1' : '1'}
                 onChange={(e) =>
-                  handleItemChange(index, 'quantity', parseInt(e.target.value))
+                  handleQuantityChange(index, e.target.value, item.measurementUnit)
                 }
                 edited={true}
               />
               <Dropdown
                 label="Единица измерения"
                 value={measurementUnitTypesRu[item.measurementUnit]}
-                setValue={(value) =>
-                  handleItemChange(
-                    index,
-                    'measurementUnit',
-                    Object.keys(measurementUnitTypesRu).find(
-                      (key) => measurementUnitTypesRu[key] === value,
-                    ),
-                  )
-                }
+                setValue={(value) => {
+                  const newMeasurementUnit = Object.keys(measurementUnitTypesRu).find(
+                    (key) => measurementUnitTypesRu[key] === value,
+                  );
+                  handleItemChange(index, 'measurementUnit', newMeasurementUnit);
+                  if (item.quantity && newMeasurementUnit !== item.measurementUnit) {
+                    handleQuantityChange(index, item.quantity, newMeasurementUnit);
+                  }
+                }}
                 options={Object.values(measurementUnitTypesRu)}
               />
             </div>
