@@ -278,7 +278,7 @@ export const mapCommentsFromApi = (apiComments) => {
                 )
               : loadAvatar(),
         },
-        isVisibleInLK: !comment.data.show_at_client_cabinet,
+        isVisibleInLK: comment.data.show_at_client_cabinet,
         record: comment.data.record,
         callType: comment.data.type,
       };
@@ -299,8 +299,7 @@ export const mapCommentsFromApi = (apiComments) => {
           name: `${comment.data?.commentator?.name ?? comment?.initiator?.name}`,
           lastName: `${comment.data?.commentator?.last_name ?? comment?.initiator?.last_name ?? ''}`,
         },
-        // isVisibleInLK:!comment.data.show_at_client_cabinet,
-        isVisibleInLK: Boolean(comment.data.show_at_client_cabinet),
+        isVisibleInLK: comment.data.show_at_client_cabinet,
         value: {
           text: comment.data.text,
           files: comment?.data?.files?.map((file) => ({
