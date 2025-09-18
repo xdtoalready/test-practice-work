@@ -1,8 +1,26 @@
+=m
+  @media (max-width: 768px)
+    @content
+
 .container
   display: flex
   flex-direction: row
   gap: 20px
+  
+  +m
+    flex-direction: column
+    gap: 12px
+    
   >div:first-of-type
     flex-grow: 3
+    min-width: 0
+    
+    +m
+      flex-grow: 1
+      
   >div:last-of-type
     flex-grow: 1
+    min-width: 280px
+    
+    +m
+      min-width: auto

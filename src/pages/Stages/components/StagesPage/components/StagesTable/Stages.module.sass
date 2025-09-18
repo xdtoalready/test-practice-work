@@ -3,6 +3,8 @@
     display: grid
     grid-template-columns: 3fr 1fr
     gap: 16px
+    @media only screen and (max-width: 1200px)
+      grid-template-columns: auto
     div[class*='pagingCard']
       grid-area: 2
       margin-top: unset
