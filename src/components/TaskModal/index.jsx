@@ -104,6 +104,7 @@ const TaskEditModal = observer(
     const initialTaskState = {
       name: '',
       description: ' ',
+      report: ' ',
       linked_task: '',
       type: '',
       taskStatus: taskStatusTypes.created,
@@ -113,6 +114,7 @@ const TaskEditModal = observer(
       actual_time: '',
       performer: [],
       showInLk: true,
+      showInReport: false,
       auditors: [],
       related_entity: mode !== 'task' ? {
         taskable_type: contextData.type,
@@ -465,6 +467,7 @@ const TaskEditModal = observer(
               )}
               <TaskTypePart
                 showInLk={taskData.showInLk}
+                showInReport={taskData.showInReport}
                 isEditMode={isEditMode}
                 types={Object.keys(tasksTypes)}
                 className={styles.taskType}

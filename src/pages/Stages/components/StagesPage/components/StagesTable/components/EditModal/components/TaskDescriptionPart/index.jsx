@@ -32,7 +32,9 @@ const Index = ({
     service,
     title,
     status,
-    related_entity:relatedEntity
+    related_entity:relatedEntity,
+    showInReport,
+    report
   },
   selectedStatus,
   prefix,
@@ -89,6 +91,21 @@ const Index = ({
           label={'Описание'}
         />
       )}
+
+      {showInReport && !isLoading && (
+        <TextInput
+          onChange={({ target }) => {
+            handleChange(target.name, target.value === '' ? ' ' : target.value);
+          }}
+          name={`${prefix}report`}
+          value={report === '' || report == null ? ' ' : report}
+          edited={true}
+          type={'editor'}
+          className={cn(styles.input, styles.textarea)}
+          label={'Отчёт по задаче'}
+        />
+      )}
+
       {(mode === 'task' || (mode ==='stage' && isEditMode))  && ( <ValuesSelector
           name={`${prefix}related_entity`}
           placeholder={'Привязать к...'}

@@ -176,6 +176,7 @@ const EditModal = observer(({ stage, data, handleClose }) => {
           />
           <TaskTypePart
             showInLk={false}
+            showInReport={stageTask.showInReport || false}
             types={Object.keys(tasksTypes)}
             className={styles.taskType}
             data={

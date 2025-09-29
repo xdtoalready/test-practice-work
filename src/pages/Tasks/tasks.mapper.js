@@ -37,12 +37,14 @@ export const mapTaskFromApi = (task, commentsData = null) => {
     type: task?.type,
     taskLinked: task?.linked_task,
     description: task?.description ?? ' ',
+    report: task?.report ?? ' ',
     createdAt: task?.created_at ? `от ${task?.created_at}` : '',
     deadline: task?.deadline ? new Date(task?.deadline) : null,
     deadlineTime: formatDuration(task?.planned_time), // Например, '5 ч'
     actualTime: formatDuration(task?.actual_time), // Например, '2 дн'
     isNewForUser: task?.show_at_client_cabinet === 1,
     showInLk: task?.show_at_client_cabinet === 1,
+    showInReport: task?.show_at_report === 1,
     // creator:mapEmployeesFromApi(task?.creator),
     responsibles: mapAssigned([task?.responsible]),
     executors: mapAssigned([task?.performer]),

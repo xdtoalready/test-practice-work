@@ -92,7 +92,9 @@ const mapTasksFromApi = (tasksData) => {
 //       title: task.template?.title || 'Название шаблона 1',
 //     },
 //     description: task?.description || ' ',
+//     report: task?.report || ' ',
 //     showInLK: task.show_at_client_cabinet === 1,
+//     showInReport: task.show_at_report === 1,
 //     comments: task.comments ? mapComments(task.comments) : {},
 //     taskLinked: task?.linked_task,
 //     type: task?.type,
@@ -170,6 +172,8 @@ export const mapStageDataToBackend = (drafts, changedFieldsSet, propId) => {
         return parseFloat(value);
       case 'show_at_client_cabinet':
         return Boolean(value); // Преобразуем в булевое значение
+      case 'show_at_report':
+        return Boolean(value);
       case 'responsible_id':
         return value.id;
       case 'performer_id':
@@ -207,7 +211,9 @@ export const mapStageDataToBackend = (drafts, changedFieldsSet, propId) => {
       executors: 'performer_id',
       taskLinked: 'linked_task',
       showInLk: 'show_at_client_cabinet',
+      showInReport: 'show_at_report',
       description: 'description',
+      report: 'report',
       stagePlannedTime: 'planned_time',
       timeOverPlan: 'time_over_planned',
       taskStatus: 'status',
@@ -222,7 +228,9 @@ export const mapStageDataToBackend = (drafts, changedFieldsSet, propId) => {
       [`tasks.${propId}.deadlineTime`]: 'planned_time', // Привязка времени к 'deadline'
       [`tasks.${propId}.executors`]: 'performer_id',
       [`tasks.${propId}.showInLk`]: 'show_at_client_cabinet',
+      [`tasks.${propId}.showInReport`]: 'show_at_report',
       [`tasks.${propId}.description`]: 'description',
+      [`tasks.${propId}.report`]: 'report',
       [`tasks.${propId}.taskLinked`]: 'linked_task',
       [`tasks.${propId}.taskStatus`]: 'status',
         [`tasks.${propId}.related_entity`]: ['taskable_type', 'taskable_id'],

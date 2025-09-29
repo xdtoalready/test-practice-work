@@ -7,6 +7,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { Link } from 'react-router-dom';
 import usePagingData from '../../../../hooks/usePagingData';
 import TableLink from '../../../../shared/Table/Row/Link';
 import useStore from '../../../../hooks/useStore';

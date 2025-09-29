@@ -29,7 +29,8 @@ const Index = ({
     actualTime,
     cost,
   },
-                 showInLk,
+  showInLk,
+  showInReport,
   isEditMode,
   types,
   handleChange,
@@ -208,6 +209,14 @@ const Index = ({
         name={'showInLk'}
         label={'Показать в личном кабинете'}
         value={showInLk}
+        onChange={(name, value) => handleChange(name, value)}
+      />
+
+      <Switch
+        className={styles.switch}
+        name={'showInReport'}
+        label={'Показать в отчете'}
+        value={showInReport}
         onChange={(name, value) => handleChange(name, value)}
       />
     </div>
