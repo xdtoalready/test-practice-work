@@ -13,6 +13,11 @@ RUN npm i
 # Copy app files
 COPY . .
 
+# УВЕЛИЧИВАЕМ ПАМЯТЬ ДЛЯ СБОРКИ REACT
+ENV NODE_OPTIONS="--max-old-space-size=8192"
+ENV GENERATE_SOURCEMAP=false
+ENV INLINE_RUNTIME_CHUNK=false
+
 # Build the app
 RUN npm run build
 
