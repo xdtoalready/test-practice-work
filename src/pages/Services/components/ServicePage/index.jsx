@@ -40,6 +40,7 @@ const ServicePage = observer(() => {
     isLoading,
   } = useServices(Number(id), true);
   const { hasPermission } = usePermissions();
+  const api = useServiceApi();
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [createEtapModal, setCreateEtapModal] = useState(false);
 
@@ -94,7 +95,12 @@ const ServicePage = observer(() => {
                     task={service.tasks}
                   />
                   <Hours actSum={el.cost} time={el.time} el={el} />
-                  <Report />
+                  <Report 
+                    stage={el} 
+                    onReportGenerated={() => {
+                      api.getServiceById(service.id, true);
+                    }}
+                  />
                   {/*<Act act={el.act} />*/}
                   {/*<Agreement/>*/}
                   {/*<AdditionalAgreement/>*/}

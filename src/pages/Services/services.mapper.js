@@ -109,6 +109,10 @@ const mapStages = (stages) => {
       description: stage?.technical_specification ?? ' ',
       cost: stage.act_sum, // Стоимость этапа
       active: stage.active === 1 ? serviceStatuses.tasks.inProgress : '',
+      report: stage.report ? {
+        id: stage.report.id,
+        path: stage.report.path
+      } : null,
     }));
   }
   // Если это объект этапов (пришел из getServices)
