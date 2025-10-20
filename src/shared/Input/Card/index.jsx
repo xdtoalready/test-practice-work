@@ -4,7 +4,7 @@ import cn from 'classnames';
 import Icon from '../../Icon';
 import TextInput from '../../TextInput';
 
-const CardInput = ({ label, value, actions, type, name, ...props }) => {
+const CardInput = ({ label, value, actions, type, name, disabled = false, readOnly = false, ...props }) => {
   const [isEdited, setIsEdited] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
 
@@ -12,22 +12,25 @@ const CardInput = ({ label, value, actions, type, name, ...props }) => {
     return {
       [styles.input_email]: type === 'email' && !isEdited,
       [styles.input_tel]: type === 'tel',
+      [styles.input_readonly]: readOnly || disabled,
     };
-  }, [type, isEdited]);
+  }, [type, isEdited, readOnly, disabled]);
 
   // Стабильный обработчик изменений
   const handleChange = useCallback(
     (e) => {
+      if (readOnly || disabled) return;
       const { value, selectionStart, name } = e.target;
-      actions.edit({ name, value, selectionStart });
+      actions?.edit({ name, value, selectionStart });
     },
-    [actions],
+    [actions, readOnly, disabled],
   );
 
   const handleEdit = useCallback(() => {
+    if (readOnly || disabled) return;
     props?.onEdit && props?.onEdit();
     setIsEdited((prev) => !prev);
-  }, []);
+  }, [readOnly, disabled, props]);
 
   const handleSee = useCallback(() => {
     setIsClicked((prev) => !prev);
@@ -44,6 +47,7 @@ const CardInput = ({ label, value, actions, type, name, ...props }) => {
       onChange={handleChange}
       seen={isClicked}
       onSee={handleSee}
+      disabled={disabled || readOnly}
       classNameActions={styles.actions}
       classLabel={
         props.multiple
@@ -58,7 +62,7 @@ const CardInput = ({ label, value, actions, type, name, ...props }) => {
       }
       classInput={cn(styles.input, getInputClass, props?.classInput)}
       label={props?.multiple ? (props?.labeled ? label : null) : label}
-      actions={actions}
+      actions={readOnly || disabled ? undefined : actions}
       {...props}
     />
   );

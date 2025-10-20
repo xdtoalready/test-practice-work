@@ -204,6 +204,7 @@ const mapLegals = (legals) => {
     REAL_ADDRESS: legals.real_address,
     BIK: legals.bank_bic,
     BankName: legals.bank_name,
+    LEGAL_NAME: legals.legal_name,
   };
 };
 
@@ -422,14 +423,14 @@ export const mapClientDataToBackend = (drafts, changedFieldsSet, propId) => {
       [`sites.${propId}.topvisor_token`]: 'topvisor_token',
       [`sites.${propId}.ymetrics_token`]: 'ymetrics_token',
       // [`contactPersons.${propId}.email`]: 'email',
-      'contactData.requisites.0.BankName': 'bank_name',
+      // 'contactData.requisites.0.BankName': 'bank_name',
       'contactData.requisites.0.INN': 'inn',
-      'contactData.requisites.0.KPP': 'kpp',
-      'contactData.requisites.0.OGRN': 'ogrn',
+      // 'contactData.requisites.0.KPP': 'kpp',
+      // 'contactData.requisites.0.OGRN': 'ogrn',
       'contactData.requisites.0.RS': 'checking_account',
-      'contactData.requisites.0.CORR_RS': 'correspondent_account',
+      // 'contactData.requisites.0.CORR_RS': 'correspondent_account',
       'contactData.requisites.0.BIK': 'bank_bic',
-      'contactData.requisites.0.LEGAL_ADDRESS': 'legal_address',
+      // 'contactData.requisites.0.LEGAL_ADDRESS': 'legal_address',
       'contactData.requisites.0.REAL_ADDRESS': 'real_address',
 
       'contactData.tel.0': 'phone',

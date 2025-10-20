@@ -14,7 +14,7 @@ import {
 import Title from '../../../../../shared/Title';
 import Card from '../../../../../shared/Card';
 import styles from './Contacts.module.sass';
-import RequisitesComponent from './Inputs/Requisites.component';
+import RequisitesCard from './Requisites';
 import MultiInputContacts from './Inputs/MultiInput.component';
 import {useCallsContext} from "../../../../../providers/CallsProvider";
 
@@ -56,68 +56,50 @@ const ClientsContacts = ({
     };
 
   return (
-    <Card classTitle={styles.title} className={styles.card}>
-      <Title
-        smallTable={true}
-        actions={
-          {
-            // add: {
-            //   action: () => null,
-            //   title: 'Добавить клиента',
-            // },
+    <>
+      {/* КАРТОЧКА 1: Контактные данные */}
+      <Card title="Контактные данные" className={styles.card}>
+        <MultiInputContacts
+          onAdd={onAdd}
+          contactData={contactData}
+          label="Телефон"
+          param="tel"
+          type="phone"
+          onActions={(path) =>
+            defaultActions(path, 'Телефон сохранен', 'Телефон восстановлен')
           }
-        }
-        title={'Контактные данные'}
-      />
-      <MultiInputContacts
-        onAdd={onAdd}
+        />
+        
+        <MultiInputContacts
+          onAdd={onAdd}
+          contactData={contactData}
+          label="Адрес"
+          param="address"
+          type="textarea"
+          classInput={styles.input}
+          onActions={(path) =>
+            defaultActions(path, 'Адрес сохранен', 'Адрес восстановлен')
+          }
+        />
+        
+        <MultiInputContacts
+          onAdd={onAdd}
+          contactData={contactData}
+          label="Почта"
+          param="email"
+          type="email"
+          onActions={(path) =>
+            defaultActions(path, 'Почта сохранена', 'Почта восстановлена')
+          }
+        />
+      </Card>
+
+      {/* КАРТОЧКА 2: Юридические реквизиты */}
+      <RequisitesCard
         contactData={contactData}
-        label={'Телефон'}
-        param={'tel'}
-        type={'tel'}
-        onActions={(path) => ({call: handlePhoneClick, ...defaultActions(path, 'Телефон сохранен', 'Телефон восстановлен')})
-        }
+        onActions={defaultActions}
       />
-      <MultiInputContacts
-        onAdd={onAdd}
-        contactData={contactData}
-        label={'Адрес'}
-        param={'address'}
-        type={'textarea'}
-        classInput={styles.input}
-        onActions={(path) =>
-          defaultActions(path, 'Адрес сохранен', 'Адрес восстановлен')
-        }
-      />
-      <MultiInputContacts
-        onAdd={onAdd}
-        contactData={contactData}
-        label={'Почта'}
-        param={'email'}
-        type={'email'}
-        onActions={(path) =>
-          defaultActions(path, 'Почта сохранена', 'Почта восстановлена')
-        }
-      />
-      {/*<MultiInputContacts*/}
-      {/*  onAdd={onAdd}*/}
-      {/*  contactData={contactData}*/}
-      {/*  label={'Сайт'}*/}
-      {/*  param={'site'}*/}
-      {/*  type={'email'}*/}
-      {/*  onActions={(path) =>*/}
-      {/*    defaultActions(path, 'Сайт сохранен', 'Сайт восстановлен')*/}
-      {/*  }*/}
-      {/*/>*/}
-      <RequisitesComponent
-        onAdd={onAdd}
-        contactData={contactData}
-        label={'Юр. реквизиты'}
-        onActions={(path, onSaveText, onCloseText) =>
-          defaultActions(path, onSaveText, onCloseText)
-        }
-      />
-    </Card>
+    </>
   );
 };
 
