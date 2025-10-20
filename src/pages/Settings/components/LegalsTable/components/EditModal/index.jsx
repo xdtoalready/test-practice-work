@@ -320,7 +320,7 @@ const EditModal = observer(({ legalId, onClose }) => {
           />
           <FileUpload
             required
-            label="Скан подписи"
+            label="Скан печати"
             name="stampScan"
             value={legal.stampScan}
             onChange={handleChange}

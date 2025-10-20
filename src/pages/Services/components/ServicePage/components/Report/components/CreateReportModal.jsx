@@ -9,24 +9,21 @@ import {
 import { http, handleHttpError } from '../../../../../../../shared/http';
 
 const CreateReportModal = ({ stageId, onClose, onSuccess }) => {
-  const [seoConclusion, setSeoConclusion] = useState(' ');
+  const [seoConclusion, setSeoConclusion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async () => {
     try {
       setIsLoading(true);
       
-      // Отправляем GET запрос с параметром work_plan в теле
-      const response = await http.get(
-        `/api/report/${stageId}/generate`,
+      // Изменен метод на POST и эндпоинт с /report/ на /reports/
+      const response = await http.post(
+        `/api/reports/${stageId}/generate`,
         {
-          params: {
-            work_plan: seoConclusion === ' ' ? '' : seoConclusion
-          }
+          seo_conclusion: seoConclusion
         }
       );
 
-      // Данные отчета приходят в response.data
       const reportData = response.data?.data;
       
       handleSubmitSnackbar('Отчет успешно создан');
@@ -39,7 +36,7 @@ const CreateReportModal = ({ stageId, onClose, onSuccess }) => {
     } catch (error) {
       console.error('Ошибка при создании отчета:', error);
       handleHttpError(error);
-      handleError('Ошибка при создании отчета', error);
+      handleError('Ошибка при создании отчета');
     } finally {
       setIsLoading(false);
     }
