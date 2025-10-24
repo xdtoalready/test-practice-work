@@ -10,6 +10,7 @@
     "@editorjs/marker": "^1.4.0",
     "@editorjs/paragraph": "^2.11.6",
     "@sentry/react": "^8.38.0",
+    "autobind-decorator": "^2.4.0",
     "axios": "^1.6.8",
     "axios-mock-adapter": "^1.22.0",
     "axios-retry": "^4.5.0",
