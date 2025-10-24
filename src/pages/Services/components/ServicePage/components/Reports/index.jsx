@@ -6,11 +6,31 @@ import Icon from '../../../../../../shared/Icon';
 import cn from 'classnames';
 import styles from '../Bills/Bills.module.sass'; // Переиспользую стили Bills
 import CreateReportModal from '../Report/components/CreateReportModal';
+import ConfirmationModal from '../../../../../../components/ConfirmationModal';
+import { handleInfo, handleError } from '../../../../../../utils/snackbar';
+import { http, handleHttpError } from '../../../../../../shared/http';
 
 const Reports = observer(({ company, service, stage, reports = [], onReportGenerated }) => {
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedReport, setSelectedReport] = useState(null);
+
+  const handleDeleteReport = async () => {
+    try {
+      await http.delete(`/api/reports/${selectedReport.id}`);
+      handleInfo('Отчет удален');
+      setIsDeleteModalOpen(false);
+      setSelectedReport(null);
+      if (onReportGenerated) {
+        onReportGenerated();
+      }
+    } catch (error) {
+      console.error('Ошибка при удалении отчета:', error);
+      handleHttpError(error);
+      handleError('Ошибка при удалении отчета');
+      setIsDeleteModalOpen(false);
+    }
+  };
 
   const cols = useMemo(
     () => [
@@ -34,7 +54,7 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
       },
       {
         Header: 'Скачать',
-        width: '35%',
+        width: '30%',
         id: 'download',
         Cell: ({ row }) => {
           const data = row?.original;
@@ -49,6 +69,26 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
               after={<Icon size={24} name={'download'} />}
               classname={cn(styles.button, styles.button_bills)}
               name={'Просмотр отчета'}
+            />
+          );
+        },
+      },
+      {
+        Header: 'Удалить',
+        width: '35%',
+        id: 'delete',
+        Cell: ({ row }) => {
+          const data = row?.original;
+          return (
+            <Button
+              onClick={() => {
+                setSelectedReport(data);
+                setIsDeleteModalOpen(true);
+              }}
+              type={'secondary'}
+              after={<Icon size={24} name={'trash'} />}
+              classname={cn(styles.button, styles.button_bills)}
+              name={'Удалить отчет'}
             />
           );
         },
@@ -87,6 +127,17 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
               onReportGenerated();
             }
           }}
+        />
+      )}
+      {isDeleteModalOpen && (
+        <ConfirmationModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => {
+            setIsDeleteModalOpen(false);
+            setSelectedReport(null);
+          }}
+          onConfirm={handleDeleteReport}
+          label="Вы уверены, что хотите удалить отчет?"
         />
       )}
     </div>

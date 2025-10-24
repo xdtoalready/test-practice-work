@@ -8,10 +8,11 @@ import useClientsApi from '../../../../clients.api';
 import { genderType } from '../../../../../Settings/settings.types';
 import Radio from '../../../../../../shared/Radio';
 import RadioGenderInput from '../../../../../../components/RadioGenderInput';
-import { handleSubmit as handleSubmitSnackbar } from '../../../../../../utils/snackbar';
+import { handleSubmit as handleSubmitSnackbar, handleInfo } from '../../../../../../utils/snackbar';
 import useStore from '../../../../../../hooks/useStore';
 import { observer } from 'mobx-react';
 import FormValidatedModal from '../../../../../../shared/Modal/FormModal';
+import ConfirmationModal from '../../../../../../components/ConfirmationModal';
 
 const CreateClientsModal = ({
   entityId,
@@ -23,6 +24,7 @@ const CreateClientsModal = ({
   onSubmit,
 }) => {
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [newClient, setNewClient] = useState({
     site: '',
     role: '',
@@ -91,17 +93,56 @@ const CreateClientsModal = ({
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      await api.deleteClient(clientId, companyId);
+      handleInfo('Контактное лицо удалено');
+      setIsDeleteModalOpen(false);
+      onClose();
+      if (onSubmit) {
+        onSubmit();
+      }
+    } catch (error) {
+      console.error('Ошибка при удалении контактного лица:', error);
+      setIsDeleteModalOpen(false);
+    }
+  };
+
   return (
-    <FormValidatedModal
-      handleSubmit={handleSubmit}
-      handleClose={handleReset}
-      size={'md'}
-    >
-      <div className={modlaStyles.header}>
-        {isEditMode
-          ? 'Редактирование контактного лица'
-          : 'Создание контактного лица'}
-      </div>
+    <>
+      <FormValidatedModal
+        handleSubmit={handleSubmit}
+        handleClose={handleReset}
+        size={'md'}
+        customFooter={
+          isEditMode && (
+            <div style={{ marginTop: '20px', borderTop: '1px solid #EFEFEF', paddingTop: '20px' }}>
+              <button
+                type="button"
+                onClick={() => setIsDeleteModalOpen(true)}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  backgroundColor: '#ff4d4f',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                }}
+              >
+                Удалить контактное лицо
+              </button>
+            </div>
+          )
+        }
+      >
+        <div className={modlaStyles.header}>
+          {isEditMode
+            ? 'Редактирование контактного лица'
+            : 'Создание контактного лица'}
+        </div>
       <div className={modlaStyles.flexDiv}>
         <TextInput
           onChange={({ target }) =>
@@ -340,7 +381,17 @@ const CreateClientsModal = ({
       </div>
 
       <div className={modlaStyles.flexDiv}></div>
-    </FormValidatedModal>
+      </FormValidatedModal>
+
+      {isDeleteModalOpen && (
+        <ConfirmationModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+          onConfirm={handleDelete}
+          label="Вы уверены, что хотите удалить контактное лицо?"
+        />
+      )}
+    </>
   );
 };
 
