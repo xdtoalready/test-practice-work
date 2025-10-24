@@ -84,7 +84,8 @@ export const mapSites = (sites) => {
       id: site.id,
       url: site.url,
       topvisor_token: site?.topvisor_token,
-      ymetrics_token: site?.ymetrics_token
+      ymetrics_token: site?.ymetrics_token,
+      topvisor_guest_link: site?.topvisor_guest_link
     };
     return acc;
   }, {});
@@ -422,6 +423,7 @@ export const mapClientDataToBackend = (drafts, changedFieldsSet, propId) => {
       [`sites.${propId}.url`]: 'url',
       [`sites.${propId}.topvisor_token`]: 'topvisor_token',
       [`sites.${propId}.ymetrics_token`]: 'ymetrics_token',
+      [`sites.${propId}.topvisor_guest_link`]: 'topvisor_guest_link',
       // [`contactPersons.${propId}.email`]: 'email',
       // 'contactData.requisites.0.BankName': 'bank_name',
       'contactData.requisites.0.INN': 'inn',

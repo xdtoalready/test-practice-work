@@ -7,7 +7,7 @@ const RequisitesCard = ({ contactData, onActions }) => {
   const requisites = contactData?.requisites?.[0] || {};
   
   return (
-    <Card title="Юридические реквизиты" className={styles.card}>
+    <Card className={styles.card}>
       {/* 1️⃣ Основные реквизиты компании */}
       <div className={styles.section}>
         <div className={styles.sectionTitle}>Основные реквизиты компании</div>
@@ -17,7 +17,7 @@ const RequisitesCard = ({ contactData, onActions }) => {
           name="contactData.requisites.0.LEGAL_NAME"
           value={requisites.LEGAL_NAME || ''}
           readOnly={true}
-          placeholder="Автоматически заполняется"
+          placeholder="Автоматически заполняется при вводе ИНН"
           className={styles.readOnlyField}
         />
         
@@ -37,7 +37,7 @@ const RequisitesCard = ({ contactData, onActions }) => {
           name="contactData.requisites.0.KPP"
           value={requisites.KPP || ''}
           readOnly={true}
-          placeholder="Автоматически заполняется при вводе БИК"
+          placeholder="Автоматически заполняется при вводе ИНН"
           className={styles.readOnlyField}
         />
         
@@ -46,7 +46,7 @@ const RequisitesCard = ({ contactData, onActions }) => {
           name="contactData.requisites.0.OGRN"
           value={requisites.OGRN || ''}
           readOnly={true}
-          placeholder="Автоматически заполняется при вводе БИК"
+          placeholder="Автоматически заполняется при вводе ИНН"
           className={styles.readOnlyField}
         />
         
@@ -56,7 +56,7 @@ const RequisitesCard = ({ contactData, onActions }) => {
           value={requisites.LEGAL_ADDRESS || ''}
           type="textarea"
           readOnly={true}
-          placeholder="Автоматически заполняется при вводе БИК"
+          placeholder="Автоматически заполняется при вводе ИНН"
           className={styles.readOnlyField}
         />
         
@@ -86,7 +86,6 @@ const RequisitesCard = ({ contactData, onActions }) => {
             'БИК сохранен',
             'БИК восстановлен'
           )}
-          placeholder="046577964"
         />
         
         <CardInput
@@ -121,7 +120,6 @@ const RequisitesCard = ({ contactData, onActions }) => {
             'Расчетный счет сохранен',
             'Расчетный счет восстановлен'
           )}
-          placeholder="40702810000000000000"
         />
       </div>
     </Card>

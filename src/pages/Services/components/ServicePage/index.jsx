@@ -12,7 +12,7 @@ import Task from './components/Task';
 import Hours from './components/Hours';
 import Act from './components/Act';
 import Bills from './components/Bills';
-import Report from './components/Report';
+import Reports from './components/Reports';
 import TextLink from '../../../../shared/Table/TextLink';
 import { observer } from 'mobx-react';
 import AdaptiveStages from './components/AdaptiveCard';
@@ -95,8 +95,14 @@ const ServicePage = observer(() => {
                     task={service.tasks}
                   />
                   <Hours actSum={el.cost} time={el.time} el={el} />
-                  <Report 
-                    stage={el} 
+                  <Reports
+                    company={{
+                      ...service?.client,
+                      name: service?.client?.title,
+                    }}
+                    service={{ id: service?.id, name: service?.title }}
+                    stage={{ id: el.id, name: el.title }}
+                    reports={el.report ? [el.report] : []} 
                     onReportGenerated={() => {
                       api.getServiceById(service.id, true);
                     }}

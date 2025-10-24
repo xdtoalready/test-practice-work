@@ -11,13 +11,13 @@ import DeleteButton from '../../../../../../shared/Button/Delete';
 import ConfirmationModal from '../../../../../../components/ConfirmationModal';
 
 const CreateSiteModal = ({
-                           companyId,
-                           onClose,
-                           siteId,
-                           onSubmit,
-                           store,
-  api
-                         }) => {
+    companyId,
+    onClose,
+    siteId,
+    onSubmit,
+    store,
+    api
+  }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -25,6 +25,7 @@ const CreateSiteModal = ({
     url: '',
     topvisor_token: '',
     ymetrics_token: '',
+    topvisor_guest_link: '',
   });
   const client = useMemo(() => {
     return isEditMode
@@ -172,6 +173,19 @@ const CreateSiteModal = ({
           className={cn(styles.input, modlaStyles.grow)}
           label={'Id счетчика Яндекс'}
           placeholder={'67890'}
+        />
+        <TextInput
+          onChange={({ target }) =>
+            handleChange(
+              isEditMode ? `sites.${siteId}.topvisor_guest_link` : 'topvisor_guest_link',
+              target.value,
+            )
+          }
+          value={client?.topvisor_guest_link}
+          edited={true}
+          className={cn(styles.input, modlaStyles.grow)}
+          label={'Гостевая ссылка Topvisor'}
+          placeholder={'https://topvisor.com/guest/...'}
         />
       </div>
     </FormValidatedModal>

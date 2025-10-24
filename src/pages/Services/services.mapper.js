@@ -111,7 +111,9 @@ const mapStages = (stages) => {
       active: stage.active === 1 ? serviceStatuses.tasks.inProgress : '',
       report: stage.report ? {
         id: stage.report.id,
-        view: stage.report.view
+        view: stage.report.view,
+        number: stage.report.number,
+        period: stage.report.period,
       } : null,
     }));
   }

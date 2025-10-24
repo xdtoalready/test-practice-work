@@ -105,6 +105,19 @@ const ClientTokens = ({
                   site.id,
                 )}
               />
+              <CardInput
+              placeholder={'Гостевая ссылка Topvisor...'}
+              label={'Topvisor Guest Link'}
+              name={`sites.${site.id}.topvisor_guest_link`}
+              type={'text'}
+              value={site.topvisor_guest_link}
+              actions={defaultActions(
+                `sites.${site.id}.topvisor_guest_link`,
+                'Topvisor Guest Link сохранен',
+                '',
+                site.id,
+              )}
+            />
             </motion.div>
           </CardDropdown>
         );
