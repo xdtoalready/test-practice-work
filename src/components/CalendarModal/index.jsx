@@ -27,6 +27,7 @@ import { UserPermissions } from '../../shared/userPermissions';
 import { usePermissions } from '../../providers/PermissionProvider';
 import { useNavigate } from 'react-router';
 import Tooltip from '../../shared/Tooltip';
+import { mapTimeTrackingsFromApi } from '../../pages/TimeTracking/timeTracking.mapper';
 
 const CalendarModal = observer(
   ({
@@ -54,7 +55,18 @@ const CalendarModal = observer(
     const [isCommentsLoading, setIsCommentsLoading] = useState(false);
     const navigate = useNavigate();
     const { members } = useMembers();
+    const { tasksStore } = useStore();
     const defaultApiHook = useCalendarApi(); // Используем как fallback
+
+    // Создаем обертку для business timeTracking API
+    const businessTimeTrackingApi = useMemo(() => ({
+      sendTimeTracking: (timeTracking, businessId) => {
+        return defaultApiHook.sendBusinessTimeTracking(timeTracking, businessId)
+          .then((data) => mapTimeTrackingsFromApi([data]));
+      },
+      updateTimeTracking: defaultApiHook.updateBusinessTimeTracking,
+      deleteTimeTracking: defaultApiHook.deleteBusinessTimeTracking,
+    }), [defaultApiHook]);
 
     // Определяем текущий режим работы компонента
     const mode = useMemo(() => {
@@ -689,6 +701,11 @@ const CalendarModal = observer(
                     entityId={businessId}
                     belongsTo={'businesses'}
                     isLoading={isCommentsLoading}
+                    timeTrackings={business?.timeTrackings}
+                    mode="business"
+                    contextStore={contextData.store}
+                    timeTrackingApi={businessTimeTrackingApi}
+                    prefix=""
                   />
                 )}
               </div>
