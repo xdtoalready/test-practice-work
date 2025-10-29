@@ -205,7 +205,7 @@ const EditStage = ({ handleClose, stageId }) => {
               {/*    onChange={(checked) => handleChange('sumByHand', checked)}*/}
               {/*/>*/}
             </div>
-            <div>
+            <div style={{ marginBottom: '16px' }}>
               <TextInput
                 type="editor"
                 onChange={({ target }) =>
@@ -221,7 +221,7 @@ const EditStage = ({ handleClose, stageId }) => {
                 // rows={14}
               />
             </div>
-            <div>
+            <div style={{ marginBottom: '16px' }}>
               <TextInput
                 type="editor"
                 onChange={({ target }) =>
