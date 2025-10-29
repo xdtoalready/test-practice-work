@@ -60,6 +60,10 @@ export const mapBusinessFromApi = (apiBusiness, apiComments = []) => {
 };
 
 export const mapBusinessToBackend = (drafts, changedFieldsSet) => {
+  // Фильтруем timeTrackings из changedFieldsSet - они не должны отправляться в PATCH
+  const filteredChangedFieldsSet = Array.isArray(changedFieldsSet)
+    ? changedFieldsSet.filter(key => !key.startsWith('timeTrackings'))
+    : changedFieldsSet;
 
   const castValue = (key, value, oldKey) => {
     switch (key) {
@@ -121,7 +125,7 @@ export const mapBusinessToBackend = (drafts, changedFieldsSet) => {
 
   return mapChangedFieldsForBackend(
     drafts,
-    changedFieldsSet,
+    filteredChangedFieldsSet,
     mapKeyToBackend,
     castValue,
   );

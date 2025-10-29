@@ -29,6 +29,7 @@ const Comments = observer(
     timeTrackings,
     mode,
     contextStore,
+    timeTrackingApi: timeTrackingApiProp,
     ...rest
   }) => {
     const commentsLength = useMemo(
@@ -45,7 +46,8 @@ const Comments = observer(
     const { tasksStore } = useStore();
     const url = useLocation();
     const appApi = useAppApi();
-    const timeTrackingApi = useTimeTrackingApi();
+    const defaultTimeTrackingApi = useTimeTrackingApi();
+    const timeTrackingApi = timeTrackingApiProp || defaultTimeTrackingApi;
 
     function countComments() {
       const commentArr = comments
