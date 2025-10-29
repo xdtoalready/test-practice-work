@@ -413,7 +413,6 @@ const PermissionsSection = ({ permissions = [], onChange, isEditMode }) => {
       permissions: {
         'access employees': 'Доступ к сотрудникам',
         'access legal entities': 'Доступ к юр. лицам',
-        'edit time trackings': 'Редактирование трекера',
         'view all time spendings': 'Доступ ко всем затратам',
         'access all calls': 'Доступ ко всем звонкам',
       },

@@ -50,7 +50,6 @@ const useTimeTrackingApi = () => {
 
     return http
       .post(`/api/tasks/${taskId}/track`, {
-        task_id: Number(taskId),
         minutes: timeTracking.minutes,
       })
       .then(handleHttpResponse)
