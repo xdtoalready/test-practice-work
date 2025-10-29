@@ -64,7 +64,10 @@ const CalendarModal = observer(
         return defaultApiHook.sendBusinessTimeTracking(timeTracking, businessId)
           .then((data) => mapTimeTrackingsFromApi([data]));
       },
-      updateTimeTracking: defaultApiHook.updateBusinessTimeTracking,
+      updateTimeTracking: (timeTrackToUpdate) => {
+        return defaultApiHook.updateBusinessTimeTracking(timeTrackToUpdate)
+          .then((data) => mapTimeTrackingsFromApi([data])[Object.keys(mapTimeTrackingsFromApi([data]))[0]]);
+      },
       deleteTimeTracking: defaultApiHook.deleteBusinessTimeTracking,
     }), [defaultApiHook]);
 

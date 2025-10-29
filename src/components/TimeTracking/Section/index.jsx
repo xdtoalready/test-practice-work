@@ -19,8 +19,8 @@ const TimeTrackingSection = ({
     const trackableId = entityId || taskId;
 
     const updateStore = (action, timeTrackId = null, value = null) => {
-        // Для stage/deal режимов
-        if (mode !== 'task') {
+        // Для business режима обновляем только contextStore
+        if (mode === 'business') {
             // Создаем драфт если его нет
             if (!contextStore.drafts[entityId]) {
                 contextStore.createDraft(entityId);
@@ -38,36 +38,80 @@ const TimeTrackingSection = ({
                     break;
 
                 case 'update':
+                    // Получаем текущий timeTracking и мержим с новым значением
+                    const currentTimeTracking = timeTrackings[timeTrackId];
+                    const updatedTimeTracking = { ...currentTimeTracking, ...value };
                     contextStore.changeById(
                         entityId,
                         `${prefix}timeTrackings.${timeTrackId}`,
-                        value,
+                        updatedTimeTracking,
                         true
                     );
                     break;
 
                 case 'delete':
+                    // Удаляем timeTracking из store
+                    const updatedTimeTrackings = { ...timeTrackings };
+                    delete updatedTimeTrackings[timeTrackId];
                     contextStore.changeById(
                         entityId,
-                        `${prefix}timeTrackings.${timeTrackId}`,
-                        null,
+                        `${prefix}timeTrackings`,
+                        updatedTimeTrackings,
                         true
                     );
                     break;
             }
-        }
+        } else {
+            // Для task/stage/deal режимов
+            if (mode !== 'task') {
+                // Создаем драфт если его нет
+                if (!contextStore.drafts[entityId]) {
+                    contextStore.createDraft(entityId);
+                }
 
-        // Обновляем taskStore в любом случае
-        switch(action) {
-            case 'add':
-                tasksStore.addTimeTrackToCurrentTask(value);
-                break;
-            case 'update':
-                tasksStore.updateTimeTrackInCurrentTask(timeTrackId, value);
-                break;
-            case 'delete':
-                tasksStore.deleteTimeTrackFromCurrentTask(timeTrackId);
-                break;
+                switch(action) {
+                    case 'add':
+                        const valueKey = Object.keys(value)[0];
+                        contextStore.changeById(
+                            entityId,
+                            `${prefix}timeTrackings.${valueKey}`,
+                            value[valueKey],
+                            true
+                        );
+                        break;
+
+                    case 'update':
+                        contextStore.changeById(
+                            entityId,
+                            `${prefix}timeTrackings.${timeTrackId}`,
+                            value,
+                            true
+                        );
+                        break;
+
+                    case 'delete':
+                        contextStore.changeById(
+                            entityId,
+                            `${prefix}timeTrackings.${timeTrackId}`,
+                            null,
+                            true
+                        );
+                        break;
+                }
+            }
+
+            // Обновляем taskStore
+            switch(action) {
+                case 'add':
+                    tasksStore.addTimeTrackToCurrentTask(value);
+                    break;
+                case 'update':
+                    tasksStore.updateTimeTrackInCurrentTask(timeTrackId, value);
+                    break;
+                case 'delete':
+                    tasksStore.deleteTimeTrackFromCurrentTask(timeTrackId);
+                    break;
+            }
         }
     };
     return (
