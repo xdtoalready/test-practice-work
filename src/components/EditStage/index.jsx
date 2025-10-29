@@ -40,6 +40,7 @@ const EditStage = ({ handleClose, stageId }) => {
     actSum: 0,
     sumByHand: false,
     taskDescription: ' ',
+    seoConclusion: ' ',
   });
 
   const stage = useMemo(() => {
@@ -218,6 +219,21 @@ const EditStage = ({ handleClose, stageId }) => {
                 className={styles.textarea}
                 label="Задача"
                 // rows={14}
+              />
+            </div>
+            <div>
+              <TextInput
+                type="editor"
+                onChange={({ target }) =>
+                  handleChange('seoConclusion', target.value)
+                }
+                name="seoConclusion"
+                value={
+                  stage.seoConclusion === '' ? ' ' : stage.seoConclusion
+                }
+                edited={true}
+                className={styles.textarea}
+                label="Вывод от seo-специалиста"
               />
             </div>
           </div>

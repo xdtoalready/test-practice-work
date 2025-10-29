@@ -39,6 +39,7 @@ export const mapStageFromApi = (stageData, tasksData) => {
         ? stageStatusTypes.inProgress
         : stageStatusTypes.finished,
     taskDescription: stageData?.technical_specification || " ",
+    seoConclusion: stageData?.seo_conclusion || " ",
     sumByHand: true,
     service: {
       id: stageData?.service?.id,
@@ -202,6 +203,7 @@ export const mapStageDataToBackend = (drafts, changedFieldsSet, propId) => {
       startTime: 'start',
       actSum: 'act_sum',
       taskDescription: 'technical_specification',
+      seoConclusion: 'seo_conclusion',
       actualTime: 'actual_time',
       type: 'type',
       deadline: 'deadline',
