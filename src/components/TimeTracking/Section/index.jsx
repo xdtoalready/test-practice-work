@@ -15,6 +15,8 @@ const TimeTrackingSection = ({
     contextStore,
     prefix
                              }) => {
+    // Для businesses используем entityId, для tasks - taskId
+    const trackableId = entityId || taskId;
 
     const updateStore = (action, timeTrackId = null, value = null) => {
         // Для stage/deal режимов
@@ -103,7 +105,7 @@ const TimeTrackingSection = ({
                     try {
 
 
-                        const result = await timeTrackingApi.sendTimeTracking(val, taskId);
+                        const result = await timeTrackingApi.sendTimeTracking(val, trackableId);
                         if (result) {
                             await updateStore('add', null, result);
                         }

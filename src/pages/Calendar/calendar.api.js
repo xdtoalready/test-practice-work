@@ -171,6 +171,57 @@ const useCalendarApi = () => {
       .finally(() => setIsLoading(false));
   };
 
+  const sendBusinessTimeTracking = (timeTracking, businessId) => {
+    resetApiProvider();
+    setIsLoading(true);
+
+    return http
+      .post(`/api/businesses/${businessId}/track`, {
+        minutes: timeTracking.minutes,
+      })
+      .then(handleHttpResponse)
+      .then((res) => {
+        return res.body.data;
+      })
+      .catch(handleHttpError)
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
+  const updateBusinessTimeTracking = ({ id, hours, minutes }) => {
+    resetApiProvider();
+    setIsLoading(true);
+
+    const totalMinutes = (parseInt(hours) || 0) * 60 + (parseInt(minutes) || 0);
+
+    return http
+      .patch(`/api/timetrackings/${id}`, {
+        minutes: totalMinutes,
+      })
+      .then(handleHttpResponse)
+      .then((res) => {
+        return res.body.data;
+      })
+      .catch(handleHttpError)
+      .finally(() => setIsLoading(false));
+  };
+
+  const deleteBusinessTimeTracking = async (id) => {
+    resetApiProvider();
+    setIsLoading(true);
+
+    try {
+      await http.delete(`/api/timetrackings/${id}`);
+      return true;
+    } catch (error) {
+      handleHttpError(error);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     isLoading,
     getBusinesses,
@@ -182,6 +233,9 @@ const useCalendarApi = () => {
     addBusinessComment,
     deleteBusinessComment,
     searchBusinessable,
+    sendBusinessTimeTracking,
+    updateBusinessTimeTracking,
+    deleteBusinessTimeTracking,
   };
 };
 
