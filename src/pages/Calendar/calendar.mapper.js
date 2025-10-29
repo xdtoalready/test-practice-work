@@ -55,7 +55,7 @@ export const mapBusinessFromApi = (apiBusiness, apiComments = []) => {
     performer: mapEmployeesFromApi(apiBusiness.performer),
     participants: apiBusiness?.participants.map(mapEmployeesFromApi),
     comments: mapCommentsFromApi(apiComments),
-    timeTrackings: mapTimeTrackingsFromApi(apiBusiness?.time_trackings || []),
+    timeTrackings: mapTimeTrackingsFromApi(apiBusiness?.time_tracking || []),
   };
 };
 
