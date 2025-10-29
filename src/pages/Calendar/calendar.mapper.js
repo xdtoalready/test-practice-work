@@ -10,6 +10,7 @@ import { format } from 'date-fns';
 import { taskableTypes } from '../Tasks/tasks.types';
 import { bussinesableType } from './calendar.types';
 import { mapParticipants } from '../Services/services.mapper';
+import { mapTimeTrackingsFromApi } from '../TimeTracking/timeTracking.mapper';
 
 export const mapBusinessFromApi = (apiBusiness, apiComments = []) => {
 
@@ -54,6 +55,7 @@ export const mapBusinessFromApi = (apiBusiness, apiComments = []) => {
     performer: mapEmployeesFromApi(apiBusiness.performer),
     participants: apiBusiness?.participants.map(mapEmployeesFromApi),
     comments: mapCommentsFromApi(apiComments),
+    timeTrackings: mapTimeTrackingsFromApi(apiBusiness?.time_trackings || []),
   };
 };
 
