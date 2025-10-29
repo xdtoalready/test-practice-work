@@ -163,6 +163,19 @@ const CalendarModal = observer(
     }, [business?.type]);
 
     useEffect(() => {
+      const loadBusiness = async () => {
+        if (isEditMode && businessId && mode === 'calendar') {
+          try {
+            await defaultApiHook.getBusinessById(businessId);
+          } catch (error) {
+            console.error('Error loading business:', error);
+          }
+        }
+      };
+      loadBusiness();
+    }, [isEditMode, businessId, mode]);
+
+    useEffect(() => {
       const loadComments = async () => {
         setIsCommentsLoading(true);
         try {
