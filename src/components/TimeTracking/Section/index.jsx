@@ -19,46 +19,17 @@ const TimeTrackingSection = ({
     const trackableId = entityId || taskId;
 
     const updateStore = (action, timeTrackId = null, value = null) => {
-        // Для business режима обновляем только contextStore
+        // Для business режима обновляем contextStore (calendarStore)
         if (mode === 'business') {
-            // Создаем драфт если его нет
-            if (!contextStore.drafts[entityId]) {
-                contextStore.createDraft(entityId);
-            }
-
             switch(action) {
                 case 'add':
-                    const valueKey = Object.keys(value)[0];
-                    contextStore.changeById(
-                        entityId,
-                        `${prefix}timeTrackings.${valueKey}`,
-                        value[valueKey],
-                        true
-                    );
+                    contextStore.addTimeTrackToCurrentBusiness(value);
                     break;
-
                 case 'update':
-                    // Получаем текущий timeTracking и мержим с новым значением
-                    const currentTimeTracking = timeTrackings[timeTrackId];
-                    const updatedTimeTracking = { ...currentTimeTracking, ...value };
-                    contextStore.changeById(
-                        entityId,
-                        `${prefix}timeTrackings.${timeTrackId}`,
-                        updatedTimeTracking,
-                        true
-                    );
+                    contextStore.updateTimeTrackInCurrentBusiness(timeTrackId, value);
                     break;
-
                 case 'delete':
-                    // Удаляем timeTracking из store
-                    const updatedTimeTrackings = { ...timeTrackings };
-                    delete updatedTimeTrackings[timeTrackId];
-                    contextStore.changeById(
-                        entityId,
-                        `${prefix}timeTrackings`,
-                        updatedTimeTrackings,
-                        true
-                    );
+                    contextStore.deleteTimeTrackFromCurrentBusiness(timeTrackId);
                     break;
             }
         } else {

@@ -133,7 +133,7 @@ const CalendarModal = observer(
         if (businessFromContext) {
           const newTaskWithTimeTracking = {
             ...businessFromContext,
-            timeTrackings: data.timeTrackings,
+            timeTrackings: calendarStore.currentBussiness?.timeTrackings || data.timeTrackings,
           };
           return newTaskWithTimeTracking;
         }
@@ -145,6 +145,8 @@ const CalendarModal = observer(
       businessId,
       localBusiness,
       contextData?.store?.drafts,
+      calendarStore.currentBussiness,
+      calendarStore.drafts,
       data,
     ]);
 

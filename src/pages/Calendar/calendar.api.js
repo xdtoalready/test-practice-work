@@ -114,11 +114,11 @@ const useCalendarApi = () => {
     return Promise.all([http.get(`api/businesses/${id}`)])
       .then(([businessData]) => {
         const mappedBusiness = mapBusinessFromApi(businessData.data.data);
-        // const businesses = calendarStore.getBusinesses();
-        // const updatedBusinesses = businesses.map((business) =>
-        //   business.id === id ? mappedBusiness : business,
-        // );
-        // calendarStore.setBusinesses(updatedBusinesses);
+        const businesses = calendarStore.getBusinesses();
+        const updatedBusinesses = businesses.map((business) =>
+          business.id === id ? mappedBusiness : business,
+        );
+        calendarStore.setBusinesses(updatedBusinesses);
         calendarStore.setCurrentBussiness(mappedBusiness);
         return mappedBusiness;
       })
