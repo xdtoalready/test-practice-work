@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 import { calendarViewTypes } from './calendar.types';
-import { changeDraft, removeDraft, resetDraft } from '../../utils/store.utils';
+import { changeDraft, removeDraft, resetDraft, TimeTrackingStoreMixin } from '../../utils/store.utils';
 import { getQueryParam } from '../../utils/window.utils';
 
 export class CalendarStore {
@@ -106,5 +106,20 @@ export class CalendarStore {
 
   clearChangesSet() {
     this.changedProps = new Set();
+  }
+
+  updateTimeTrackInCurrentBusiness(timeTrackingId, updatedValue) {
+    if (!this.currentBussiness) return;
+    TimeTrackingStoreMixin.updateTimeTracking.call(this, this.currentBussiness.id, timeTrackingId, updatedValue);
+  }
+
+  addTimeTrackToCurrentBusiness(value) {
+    if (!this.currentBussiness) return;
+    TimeTrackingStoreMixin.addTimeTracking.call(this, this.currentBussiness.id, value);
+  }
+
+  deleteTimeTrackFromCurrentBusiness(timeTrackId) {
+    if (!this.currentBussiness) return;
+    TimeTrackingStoreMixin.deleteTimeTracking.call(this, this.currentBussiness.id, timeTrackId);
   }
 }
