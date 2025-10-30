@@ -157,6 +157,23 @@ const useReportsApi = () => {
     window.open(url, '_blank');
   };
 
+  const agreeReport = async (reportId) => {
+    resetApiProvider();
+    setIsLoading(true);
+
+    try {
+      await http.get(`/api/reports/${reportId}/set_agreed`);
+      const pageFromUrl = getQueryParam('page', 1);
+      await getReports(pageFromUrl);
+      return true;
+    } catch (error) {
+      handleHttpError(error);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     getReports,
     createReport,
@@ -164,6 +181,7 @@ const useReportsApi = () => {
     getReportById,
     deleteReport,
     downloadReport,
+    agreeReport,
     isLoading,
   };
 };

@@ -62,15 +62,36 @@ const ReportsTable = observer(({ currentSwitcher }) => {
     window.open(urlToReport, '_blank');
   };
 
-  const getActions = (data) => [
-    { label: 'Скачать', onClick: () => handleDownload(data.downloadUrl) },
-    { label: 'Редактировать', onClick: () => handleEdit(data) },
-    {
-      label: 'Удалить',
-      onClick: () => setReportToDelete(data.id),
-      disabled: data.id === 0,
-    },
-  ];
+  const handleAgree = async (id) => {
+    try {
+      await api.agreeReport(id);
+      handleInfo('Отчет согласован');
+    } catch (error) {
+      handleError('Ошибка при согласовании:', error);
+    }
+  };
+
+  const getActions = (data) => {
+    const actions = [
+      { label: 'Скачать', onClick: () => handleDownload(data.downloadUrl) },
+      { label: 'Редактировать', onClick: () => handleEdit(data) },
+      {
+        label: 'Удалить',
+        onClick: () => setReportToDelete(data.id),
+        disabled: data.id === 0,
+      },
+    ];
+
+    // Добавляем действие "Согласовать" только если can_be_agreed = true
+    if (data.canBeAgreed) {
+      actions.splice(2, 0, {
+        label: 'Согласовать',
+        onClick: () => handleAgree(data.id),
+      });
+    }
+
+    return actions;
+  };
 
   const cols = useMemo(
     () => [
@@ -78,7 +99,7 @@ const ReportsTable = observer(({ currentSwitcher }) => {
         Header: 'Номер отчета',
         id: 'number',
         accessor: 'number',
-        width: '15%',
+        width: '10%',
         Cell: ({ row }) => (
           <TableLink
             onClick={() => handleEdit(row.original)}
@@ -89,27 +110,53 @@ const ReportsTable = observer(({ currentSwitcher }) => {
       {
         Header: 'Дата создания',
         id: 'creationDate',
-        width: '15%',
+        width: '12%',
         accessor: 'creationDate',
         Cell: ({ row }) => (
           <span>
-            {new Date(row.original.creationDate).toLocaleDateString()}
+            {row.original.creationDate
+              ? new Date(row.original.creationDate).toLocaleDateString()
+              : '—'}
           </span>
         ),
       },
       {
-        Header: 'Период',
-        id: 'period',
-        width: '15%',
-        accessor: 'period',
+        Header: 'Дата просмотра',
+        id: 'viewedAt',
+        width: '12%',
+        accessor: 'viewedAt',
         Cell: ({ row }) => (
-          <span>{row.original.period}</span>
+          <span>
+            {row.original.viewedAt
+              ? new Date(row.original.viewedAt).toLocaleDateString()
+              : '—'}
+          </span>
         ),
+      },
+      {
+        Header: 'Дата согласования',
+        id: 'agreedAt',
+        width: '12%',
+        accessor: 'agreedAt',
+        Cell: ({ row }) => (
+          <span>
+            {row.original.agreedAt
+              ? new Date(row.original.agreedAt).toLocaleDateString()
+              : '—'}
+          </span>
+        ),
+      },
+      {
+        Header: 'Название отчета',
+        id: 'title',
+        width: '20%',
+        accessor: 'title',
+        Cell: ({ row }) => <span>{row.original.title || '—'}</span>,
       },
       {
         Header: 'Клиент',
         id: 'company',
-        width: '20%',
+        width: '15%',
         accessor: 'company.name',
         Cell: ({ row }) => {
           return row.original.company ? (
@@ -122,17 +169,9 @@ const ReportsTable = observer(({ currentSwitcher }) => {
         },
       },
       {
-        Header: 'Тип услуги',
-        id: 'serviceType',
-        width: '15%',
-        accessor: 'serviceType',
-        Cell: ({ row }) => (
-          <span>{row.original.serviceType}</span>
-        ),
-      },
-      {
         Header: 'Статус',
         id: 'status',
+        width: '10%',
         Cell: ({ row }) => (
           <Badge
             classname={styles.badge}

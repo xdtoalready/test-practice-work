@@ -16,7 +16,10 @@ const StatsWidget = ({
                          icon,
                          iconStyles={},
                          type,
-                         value
+                         value,
+                         customColor,
+                         customPercentColor,
+                         borderColor,
                      }) => {
     const renderIcon = () => {
         if (typeof icon === 'string') {
@@ -34,34 +37,53 @@ const StatsWidget = ({
             );
         }
 
-        if (value!==null) {
+        if (value!==null && value !== undefined) {
             elements.push(
                 <span key="value">{value}</span>
             );
         }
 
-        if (percent) {
+        if (percent !== null && percent !== undefined) {
+            const percentStyle = customPercentColor
+                ? { color: customPercentColor }
+                : {};
             elements.push(
-                <span key="percent" className={cn(styles.percent, styles[type])}>
-          {percent}%
-        </span>
+                <span
+                    key="percent"
+                    className={cn(styles.percent, type && styles[type])}
+                    style={percentStyle}
+                >
+                    {percent}%
+                </span>
             );
         }
 
         return elements;
     };
 
+    // Определяем цвет линии прогресса
+    const getPathColor = () => {
+        if (customColor) return customColor;
+        if (type === 'accept') return '#83BF6E';
+        if (type === 'reject') return '#C31212';
+        return '#2A85FF';
+    };
+
+    const widgetStyle = borderColor
+        ? { '--border-color': borderColor }
+        : {};
+
     return (
-        <div className={styles.widget}>
+        <div className={styles.widget} style={widgetStyle}>
             <div className={styles.icon}>
                 {showChart ? (
                     <CircularProgressbarWithChildren
-                        value={percent}
+                        value={percent || 0}
                         strokeWidth={2}
                         styles={buildStyles({
                             textColor: '#ffffff',
                             pathTransitionDuration: 0.5,
-                            pathColor: type === 'accept' ? '#83BF6E' : '#C31212',
+                            pathColor: getPathColor(),
                             trailColor: '#EFEFEF',
                         })}
                     >

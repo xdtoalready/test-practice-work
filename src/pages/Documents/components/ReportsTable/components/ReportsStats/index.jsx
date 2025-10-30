@@ -5,32 +5,39 @@ import styles from './styles.module.sass';
 const ReportsStats = () => {
   const { reportsStore } = useStore();
   if (!reportsStore.stats) return <></>;
-  
-  const { total, sent, approved } = reportsStore.stats;
+
+  const { total, viewed, agreed } = reportsStore.stats;
 
   return (
     <div className={styles.container}>
       <StatsWidget
         title="Создано отчетов"
-        sum={total}
-        showChart={false}
-        icon={'/coins.svg'}
-      />
-      <StatsWidget
-        type={'accept'}
-        title="Отправлено отчетов"
-        sum={sent?.sum || 0}
-        percent={sent?.percent || 0}
+        value={total || 0}
         showChart={true}
-        icon={'/credit-check.png'}
+        icon={'/reports-created.svg'}
+        customColor="#2A85FF"
+        borderColor="#2A85FF"
+        percent={100}
       />
       <StatsWidget
-        type={'reject'}
+        title="Просмотрено отчетов"
+        value={viewed?.amount || 0}
+        percent={viewed?.percent || 0}
+        showChart={true}
+        icon={'/reports-viewed.svg'}
+        customColor="#FF6A55"
+        customPercentColor="#FF6A55"
+        borderColor="#FF6A55"
+      />
+      <StatsWidget
         title="Согласовано отчетов"
-        sum={approved?.sum || 0}
-        percent={approved?.percent || 0}
+        value={agreed?.amount || 0}
+        percent={agreed?.percent || 0}
         showChart={true}
-        icon={'/credit-x.png'}
+        icon={'/reports-agreed.svg'}
+        customColor="#83BF6E"
+        customPercentColor="#83BF6E"
+        borderColor="#83BF6E"
       />
     </div>
   );

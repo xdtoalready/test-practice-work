@@ -7,12 +7,15 @@ export const mapReportFromApi = (apiReport) => {
   return {
     id: apiReport?.id,
     number: apiReport?.number,
-    creationDate: new Date(apiReport?.creation_date),
+    creationDate: apiReport?.creation_date ? new Date(apiReport.creation_date) : null,
+    viewedAt: apiReport?.viewed_at ? new Date(apiReport.viewed_at) : null,
+    agreedAt: apiReport?.agreed_at ? new Date(apiReport.agreed_at) : null,
+    title: apiReport?.title,
     period: apiReport?.period, // например "Декабрь 2024"
     company: apiReport?.company ?? null,
     service: apiReport?.service ?? null,
     stage: apiReport?.stage,
-    
+
     items: apiReport?.items?.map((item) => ({
       id: item.id,
       name: item.name,
@@ -20,12 +23,13 @@ export const mapReportFromApi = (apiReport) => {
       quantity: item.quantity,
       measurementUnit: item.measurement_unit,
     })) || [],
-    
+
     sum: apiReport?.sum,
     status: apiReport?.status,
     serviceType: apiReport?.service_type,
     downloadUrl: apiReport?.download_url,
-    
+    canBeAgreed: apiReport?.can_be_agreed ?? false,
+
     // Дополнительные поля которые могут прийти
     month: apiReport?.month,
     year: apiReport?.year,
