@@ -17,6 +17,7 @@ const ReportsStats = () => {
         icon={'/reports-created.svg'}
         customColor="#2A85FF"
         borderColor="#2A85FF"
+        customPercentColor="#2A85FF"
         percent={100}
       />
       <StatsWidget
@@ -25,9 +26,9 @@ const ReportsStats = () => {
         percent={viewed?.percent || 0}
         showChart={true}
         icon={'/reports-viewed.svg'}
-        customColor="#FF6A55"
-        customPercentColor="#FF6A55"
-        borderColor="#FF6A55"
+        customColor="#E4A52B"
+        customPercentColor="#E4A52B"
+        borderColor="#E4A52B"
       />
       <StatsWidget
         title="Согласовано отчетов"
