@@ -98,12 +98,12 @@ const ReportsTable = observer(({ currentSwitcher }) => {
       {
         Header: 'Номер отчета',
         id: 'number',
-        accessor: 'number',
+        accessor: 'id',
         width: '10%',
         Cell: ({ row }) => (
           <TableLink
             onClick={() => handleEdit(row.original)}
-            name={row.original.number}
+            name={row.original.id}
           />
         ),
       },
