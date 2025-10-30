@@ -13,6 +13,7 @@ import useStore from '../../../../../../hooks/useStore';
 import { observer } from 'mobx-react';
 import FormValidatedModal from '../../../../../../shared/Modal/FormModal';
 import ConfirmationModal from '../../../../../../components/ConfirmationModal';
+import DeleteButton from '../../../../../../shared/Button/Delete';
 
 const CreateClientsModal = ({
   entityId,
@@ -114,27 +115,12 @@ const CreateClientsModal = ({
         handleSubmit={handleSubmit}
         handleClose={handleReset}
         size={'md'}
-        customFooter={
+        customButtons={
           isEditMode && (
-            <div style={{ marginTop: '20px', borderTop: '1px solid #EFEFEF', paddingTop: '20px' }}>
-              <button
-                type="button"
-                onClick={() => setIsDeleteModalOpen(true)}
-                style={{
-                  width: '100%',
-                  padding: '12px',
-                  backgroundColor: '#ff4d4f',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                }}
-              >
-                Удалить контактное лицо
-              </button>
-            </div>
+            <DeleteButton
+              label={'Удалить контактное лицо'}
+              handleDelete={() => setIsDeleteModalOpen(true)}
+            />
           )
         }
       >
