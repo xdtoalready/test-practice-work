@@ -73,8 +73,7 @@ const ReportsTable = observer(({ currentSwitcher }) => {
 
   const getActions = (data) => {
     const actions = [
-      { label: 'Скачать', onClick: () => handleDownload(data.downloadUrl) },
-      { label: 'Редактировать', onClick: () => handleEdit(data) },
+      { label: 'Скачать', onClick: () => handleDownload(data.viewUrl) },
       {
         label: 'Удалить',
         onClick: () => setReportToDelete(data.id),
@@ -84,7 +83,7 @@ const ReportsTable = observer(({ currentSwitcher }) => {
 
     // Добавляем действие "Согласовать" только если can_be_agreed = true
     if (data.canBeAgreed) {
-      actions.splice(2, 0, {
+      actions.splice(1, 0, {
         label: 'Согласовать',
         onClick: () => handleAgree(data.id),
       });
