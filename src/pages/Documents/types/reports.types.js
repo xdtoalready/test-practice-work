@@ -12,7 +12,7 @@ export const reportStatusTypesRu = {
   processing: 'В обработке',
   completed: 'Готов',
   sent: 'Отправлен',
-  viewed: 'Отправлен',
+  viewed: 'Просмотрено',
   agreed: 'Согласован',
 };
 
