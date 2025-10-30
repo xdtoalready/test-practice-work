@@ -13,7 +13,8 @@ export const mapTimeTrackingsFromApi = (apiResponse) => {
       id: entry.id,
       order: index,
       date: convertUTCToLocal(entry.created_at),
-      link:entry?.link ?? '',
+      link: entry.link,
+      link_title: entry.link_title,
       timeSpent: {
         minutes: entry.minutes - Math.floor(entry.minutes / 60) * 60,
         hours: Math.floor(entry.minutes / 60),
@@ -21,7 +22,7 @@ export const mapTimeTrackingsFromApi = (apiResponse) => {
       },
       taskId: entry.task_id,
       cost: entry.cost,
-      employee:  mapEmployeesFromApi(entry.employee),
+      employee: mapEmployeesFromApi(entry.employee),
     };
     return acc;
   }, {});

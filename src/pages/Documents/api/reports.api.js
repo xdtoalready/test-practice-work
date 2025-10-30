@@ -18,7 +18,7 @@ const useReportsApi = () => {
   const { reportsStore } = useStore();
   const [isLoading, setIsLoading] = useState(false);
 
-  const getReports = (page = 1) => {
+  const getReports = (page = 1,type='report') => {
     resetApiProvider();
     setIsLoading(true);
     page = getQueryParam('page', 1);
@@ -29,12 +29,13 @@ const useReportsApi = () => {
       company_id: getQueryParam('company_id'),
       month: getQueryParam('month'),
       year: getQueryParam('year'),
+      document_type:type,
     });
 
     let params = { page };
 
     return http
-      .get('/api/reports', {
+      .get('/api/documents', {
         params: {
           ...params,
           ...sanitizedFilters,

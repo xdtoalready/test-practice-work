@@ -14,10 +14,7 @@ const CreateReportModal = ({ stageId, onClose, onSuccess }) => {
     try {
       setIsLoading(true);
 
-      const response = await http.post(
-        `/api/reports/${stageId}/generate`,
-        {}
-      );
+      const response = await http.get(`/api/reports/${stageId}/generate`);
 
       const reportData = response.data?.data;
 

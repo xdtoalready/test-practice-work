@@ -66,14 +66,6 @@ const TimeTrackingsTable = observer(() => {
     timeTrackingStore?.getTimeTrackingsArray(),
   );
 
-  // useEffect(() => {
-  //   api.getTimeTrackings(
-  //     currentPage,
-  //     from ?? formatDateToQuery(new Date()),
-  //     to ?? formatDateToQuery(new Date()),
-  //   );
-  // }, [from, to]);
-
   const hasAllTimeSpendingsAccess = useMemo(
     () => hasPermission(UserPermissions.VIEW_ALL_TIME_SPENDINGS),
     [permissions],
@@ -132,13 +124,13 @@ const TimeTrackingsTable = observer(() => {
         ),
       },
       {
-        Header:'Задача',
-        id:'task',
+        Header: 'Активность',
+        id: 'task',
         width: '10%',
         Cell: ({ row }) => (
-          <TableLink to={row.original.link} name={<span>Задача #{row.original.taskId}</span>} />
-        )
-      }
+          <TableLink to={row.original.link} name={<span>{row.original.link_title}</span>} />
+        ),
+      },
     ],
     [],
   );
