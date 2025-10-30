@@ -1,5 +1,4 @@
 import { billStatusTypesRu } from '../types/bills.types';
-import { serviceTypeEnumRu } from '../../Services/services.types';
 
 // Создаем список месяцев
 export const monthsEnum = {
@@ -129,10 +128,10 @@ export const createReportsFilters = ({ appApi }) => {
         label: 'Тип отчета',
         props: {
           isMulti: true,
-          options: Object.entries(serviceTypeEnumRu).map(([value, label]) => ({
-            value,
-            label,
-          })),
+          options: [
+            { value: 'seo', label: 'SEO' },
+            { value: 'general', label: 'Общий' }
+          ],
         },
         toUrlValue: (values) =>
           values ? values.map((v) => v.value).join(',') : '',
