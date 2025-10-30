@@ -28,6 +28,7 @@ export const mapReportFromApi = (apiReport) => {
     status: apiReport?.status,
     serviceType: apiReport?.service_type,
     downloadUrl: apiReport?.download_url,
+    viewUrl: apiReport?.view,
     canBeAgreed: apiReport?.can_be_agreed ?? false,
 
     // Дополнительные поля которые могут прийти
