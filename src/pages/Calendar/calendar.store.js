@@ -86,6 +86,7 @@ export class CalendarStore {
     if (!business) return;
 
     const updatedBusiness = { ...business };
+    this.currentBussiness = updatedBusiness;
     this.businesses = this.businesses.map((b) =>
       b.id === id ? updatedBusiness : b,
     );
