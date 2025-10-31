@@ -92,6 +92,13 @@ const useLegalsApi = () => {
       legalsStore.changedProps,
     );
 
+    // Добавляем _method для Laravel, чтобы он распознал это как PATCH запрос
+    // PHP не парсит multipart/form-data для PATCH запросов
+    const dataWithMethod = {
+      ...backendData,
+      _method: 'PATCH',
+    };
+
     // Если есть файлы, используем FormData
     // const formData = new FormData();
     // if (updateData.signScan instanceof File) {
@@ -109,7 +116,7 @@ const useLegalsApi = () => {
     // });
 
     return http
-      .patch(`/api/legal_entities/${legalId}`, backendData, {
+      .post(`/api/legal_entities/${legalId}`, dataWithMethod, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
