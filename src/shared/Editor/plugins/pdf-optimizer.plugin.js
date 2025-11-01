@@ -80,6 +80,7 @@ export function calculateContentHeight(editor) {
 
 /**
  * Оптимизирует контент для PDF - автоматически расставляет разрывы страниц
+ * ВАЖНО: Работает только с top-level элементами чтобы не ломать структуру списков
  */
 export function optimizeForPDF(editor) {
   console.log('[PDF Optimizer] Начало оптимизации');
@@ -93,35 +94,20 @@ export function optimizeForPDF(editor) {
     return 1;
   }
 
-  // Получаем все top-level элементы
-  let elements = Array.from(editorElement.children).filter(
+  // Получаем ТОЛЬКО top-level элементы (не трогаем вложенные!)
+  const elements = Array.from(editorElement.children).filter(
     el => !el.classList.contains('pdf-page-break')
   );
 
-  console.log('[PDF Optimizer] Найдено элементов:', elements.length);
+  console.log('[PDF Optimizer] Найдено top-level элементов:', elements.length);
   console.log('[PDF Optimizer] Типы элементов:', elements.map(el => el.tagName).join(', '));
-
-  // Если элементов слишком мало, но контент есть - нужно получить вложенные элементы
-  if (elements.length <= 2 && editorElement.textContent.length > 100) {
-    console.log('[PDF Optimizer] Мало top-level элементов, ищем вложенные');
-
-    // Получаем все параграфы, заголовки и списки
-    const nestedElements = Array.from(
-      editorElement.querySelectorAll('p, h1, h2, h3, h4, h5, h6, ul, ol, blockquote, pre, table')
-    );
-
-    if (nestedElements.length > elements.length) {
-      elements = nestedElements;
-      console.log('[PDF Optimizer] Найдено вложенных элементов:', elements.length);
-    }
-  }
 
   if (elements.length === 0) {
     console.error('[PDF Optimizer] Нет элементов для обработки');
     return 1;
   }
 
-  // Создаем измерительный контейнер (проще чем iframe)
+  // Создаем измерительный контейнер с правильными стилями
   const measureContainer = document.createElement('div');
   measureContainer.style.cssText = `
     position: absolute;
@@ -129,10 +115,14 @@ export function optimizeForPDF(editor) {
     top: -9999px;
     width: ${PAGE_WIDTH - CONTENT_PADDING * 2}px;
     visibility: hidden;
-    font-family: inherit;
-    font-size: inherit;
-    line-height: inherit;
   `;
+
+  // Копируем стили из редактора
+  const editorStyles = window.getComputedStyle(editorElement);
+  measureContainer.style.fontFamily = editorStyles.fontFamily;
+  measureContainer.style.fontSize = editorStyles.fontSize;
+  measureContainer.style.lineHeight = editorStyles.lineHeight;
+
   document.body.appendChild(measureContainer);
 
   const fragments = [];
@@ -144,7 +134,7 @@ export function optimizeForPDF(editor) {
   console.log('[PDF Optimizer] Лимит высоты страницы:', pageLimit, 'px');
 
   elements.forEach((el, index) => {
-    // Измеряем высоту элемента
+    // Измеряем ПОЛНУЮ высоту элемента (включая вложенные элементы)
     const clone = el.cloneNode(true);
     measureContainer.innerHTML = '';
     measureContainer.appendChild(clone);
@@ -189,26 +179,24 @@ export function optimizeForPDF(editor) {
   if (fragments.length > 1) {
     console.log('[PDF Optimizer] Вставляю разрывы страниц');
 
-    // Строим новый контент с разрывами
-    editorElement.innerHTML = '';
+    // ВАЖНО: Не очищаем innerHTML, а вставляем разрывы между существующими элементами
+    // Это сохраняет структуру и ссылки на DOM элементы
 
-    fragments.forEach((fragment, index) => {
-      console.log(`[PDF Optimizer] Добавляю фрагмент #${index + 1}, элементов: ${fragment.elements.length}`);
+    // Идем с конца чтобы не сбивать индексы при вставке
+    for (let i = fragments.length - 1; i > 0; i--) {
+      const fragment = fragments[i];
+      const firstElementOfFragment = fragment.elements[0];
 
-      // Добавляем элементы фрагмента
-      fragment.elements.forEach((el) => {
-        editorElement.appendChild(el);
-      });
+      // Создаем маркер разрыва
+      const pageBreakEl = document.createElement('div');
+      pageBreakEl.innerHTML = createPageBreakHTML(fragment.pageNumber);
+      const pageBreak = pageBreakEl.firstElementChild;
 
-      // Добавляем разрыв страницы (кроме последнего фрагмента)
-      if (index < fragments.length - 1) {
-        const pageBreakEl = document.createElement('div');
-        pageBreakEl.innerHTML = createPageBreakHTML(fragment.pageNumber + 1);
-        const pageBreak = pageBreakEl.firstElementChild;
-        editorElement.appendChild(pageBreak);
-        console.log(`[PDF Optimizer] Вставлен разрыв перед страницей #${fragment.pageNumber + 1}`);
-      }
-    });
+      // Вставляем ПЕРЕД первым элементом фрагмента
+      editorElement.insertBefore(pageBreak, firstElementOfFragment);
+
+      console.log(`[PDF Optimizer] Вставлен разрыв перед страницей #${fragment.pageNumber}`);
+    }
 
     // Синхронизируем значение
     editor.synchronizeValues();
