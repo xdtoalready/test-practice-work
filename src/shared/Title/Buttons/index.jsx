@@ -21,6 +21,11 @@ const TitleButtons = ({
           <Icon fill={'#6F767E'} name={'edit'} size={24} />
         </div>
       )}
+      {actions.refresh && (
+        <div className={cn(styles.icon)} onClick={() => actions.refresh.action()}>
+          <Icon fill={'#6F767E'} name={'refresh'} size={24} />
+        </div>
+      )}
       {actions.filter && (
         <div>
           <FilterManager
