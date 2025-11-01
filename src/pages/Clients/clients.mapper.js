@@ -74,6 +74,8 @@ export const mapClientFromApi = (
     passwords: mapPasswords(apiPasswords, apiClient),
     ymetricsToken: apiClient?.ymetrics_token,
     topvisorToken: apiClient?.topvisor_token,
+    signer: apiClient?.signer,
+    director: apiClient?.director,
   };
 };
 
@@ -447,6 +449,8 @@ export const mapClientDataToBackend = (drafts, changedFieldsSet, propId) => {
       ogrn: 'ogrn',
       ymetricsToken: 'ymetrics_token',
       topvisorToken: 'topvisor_token',
+      signer: 'signer',
+      director: 'director',
       // Добавляем другие ключи по мере необходимости
     };
 

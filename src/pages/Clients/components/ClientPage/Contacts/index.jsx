@@ -20,6 +20,7 @@ import {useCallsContext} from "../../../../../providers/CallsProvider";
 
 const ClientsContacts = ({
   contactData,
+  client,
   onRemove,
   onChange,
   onSubmit,
@@ -97,6 +98,7 @@ const ClientsContacts = ({
       {/* КАРТОЧКА 2: Юридические реквизиты */}
       <RequisitesCard
         contactData={contactData}
+        client={client}
         onActions={defaultActions}
       />
     </>
