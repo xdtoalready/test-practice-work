@@ -114,6 +114,8 @@ const mapStages = (stages) => {
         view: stage.report.view,
         number: stage.report.number,
         period: stage.report.period,
+        status: stage.report.status,
+        canBeAgreed: stage.report.can_be_agreed,
       } : null,
     }));
   }

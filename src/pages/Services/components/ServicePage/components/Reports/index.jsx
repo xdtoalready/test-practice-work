@@ -13,6 +13,7 @@ import { http, handleHttpError } from '../../../../../../shared/http';
 const Reports = observer(({ company, service, stage, reports = [], onReportGenerated }) => {
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isRefreshModalOpen, setIsRefreshModalOpen] = useState(false);
   const [selectedReport, setSelectedReport] = useState(null);
 
   const handleDeleteReport = async () => {
@@ -32,29 +33,69 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
     }
   };
 
+  const handleRefreshReport = async () => {
+    try {
+      await http.get(`/api/reports/${selectedReport.id}/refresh`);
+      handleInfo('Отчет обновлен');
+      setIsRefreshModalOpen(false);
+      setSelectedReport(null);
+      if (onReportGenerated) {
+        onReportGenerated();
+      }
+    } catch (error) {
+      console.error('Ошибка при обновлении отчета:', error);
+      handleHttpError(error);
+      handleError('Ошибка при обновлении отчета');
+      setIsRefreshModalOpen(false);
+    }
+  };
+
+  const handleAgreeReport = async (report) => {
+    try {
+      await http.get(`/api/reports/${report.id}/set_agreed`);
+      handleInfo('Отчет согласован');
+      if (onReportGenerated) {
+        onReportGenerated();
+      }
+    } catch (error) {
+      console.error('Ошибка при согласовании отчета:', error);
+      handleHttpError(error);
+      handleError('Ошибка при согласовании отчета');
+    }
+  };
+
+  const getStatusText = (status) => {
+    const statusMap = {
+      created: 'Создан',
+      viewed: 'Просмотрен',
+      agreed: 'Согласован',
+    };
+    return statusMap[status] || status || '-';
+  };
+
   const cols = useMemo(
     () => [
       {
         Header: 'Номер',
         id: 'number',
-        width: '15%',
+        width: '10%',
         Cell: ({ row }) => {
           const data = row?.original;
           return <p>{data.number || `Отчет #${data.id}`}</p>;
         },
       },
       {
-        Header: 'Период',
-        id: 'period',
-        width: '20%',
+        Header: 'Статус',
+        id: 'status',
+        width: '10%',
         Cell: ({ row }) => {
           const data = row?.original;
-          return <p>{data.period || '-'}</p>;
+          return <p>{getStatusText(data.status)}</p>;
         },
       },
       {
         Header: 'Скачать',
-        width: '30%',
+        width: '20%',
         id: 'download',
         Cell: ({ row }) => {
           const data = row?.original;
@@ -75,7 +116,7 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
       },
       {
         Header: 'Удалить',
-        width: '35%',
+        width: '20%',
         id: 'delete',
         Cell: ({ row }) => {
           const data = row?.original;
@@ -89,6 +130,46 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
               after={<Icon size={24} name={'trash'} />}
               classname={cn(styles.button, styles.button_bills)}
               name={'Удалить отчет'}
+            />
+          );
+        },
+      },
+      {
+        Header: 'Согласовать',
+        width: '20%',
+        id: 'agree',
+        Cell: ({ row }) => {
+          const data = row?.original;
+          if (!data.canBeAgreed) {
+            return null;
+          }
+          return (
+            <Button
+              onClick={() => handleAgreeReport(data)}
+              type={'secondary'}
+              after={<Icon size={24} name={'check'} />}
+              classname={cn(styles.button, styles.button_bills)}
+              name={'Согласовать'}
+            />
+          );
+        },
+      },
+      {
+        Header: 'Обновить',
+        width: '20%',
+        id: 'refresh',
+        Cell: ({ row }) => {
+          const data = row?.original;
+          return (
+            <Button
+              onClick={() => {
+                setSelectedReport(data);
+                setIsRefreshModalOpen(true);
+              }}
+              type={'secondary'}
+              after={<Icon size={24} name={'refresh'} />}
+              classname={cn(styles.button, styles.button_bills)}
+              name={'Обновить'}
             />
           );
         },
@@ -138,6 +219,17 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
           }}
           onConfirm={handleDeleteReport}
           label="Вы уверены, что хотите удалить отчет?"
+        />
+      )}
+      {isRefreshModalOpen && (
+        <ConfirmationModal
+          isOpen={isRefreshModalOpen}
+          onClose={() => {
+            setIsRefreshModalOpen(false);
+            setSelectedReport(null);
+          }}
+          onConfirm={handleRefreshReport}
+          label="Вы действительно хотите обновить отчет?"
         />
       )}
     </div>
