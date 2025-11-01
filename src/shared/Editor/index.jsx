@@ -15,8 +15,11 @@ import { handleError } from '../../utils/snackbar';
 import addCustomImagePlugin from './plugins/image.plugin';
 import { compressImage } from './utils/compressImage';
 import addResizePlugin from './plugins/resize.plugin';
-import addPdfOptimizerPlugin from './plugins/pdf-optimizer.plugin';
+import addPdfOptimizerPlugin, { registerPdfOptimizeButton } from './plugins/pdf-optimizer.plugin';
 import HeightIndicator from './components/HeightIndicator';
+
+// Регистрируем кнопку PDF оптимизации глобально (один раз)
+registerPdfOptimizeButton();
 import {
   afterInitClick,
   afterInitDblClick,
@@ -52,7 +55,7 @@ const Editor = forwardRef(
     const [contentHeight, setContentHeight] = useState({
       height: 0,
       pagesCount: 1,
-      pageHeight: 1350,
+      pageHeight: 900,
     });
     Jodit.modules.Icon.set('bold',editorIcons.bold);
     Jodit.modules.Icon.set('italic',editorIcons.italic);

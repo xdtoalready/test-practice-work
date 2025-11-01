@@ -5,7 +5,9 @@
  * - Вставляет маркеры page-break
  */
 
-const PAGE_HEIGHT = 1350; // px - высота страницы PDF
+import { Jodit } from 'jodit';
+
+const PAGE_HEIGHT = 900; // px - высота страницы PDF (с запасом для футера)
 const PAGE_WIDTH = 1920; // px - ширина страницы PDF
 const CONTENT_PADDING = 50; // px - отступы контента
 
@@ -213,21 +215,8 @@ export function optimizeForPDF(editor) {
  * Добавляет кнопку "Оптимизировать для PDF" в toolbar
  */
 export default function addPdfOptimizerPlugin(editor, onHeightChange) {
-  // Добавляем кнопку в toolbar
-  editor.registerButton({
-    name: 'pdfOptimize',
-    icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    tooltip: 'Оптимизировать для PDF (авто-разбивка на страницы)',
-    exec: (editor) => {
-      const pagesCount = optimizeForPDF(editor);
-      editor.alert(`Контент разбит на ${pagesCount} страниц(ы)`);
-
-      // Обновляем высоту
-      if (onHeightChange) {
-        updateHeight(editor, onHeightChange);
-      }
-    },
-  });
+  // Регистрируем команду для кнопки (должно быть ДО инициализации)
+  // Эта функция вызывается после afterInit, поэтому кнопка уже должна быть зарегистрирована
 
   // Слушаем изменения контента для обновления высоты
   editor.events.on('change', () => {
@@ -242,6 +231,32 @@ export default function addPdfOptimizerPlugin(editor, onHeightChange) {
       updateHeight(editor, onHeightChange);
     }
   }, 300);
+}
+
+/**
+ * Регистрирует кнопку в Jodit (нужно вызвать ДО создания редактора)
+ */
+export function registerPdfOptimizeButton() {
+  if (!Jodit || !Jodit.defaultOptions) return;
+
+  Jodit.defaultOptions.controls.pdfOptimize = {
+    icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    tooltip: 'Оптимизировать для PDF (авто-разбивка на страницы)',
+    exec: function (editor) {
+      try {
+        const pagesCount = optimizeForPDF(editor);
+
+        // Используем встроенный диалог Jodit
+        editor.message.success(`Контент разбит на ${pagesCount} страниц(ы)`, 3000);
+
+        // Триггерим событие change для обновления индикатора
+        editor.events.fire('change', editor.value);
+      } catch (error) {
+        console.error('Ошибка при оптимизации PDF:', error);
+        editor.message.error('Ошибка при оптимизации контента', 3000);
+      }
+    }
+  };
 }
 
 /**
