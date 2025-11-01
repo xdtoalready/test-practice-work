@@ -238,6 +238,7 @@ const ClientPage = observer(() => {
                     onReset={handleReset}
                     onSubmit={handleSubmit}
                     contactData={client?.contactData}
+                    client={client}
                   />
                 )}
                 <ClientTokens

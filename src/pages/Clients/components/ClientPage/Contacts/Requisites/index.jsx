@@ -3,15 +3,15 @@ import Card from '../../../../../../shared/Card';
 import CardInput from '../../../../../../shared/Input/Card';
 import styles from './Requisites.module.sass';
 
-const RequisitesCard = ({ contactData, onActions }) => {
+const RequisitesCard = ({ contactData, client, onActions }) => {
   const requisites = contactData?.requisites?.[0] || {};
-  
+
   return (
     <Card className={styles.card}>
       {/* 1️⃣ Основные реквизиты компании */}
       <div className={styles.section}>
         <div className={styles.sectionTitle}>Основные реквизиты компании</div>
-        
+
         <CardInput
           label="Наименование компании"
           name="contactData.requisites.0.LEGAL_NAME"
@@ -20,7 +20,7 @@ const RequisitesCard = ({ contactData, onActions }) => {
           placeholder="Автоматически заполняется при вводе ИНН"
           className={styles.readOnlyField}
         />
-        
+
         <CardInput
           label="ИНН"
           name="contactData.requisites.0.INN"
@@ -31,7 +31,7 @@ const RequisitesCard = ({ contactData, onActions }) => {
             'ИНН восстановлен'
           )}
         />
-        
+
         <CardInput
           label="КПП"
           name="contactData.requisites.0.KPP"
@@ -40,7 +40,7 @@ const RequisitesCard = ({ contactData, onActions }) => {
           placeholder="Автоматически заполняется при вводе ИНН"
           className={styles.readOnlyField}
         />
-        
+
         <CardInput
           label="ОГРН"
           name="contactData.requisites.0.OGRN"
@@ -49,7 +49,7 @@ const RequisitesCard = ({ contactData, onActions }) => {
           placeholder="Автоматически заполняется при вводе ИНН"
           className={styles.readOnlyField}
         />
-        
+
         <CardInput
           label="Юр. адрес"
           name="contactData.requisites.0.LEGAL_ADDRESS"
@@ -59,7 +59,7 @@ const RequisitesCard = ({ contactData, onActions }) => {
           placeholder="Автоматически заполняется при вводе ИНН"
           className={styles.readOnlyField}
         />
-        
+
         <CardInput
           label="Факт. адрес"
           name="contactData.requisites.0.REAL_ADDRESS"
@@ -69,6 +69,30 @@ const RequisitesCard = ({ contactData, onActions }) => {
             'contactData.requisites.0.REAL_ADDRESS',
             'Факт. адрес сохранен',
             'Факт. адрес восстановлен'
+          )}
+        />
+
+        <CardInput
+          label="Подписант"
+          name="signer"
+          value={client?.signer || ''}
+          placeholder="ФИО подписанта"
+          actions={onActions(
+            'signer',
+            'Подписант сохранен',
+            'Подписант восстановлен'
+          )}
+        />
+
+        <CardInput
+          label="Директор"
+          name="director"
+          value={client?.director || ''}
+          placeholder="ФИО директора"
+          actions={onActions(
+            'director',
+            'Директор сохранен',
+            'Директор восстановлен'
           )}
         />
       </div>
