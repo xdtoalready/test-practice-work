@@ -15,6 +15,8 @@ import { handleError } from '../../utils/snackbar';
 import addCustomImagePlugin from './plugins/image.plugin';
 import { compressImage } from './utils/compressImage';
 import addResizePlugin from './plugins/resize.plugin';
+import addPdfOptimizerPlugin from './plugins/pdf-optimizer.plugin';
+import HeightIndicator from './components/HeightIndicator';
 import {
   afterInitClick,
   afterInitDblClick,
@@ -47,6 +49,11 @@ const Editor = forwardRef(
     const { registerEditor } = useContext(EditorContext);
     const editorRef = useRef(null);
     const [selectionRange, setSelectionRange] = useState(null);
+    const [contentHeight, setContentHeight] = useState({
+      height: 0,
+      pagesCount: 1,
+      pageHeight: 1350,
+    });
     Jodit.modules.Icon.set('bold',editorIcons.bold);
     Jodit.modules.Icon.set('italic',editorIcons.italic);
     Jodit.modules.Icon.set('paragraph',editorIcons.paragraph);
@@ -245,6 +252,11 @@ const Editor = forwardRef(
 
                     afterInitDblClick(editor);
 
+                    // Добавляем плагин оптимизации PDF
+                    addPdfOptimizerPlugin(editor, (heightData) => {
+                      setContentHeight(heightData);
+                    });
+
                     // addResizePlugin(editor);
                   },
                   change: async function (newValue) {
@@ -275,7 +287,18 @@ const Editor = forwardRef(
       };
     }, []);
 
-    return <div ref={containerRef} className={styles.editorContainer}></div>;
+    return (
+      <div>
+        <div ref={containerRef} className={styles.editorContainer}></div>
+        {name !== 'comment' && (
+          <HeightIndicator
+            height={contentHeight.height}
+            pagesCount={contentHeight.pagesCount}
+            pageHeight={contentHeight.pageHeight}
+          />
+        )}
+      </div>
+    );
   },
 );
 
