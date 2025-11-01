@@ -17,9 +17,6 @@ import { compressImage } from './utils/compressImage';
 import addResizePlugin from './plugins/resize.plugin';
 import addPdfOptimizerPlugin, { registerPdfOptimizeButton } from './plugins/pdf-optimizer.plugin';
 import HeightIndicator from './components/HeightIndicator';
-
-// Регистрируем кнопку PDF оптимизации глобально (один раз)
-registerPdfOptimizeButton();
 import {
   afterInitClick,
   afterInitDblClick,
@@ -31,6 +28,9 @@ import {
 import { EditorJsTools } from './config';
 import { editorIcons } from './utils/icons';
 import { EditorContext } from './context/editor.context';
+
+// Регистрируем кнопку PDF оптимизации глобально (один раз)
+registerPdfOptimizeButton();
 
 const Editor = forwardRef(
   (
