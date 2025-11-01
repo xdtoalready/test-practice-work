@@ -17,9 +17,6 @@ import { compressImage } from './utils/compressImage';
 import addResizePlugin from './plugins/resize.plugin';
 import addPdfOptimizerPlugin, { registerPdfOptimizeButton } from './plugins/pdf-optimizer.plugin';
 import HeightIndicator from './components/HeightIndicator';
-
-// Регистрируем кнопку PDF оптимизации глобально (один раз)
-registerPdfOptimizeButton();
 import {
   afterInitClick,
   afterInitDblClick,
@@ -32,6 +29,9 @@ import { EditorJsTools } from './config';
 import { editorIcons } from './utils/icons';
 import { EditorContext } from './context/editor.context';
 
+// Регистрируем кнопку PDF оптимизации глобально (один раз)
+registerPdfOptimizeButton();
+
 const Editor = forwardRef(
   (
     {
@@ -43,6 +43,7 @@ const Editor = forwardRef(
       placeholder,
       handleEnter,
       onFileUpload,
+      enablePdfOptimization = false, // Новый пропс для включения PDF функционала
       ...rest
     },
     ref,
@@ -237,6 +238,10 @@ const Editor = forwardRef(
 
                 className: 'jodit-default',
                 ...EditorJsTools,
+                // Условно добавляем кнопку PDF оптимизации
+                buttons: enablePdfOptimization
+                  ? EditorJsTools.buttons
+                  : EditorJsTools.buttons.filter(btn => btn !== 'pdfOptimize'),
                 placeholder: placeholder || 'Start typing...',
                 minHeight: rest?.height ?? 100,
                 maxHeight: rest?.height + 400,
@@ -255,10 +260,12 @@ const Editor = forwardRef(
 
                     afterInitDblClick(editor);
 
-                    // Добавляем плагин оптимизации PDF
-                    addPdfOptimizerPlugin(editor, (heightData) => {
-                      setContentHeight(heightData);
-                    });
+                    // Добавляем плагин оптимизации PDF только если включен
+                    if (enablePdfOptimization) {
+                      addPdfOptimizerPlugin(editor, (heightData) => {
+                        setContentHeight(heightData);
+                      });
+                    }
 
                     // addResizePlugin(editor);
                   },
@@ -293,7 +300,7 @@ const Editor = forwardRef(
     return (
       <div>
         <div ref={containerRef} className={styles.editorContainer}></div>
-        {name !== 'comment' && (
+        {name !== 'comment' && enablePdfOptimization && (
           <HeightIndicator
             height={contentHeight.height}
             pagesCount={contentHeight.pagesCount}
