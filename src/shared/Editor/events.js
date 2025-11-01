@@ -137,41 +137,74 @@ export const afterInitPaste = function (editor) {
 
 /**
  * Очищает нежелательные стили после вставки контента
+ * Агрессивная очистка всех атрибутов из Word/Google Docs
  */
 function cleanupPastedStyles(editor) {
   const editorElement = editor.editor;
   if (!editorElement) return;
 
-  // Удаляем инлайн стили с определенных элементов
-  const elementsWithStyles = editorElement.querySelectorAll('[style]');
-  elementsWithStyles.forEach((el) => {
-    // Сохраняем только необходимые стили для специальных элементов
-    if (el.classList.contains('pdf-page-break')) {
-      return; // Не трогаем page-break маркеры
+  // Список разрешенных атрибутов для каждого типа элемента
+  const allowedAttributes = {
+    'a': ['href', 'target'],
+    'img': ['src', 'alt', 'width', 'height'],
+    'div': ['class'], // только для page-break
+  };
+
+  // Получаем все элементы
+  const allElements = editorElement.querySelectorAll('*');
+
+  allElements.forEach((el) => {
+    const tagName = el.tagName.toLowerCase();
+
+    // Не трогаем page-break маркеры
+    if (el.classList && el.classList.contains('pdf-page-break')) {
+      return;
     }
 
-    // Удаляем все инлайн стили
-    el.removeAttribute('style');
+    // Удаляем ВСЕ атрибуты, кроме разрешенных
+    const attrs = Array.from(el.attributes);
+    attrs.forEach((attr) => {
+      const attrName = attr.name.toLowerCase();
+
+      // Разрешенные атрибуты для этого тега
+      const allowed = allowedAttributes[tagName] || [];
+
+      // Если атрибут не в списке разрешенных - удаляем
+      if (!allowed.includes(attrName)) {
+        el.removeAttribute(attr.name);
+      }
+    });
   });
 
-  // Удаляем span теги без атрибутов (часто создаются Word/Google Docs)
+  // Удаляем все span теги (переносим содержимое)
   const spans = editorElement.querySelectorAll('span');
   spans.forEach((span) => {
-    if (!span.hasAttributes() || (span.attributes.length === 0)) {
-      // Переносим содержимое span в родительский элемент
-      while (span.firstChild) {
-        span.parentNode.insertBefore(span.firstChild, span);
+    // Переносим содержимое span в родительский элемент
+    while (span.firstChild) {
+      span.parentNode.insertBefore(span.firstChild, span);
+    }
+    span.remove();
+  });
+
+  // Упрощаем структуру: удаляем пустые параграфы внутри списков
+  const listParagraphs = editorElement.querySelectorAll('li > p');
+  listParagraphs.forEach((p) => {
+    // Если это единственный параграф в li, переносим содержимое напрямую в li
+    if (p.parentElement.children.length === 1) {
+      while (p.firstChild) {
+        p.parentElement.insertBefore(p.firstChild, p);
       }
-      span.remove();
+      p.remove();
     }
   });
 
-  // Удаляем атрибуты class с элементов (кроме наших)
-  const elementsWithClass = editorElement.querySelectorAll('[class]');
-  elementsWithClass.forEach((el) => {
-    if (!el.classList.contains('pdf-page-break')) {
-      el.removeAttribute('class');
+  // Удаляем code теги (если были вставлены из Google Docs)
+  const codeTags = editorElement.querySelectorAll('code');
+  codeTags.forEach((code) => {
+    while (code.firstChild) {
+      code.parentNode.insertBefore(code.firstChild, code);
     }
+    code.remove();
   });
 
   // Синхронизируем изменения

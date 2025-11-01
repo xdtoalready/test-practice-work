@@ -72,4 +72,63 @@ export const EditorJsTools = {
   askBeforePasteFromWord: false,
   defaultActionOnPaste: 'insert_clear_html',
   processPasteHTML: true,
+
+  // Функция для очистки HTML при вставке (применяется ДО вставки в редактор)
+  events: {
+    processPaste: function(event, html, plainText) {
+      // Создаем временный контейнер для парсинга HTML
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = html;
+
+      // Удаляем все атрибуты style
+      const allElements = tempDiv.querySelectorAll('*');
+      allElements.forEach((el) => {
+        // Удаляем атрибуты
+        el.removeAttribute('style');
+        el.removeAttribute('class');
+        el.removeAttribute('id');
+        el.removeAttribute('dir');
+        el.removeAttribute('role');
+        el.removeAttribute('aria-level');
+
+        // Удаляем все aria-* атрибуты
+        Array.from(el.attributes).forEach((attr) => {
+          if (attr.name.startsWith('aria-') || attr.name.startsWith('data-')) {
+            el.removeAttribute(attr.name);
+          }
+        });
+      });
+
+      // Удаляем все span теги
+      const spans = tempDiv.querySelectorAll('span');
+      spans.forEach((span) => {
+        while (span.firstChild) {
+          span.parentNode.insertBefore(span.firstChild, span);
+        }
+        span.remove();
+      });
+
+      // Удаляем code теги
+      const codeTags = tempDiv.querySelectorAll('code');
+      codeTags.forEach((code) => {
+        while (code.firstChild) {
+          code.parentNode.insertBefore(code.firstChild, code);
+        }
+        code.remove();
+      });
+
+      // Упрощаем структуру списков
+      const listParagraphs = tempDiv.querySelectorAll('li > p');
+      listParagraphs.forEach((p) => {
+        if (p.parentElement.children.length === 1) {
+          while (p.firstChild) {
+            p.parentElement.insertBefore(p.firstChild, p);
+          }
+          p.remove();
+        }
+      });
+
+      return tempDiv.innerHTML;
+    }
+  }
 };

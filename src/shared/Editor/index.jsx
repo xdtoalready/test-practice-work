@@ -172,7 +172,7 @@ const Editor = forwardRef(
                 controls: controls,
                 events: {
                   beforeInit: function (editor) {
-                    beforeInitKeyDown(editor, selectionRange, selectionRange);
+                    beforeInitKeyDown(editor, selectionRange, setSelectionRange);
                     beforeInitDrop(editor);
                   },
                   afterInit: function (editor) {
@@ -239,7 +239,7 @@ const Editor = forwardRef(
                 maxHeight: rest?.height + 400,
                 events: {
                   beforeInit: function (editor) {
-                    beforeInitKeyDown(editor, selectionRange, selectionRange);
+                    beforeInitKeyDown(editor, selectionRange, setSelectionRange);
                     beforeInitDrop(editor);
                   },
                   afterInit: function (editor) {
