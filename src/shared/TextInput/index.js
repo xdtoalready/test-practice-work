@@ -38,6 +38,7 @@ const TextInput = forwardRef(
       key,
       disabled,
       onFileUpload,
+      enablePdfOptimization = false, // Пропс для включения PDF функционала
       ...props
     },
     ref,
@@ -256,6 +257,7 @@ const TextInput = forwardRef(
             onChangeComment={onChangeComment}
             handleEnter={handleEnter}
             onFileUpload={onFileUpload}
+            enablePdfOptimization={enablePdfOptimization}
             ref={ref}
             {...props}
           />
