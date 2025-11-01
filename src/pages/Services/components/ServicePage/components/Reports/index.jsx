@@ -79,7 +79,7 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
       {
         Header: 'Статус',
         id: 'status',
-        width: '10%',
+        width: '20%',
         Cell: ({ row }) => {
           const data = row?.original;
           return (
@@ -153,7 +153,7 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
       },
       {
         Header: 'Обновить',
-        width: '20%',
+        width: '10%',
         id: 'refresh',
         Cell: ({ row }) => {
           const data = row?.original;
@@ -164,8 +164,8 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
                 setIsRefreshModalOpen(true);
               }}
               type={'secondary'}
-              after={<Icon size={24} name={'refresh'} />}
-              classname={cn(styles.button, styles.button_bills)}
+              isSmallButton={true}
+              adaptiveIcon={<Icon size={16} viewBox={'0 0 16 16'} name={'refresh'} />}
             />
           );
         },
