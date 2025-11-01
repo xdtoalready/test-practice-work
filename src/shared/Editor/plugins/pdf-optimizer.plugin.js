@@ -82,86 +82,86 @@ export function calculateContentHeight(editor) {
  * Оптимизирует контент для PDF - автоматически расставляет разрывы страниц
  */
 export function optimizeForPDF(editor) {
+  console.log('[PDF Optimizer] Начало оптимизации');
+
   // Удаляем старые разрывы
   removeAllPageBreaks(editor);
 
   const editorElement = editor.editor;
-  if (!editorElement) return;
+  if (!editorElement) {
+    console.error('[PDF Optimizer] editorElement не найден');
+    return 1;
+  }
 
-  // Создаем измерительный iframe
-  const iframe = document.createElement('iframe');
-  iframe.style.cssText = `
+  // Получаем все top-level элементы
+  let elements = Array.from(editorElement.children).filter(
+    el => !el.classList.contains('pdf-page-break')
+  );
+
+  console.log('[PDF Optimizer] Найдено элементов:', elements.length);
+  console.log('[PDF Optimizer] Типы элементов:', elements.map(el => el.tagName).join(', '));
+
+  // Если элементов слишком мало, но контент есть - нужно получить вложенные элементы
+  if (elements.length <= 2 && editorElement.textContent.length > 100) {
+    console.log('[PDF Optimizer] Мало top-level элементов, ищем вложенные');
+
+    // Получаем все параграфы, заголовки и списки
+    const nestedElements = Array.from(
+      editorElement.querySelectorAll('p, h1, h2, h3, h4, h5, h6, ul, ol, blockquote, pre, table')
+    );
+
+    if (nestedElements.length > elements.length) {
+      elements = nestedElements;
+      console.log('[PDF Optimizer] Найдено вложенных элементов:', elements.length);
+    }
+  }
+
+  if (elements.length === 0) {
+    console.error('[PDF Optimizer] Нет элементов для обработки');
+    return 1;
+  }
+
+  // Создаем измерительный контейнер (проще чем iframe)
+  const measureContainer = document.createElement('div');
+  measureContainer.style.cssText = `
     position: absolute;
     left: -9999px;
     top: -9999px;
-    width: ${PAGE_WIDTH}px;
-    height: ${PAGE_HEIGHT * 10}px;
+    width: ${PAGE_WIDTH - CONTENT_PADDING * 2}px;
     visibility: hidden;
-    border: none;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
   `;
-  document.body.appendChild(iframe);
+  document.body.appendChild(measureContainer);
 
-  const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-  iframeDoc.open();
-  iframeDoc.write(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <style>
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-        }
-        body {
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-          font-size: 14px;
-          line-height: 1.6;
-          padding: ${CONTENT_PADDING}px;
-          width: ${PAGE_WIDTH}px;
-        }
-        p { margin-bottom: 1em; }
-        ul, ol { margin-bottom: 1em; padding-left: 2em; }
-        li { margin-bottom: 0.5em; }
-        h1, h2, h3, h4, h5, h6 { margin-bottom: 0.5em; margin-top: 1em; }
-        table { margin-bottom: 1em; width: 100%; border-collapse: collapse; }
-        img { max-width: 100%; height: auto; }
-      </style>
-    </head>
-    <body id="content"></body>
-    </html>
-  `);
-  iframeDoc.close();
-
-  const contentContainer = iframeDoc.getElementById('content');
-
-  // Копируем элементы из редактора
-  const elements = Array.from(editorElement.children);
   const fragments = [];
-  let currentHeight = 0;
   let currentFragment = [];
+  let currentHeight = 0;
   let pageNumber = 1;
+  const pageLimit = PAGE_HEIGHT - CONTENT_PADDING * 2;
 
-  elements.forEach((el) => {
-    // Пропускаем старые page-breaks
-    if (el.classList.contains('pdf-page-break')) {
-      return;
-    }
+  console.log('[PDF Optimizer] Лимит высоты страницы:', pageLimit, 'px');
 
-    // Клонируем элемент для измерения
+  elements.forEach((el, index) => {
+    // Измеряем высоту элемента
     const clone = el.cloneNode(true);
-    contentContainer.appendChild(clone);
-    const elHeight = clone.offsetHeight;
+    measureContainer.innerHTML = '';
+    measureContainer.appendChild(clone);
+    const elHeight = measureContainer.offsetHeight;
+
+    console.log(`[PDF Optimizer] Элемент #${index} (${el.tagName}): ${elHeight}px, текущая высота: ${currentHeight}px`);
 
     // Проверяем, влезет ли элемент на текущую страницу
-    if (currentHeight + elHeight > PAGE_HEIGHT - CONTENT_PADDING * 2) {
-      // Не влезает - сохраняем текущий фрагмент и начинаем новый
-      if (currentFragment.length > 0) {
-        fragments.push({
-          elements: currentFragment,
-          pageNumber: pageNumber++,
-        });
-      }
+    if (currentHeight + elHeight > pageLimit && currentFragment.length > 0) {
+      // Не влезает - создаем новую страницу
+      console.log(`[PDF Optimizer] Элемент не влез, создаю страницу #${pageNumber}`);
+
+      fragments.push({
+        elements: [...currentFragment],
+        pageNumber: pageNumber++,
+      });
+
       currentFragment = [el];
       currentHeight = elHeight;
     } else {
@@ -177,17 +177,24 @@ export function optimizeForPDF(editor) {
       elements: currentFragment,
       pageNumber: pageNumber,
     });
+    console.log(`[PDF Optimizer] Добавлена последняя страница #${pageNumber}`);
   }
 
-  // Очищаем iframe
-  document.body.removeChild(iframe);
+  // Очищаем измерительный контейнер
+  document.body.removeChild(measureContainer);
+
+  console.log('[PDF Optimizer] Всего фрагментов (страниц):', fragments.length);
 
   // Вставляем разрывы между фрагментами
   if (fragments.length > 1) {
+    console.log('[PDF Optimizer] Вставляю разрывы страниц');
+
     // Строим новый контент с разрывами
     editorElement.innerHTML = '';
 
     fragments.forEach((fragment, index) => {
+      console.log(`[PDF Optimizer] Добавляю фрагмент #${index + 1}, элементов: ${fragment.elements.length}`);
+
       // Добавляем элементы фрагмента
       fragment.elements.forEach((el) => {
         editorElement.appendChild(el);
@@ -199,15 +206,18 @@ export function optimizeForPDF(editor) {
         pageBreakEl.innerHTML = createPageBreakHTML(fragment.pageNumber + 1);
         const pageBreak = pageBreakEl.firstElementChild;
         editorElement.appendChild(pageBreak);
+        console.log(`[PDF Optimizer] Вставлен разрыв перед страницей #${fragment.pageNumber + 1}`);
       }
     });
 
     // Синхронизируем значение
     editor.synchronizeValues();
 
+    console.log('[PDF Optimizer] Оптимизация завершена, страниц:', fragments.length);
     return fragments.length;
   }
 
+  console.log('[PDF Optimizer] Разбивка не требуется (всё влезло на 1 страницу)');
   return 1;
 }
 
