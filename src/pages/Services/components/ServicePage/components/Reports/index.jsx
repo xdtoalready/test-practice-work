@@ -14,6 +14,7 @@ import { http, handleHttpError } from '../../../../../../shared/http';
 const Reports = observer(({ company, service, stage, reports = [], onReportGenerated }) => {
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isRefreshModalOpen, setIsRefreshModalOpen] = useState(false);
   const [selectedReport, setSelectedReport] = useState(null);
 
   const handleDeleteReport = async () => {
@@ -33,9 +34,20 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
     }
   };
 
-  const handleRefreshReports = () => {
-    if (onReportGenerated) {
-      onReportGenerated();
+  const handleRefreshReport = async () => {
+    try {
+      await http.get(`/api/reports/${selectedReport.id}/refresh`);
+      handleInfo('Отчет обновлен');
+      setIsRefreshModalOpen(false);
+      setSelectedReport(null);
+      if (onReportGenerated) {
+        onReportGenerated();
+      }
+    } catch (error) {
+      console.error('Ошибка при обновлении отчета:', error);
+      handleHttpError(error);
+      handleError('Ошибка при обновлении отчета');
+      setIsRefreshModalOpen(false);
     }
   };
 
@@ -121,7 +133,7 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
       },
       {
         Header: 'Согласовать',
-        width: '30%',
+        width: '20%',
         id: 'agree',
         Cell: ({ row }) => {
           const data = row?.original;
@@ -139,6 +151,32 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
           );
         },
       },
+      {
+        Header: 'Обновить',
+        width: '10%',
+        id: 'refresh',
+        Cell: ({ row }) => {
+          const data = row?.original;
+          return (
+            <div
+              onClick={() => {
+                setSelectedReport(data);
+                setIsRefreshModalOpen(true);
+              }}
+              style={{
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '24px',
+                height: '24px',
+              }}
+            >
+              <Icon size={24} name={'refresh'} fill={'#6F767E'} />
+            </div>
+          );
+        },
+      },
     ],
     [],
   );
@@ -151,9 +189,6 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
         withHeaderWhenEmpty={false}
         smallTable={true}
         headerActions={{
-          refresh: {
-            action: handleRefreshReports,
-          },
           add: {
             action: () => setReportModalOpen(true),
             isSmall: true,
@@ -187,6 +222,17 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
           }}
           onConfirm={handleDeleteReport}
           label="Вы уверены, что хотите удалить отчет?"
+        />
+      )}
+      {isRefreshModalOpen && (
+        <ConfirmationModal
+          isOpen={isRefreshModalOpen}
+          onClose={() => {
+            setIsRefreshModalOpen(false);
+            setSelectedReport(null);
+          }}
+          onConfirm={handleRefreshReport}
+          label="Вы действительно хотите обновить отчет?"
         />
       )}
     </div>
