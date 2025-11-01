@@ -116,7 +116,7 @@ const CalendarModal = observer(
           return {
             id: null,
             afterDelete:(id)=>{
-              calendarStore.setBusinesses(calendarStore.businesses.filter(el=>el.id !== id))
+              calendarStore?.setBusinesses(calendarStore?.businesses.filter(el=>el.id !== id))
             },
             store: calendarStore,
             api: calendarApi,
@@ -133,20 +133,20 @@ const CalendarModal = observer(
         if (businessFromContext) {
           const newTaskWithTimeTracking = {
             ...businessFromContext,
-            timeTrackings: calendarStore.currentBussiness?.timeTrackings || data.timeTrackings,
+            timeTrackings: calendarStore?.currentBussiness?.timeTrackings || data.timeTrackings,
           };
           return newTaskWithTimeTracking;
         }
       }
 
-      return calendarStore.getById(data?.id ?? Number(businessId));
+      return calendarStore?.getById(data?.id ?? Number(businessId));
     }, [
       isEditMode,
       businessId,
       localBusiness,
       contextData?.store?.drafts,
-      calendarStore.currentBussiness,
-      calendarStore.drafts,
+      calendarStore?.currentBussiness,
+      calendarStore?.drafts,
       data,
     ]);
 
@@ -199,8 +199,8 @@ const CalendarModal = observer(
     }, [isEditMode, businessId, contextData.api]);
 
     useEffect(() => {
-      return () => calendarStore && calendarStore.setCurrentBussiness(null);
-    }, []);
+      return () => calendarStore?.setCurrentBussiness(null);
+    }, [calendarStore]);
 
     const handleAddComment = async (text) => {
       if (!text.trim()) return;
@@ -276,8 +276,8 @@ const CalendarModal = observer(
             );
             contextData.store.changeById(contextData.id, name, value, withId);
           } else {
-            calendarStore.changeById(data.id, 'endDate', dateWithTime, withId);
-            calendarStore.changeById(data.id, name, value, withId);
+            calendarStore?.changeById(data.id, 'endDate', dateWithTime, withId);
+            calendarStore?.changeById(data.id, name, value, withId);
           }
         } else {
           setLocalBusiness((prev) => ({
@@ -294,7 +294,7 @@ const CalendarModal = observer(
 
           contextData.store.changeById(contextData.id, name, value, withId);
         } else {
-          calendarStore.changeById(data.id, name, value, withId);
+          calendarStore?.changeById(data.id, name, value, withId);
         }
       } else {
         setLocalBusiness((prev) => ({
@@ -343,7 +343,7 @@ const CalendarModal = observer(
       if (mode !== 'calendar' && isEditMode) {
         contextData.store.resetDraft(contextData.id, path);
       } else if (mode === 'calendar' && isEditMode) {
-        calendarStore.resetDraft(data.id, path);
+        calendarStore?.resetDraft(data.id, path);
       }
       onClose();
     };
