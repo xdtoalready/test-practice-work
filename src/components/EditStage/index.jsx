@@ -216,6 +216,7 @@ const EditStage = ({ handleClose, stageId }) => {
                   stage.taskDescription === '' ? ' ' : stage.taskDescription
                 }
                 edited={true}
+                enablePdfOptimization={true}
                 className={styles.textarea}
                 label="Задача"
                 // rows={14}
@@ -232,6 +233,7 @@ const EditStage = ({ handleClose, stageId }) => {
                   stage.seoConclusion === '' ? ' ' : stage.seoConclusion
                 }
                 edited={true}
+                enablePdfOptimization={true}
                 className={styles.textarea}
                 label="Вывод от seo-специалиста"
               />
