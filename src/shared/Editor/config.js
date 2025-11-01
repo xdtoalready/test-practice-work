@@ -49,6 +49,8 @@ export const EditorJsTools = {
     '|',
     'table',
     'link',
+    '|',
+    'pdfOptimize',
 
   ],
   link: {
@@ -64,4 +66,10 @@ export const EditorJsTools = {
   enableCommandExecution: true,
   disablePlugins: ['mobile'],
   iframe: false,
+
+  // Настройки очистки стилей при вставке
+  askBeforePasteHTML: false,
+  askBeforePasteFromWord: false,
+  defaultActionOnPaste: 'insert_clear_html',
+  processPasteHTML: true,
 };

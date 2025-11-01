@@ -126,7 +126,57 @@ export const afterInitPaste = function (editor) {
       }
     }
   });
+
+  // Очистка стилей после вставки
+  editor.events.on('afterPaste', function () {
+    setTimeout(() => {
+      cleanupPastedStyles(editor);
+    }, 50);
+  });
 };
+
+/**
+ * Очищает нежелательные стили после вставки контента
+ */
+function cleanupPastedStyles(editor) {
+  const editorElement = editor.editor;
+  if (!editorElement) return;
+
+  // Удаляем инлайн стили с определенных элементов
+  const elementsWithStyles = editorElement.querySelectorAll('[style]');
+  elementsWithStyles.forEach((el) => {
+    // Сохраняем только необходимые стили для специальных элементов
+    if (el.classList.contains('pdf-page-break')) {
+      return; // Не трогаем page-break маркеры
+    }
+
+    // Удаляем все инлайн стили
+    el.removeAttribute('style');
+  });
+
+  // Удаляем span теги без атрибутов (часто создаются Word/Google Docs)
+  const spans = editorElement.querySelectorAll('span');
+  spans.forEach((span) => {
+    if (!span.hasAttributes() || (span.attributes.length === 0)) {
+      // Переносим содержимое span в родительский элемент
+      while (span.firstChild) {
+        span.parentNode.insertBefore(span.firstChild, span);
+      }
+      span.remove();
+    }
+  });
+
+  // Удаляем атрибуты class с элементов (кроме наших)
+  const elementsWithClass = editorElement.querySelectorAll('[class]');
+  elementsWithClass.forEach((el) => {
+    if (!el.classList.contains('pdf-page-break')) {
+      el.removeAttribute('class');
+    }
+  });
+
+  // Синхронизируем изменения
+  editor.synchronizeValues();
+}
 export const afterInitDblClick = function (editor) {
   editor.editor.addEventListener('dblclick', function (e) {
     const link = e.target.closest('a');
