@@ -3,6 +3,7 @@ import { observer } from 'mobx-react-lite';
 import Table from '../../../../../../shared/Table';
 import Button from '../../../../../../shared/Button';
 import Icon from '../../../../../../shared/Icon';
+import Badge, { statusTypes } from '../../../../../../shared/Badge';
 import cn from 'classnames';
 import styles from '../Bills/Bills.module.sass'; // Переиспользую стили Bills
 import CreateReportModal from '../Report/components/CreateReportModal';
@@ -64,15 +65,6 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
     }
   };
 
-  const getStatusText = (status) => {
-    const statusMap = {
-      created: 'Создан',
-      viewed: 'Просмотрен',
-      agreed: 'Согласован',
-    };
-    return statusMap[status] || status || '-';
-  };
-
   const cols = useMemo(
     () => [
       {
@@ -90,7 +82,12 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
         width: '10%',
         Cell: ({ row }) => {
           const data = row?.original;
-          return <p>{getStatusText(data.status)}</p>;
+          return (
+            <Badge
+              status={data.status}
+              statusType={statusTypes.reports}
+            />
+          );
         },
       },
       {
@@ -169,7 +166,6 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
               type={'secondary'}
               after={<Icon size={24} name={'refresh'} />}
               classname={cn(styles.button, styles.button_bills)}
-              name={'Обновить'}
             />
           );
         },
