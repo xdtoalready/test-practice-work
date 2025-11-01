@@ -170,9 +170,13 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
                 justifyContent: 'center',
                 width: '24px',
                 height: '24px',
+                backgroundColor: '#FF6A55',
+                color: 'white',
+                padding: '0',
+                borderRadius: '50%',
               }}
             >
-              <Icon size={24} name={'refresh'} fill={'#6F767E'} />
+              <Icon size={12} name={'refresh'} fill={'#FFF'} />
             </div>
           );
         },
