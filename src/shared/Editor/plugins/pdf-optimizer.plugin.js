@@ -79,99 +79,79 @@ export function calculateContentHeight(editor) {
 }
 
 /**
- * Разбивает список (OL/UL) на части по элементам LI
+ * Вставляет page-break маркеры ВНУТРИ списка (OL/UL) между LI элементами
+ * Это сохраняет нумерацию и не дублирует контент
  * @param {HTMLElement} listElement - элемент списка (OL или UL)
  * @param {number} pageLimit - лимит высоты страницы
  * @param {HTMLElement} measureContainer - контейнер для измерений
- * @param {number} availableHeight - доступная высота на текущей странице
- * @returns {Array<HTMLElement>} - массив новых списков
  */
-function splitListElement(listElement, pageLimit, measureContainer, availableHeight = pageLimit) {
-  console.log(`[PDF Optimizer] Разбиваю список ${listElement.tagName}, доступная высота: ${availableHeight}px`);
+function insertPageBreaksIntoList(listElement, pageLimit, measureContainer) {
+  console.log(`[PDF Optimizer] Обрабатываю список ${listElement.tagName}`);
 
-  // Получаем все direct children LI
-  const listItems = Array.from(listElement.children).filter(el => el.tagName === 'LI');
+  // Получаем все прямые дочерние элементы (LI, UL, OL)
+  const children = Array.from(listElement.children);
 
-  if (listItems.length === 0) {
-    return [listElement];
+  if (children.length === 0) {
+    return;
   }
 
-  // Разбиваем на группы, которые помещаются на страницу
-  const groups = [];
-  let currentGroup = [];
   let currentHeight = 0;
-  let isFirstGroup = true;
+  let pageNumber = 2;
+  const insertedBreaks = [];
 
-  listItems.forEach((li, index) => {
-    // Измеряем высоту LI
+  // Проходим по всем детям списка
+  children.forEach((child, index) => {
+    // Пропускаем уже вставленные page-breaks
+    if (child.classList && child.classList.contains('pdf-page-break')) {
+      currentHeight = 0;
+      return;
+    }
+
+    // Измеряем высоту элемента
     measureContainer.innerHTML = '';
     const tempList = listElement.cloneNode(false);
-    tempList.appendChild(li.cloneNode(true));
+    tempList.appendChild(child.cloneNode(true));
     measureContainer.appendChild(tempList);
-    const liHeight = measureContainer.offsetHeight;
+    const childHeight = measureContainer.offsetHeight;
 
-    console.log(`[PDF Optimizer]   LI #${index}: ${liHeight}px, текущая высота: ${currentHeight}px`);
+    console.log(`[PDF Optimizer]   ${child.tagName} #${index}: ${childHeight}px, текущая высота: ${currentHeight}px`);
 
-    // Для первой группы используем availableHeight, для остальных - pageLimit
-    const currentLimit = isFirstGroup ? availableHeight : pageLimit;
+    // Если элемент не влезает на текущую страницу
+    if (currentHeight + childHeight > pageLimit && currentHeight > 0) {
+      console.log(`[PDF Optimizer]   Элемент не влез, вставляю page-break перед ${child.tagName} #${index}`);
 
-    if (currentHeight + liHeight > currentLimit && currentGroup.length > 0) {
-      // Не влезает - создаем новую группу
-      console.log(`[PDF Optimizer]   LI не влез, создаю новую группу (элементов: ${currentGroup.length})`);
-      groups.push([...currentGroup]);
-      currentGroup = [li];
-      currentHeight = liHeight;
-      isFirstGroup = false;
+      // Запоминаем где нужно вставить break
+      insertedBreaks.push({
+        beforeElement: child,
+        pageNumber: pageNumber++
+      });
+
+      currentHeight = childHeight;
     } else {
-      // Влезает - добавляем в текущую группу
-      currentGroup.push(li);
-      currentHeight += liHeight;
+      currentHeight += childHeight;
+    }
+
+    // Если это вложенный список (UL или OL), обрабатываем рекурсивно
+    if (child.tagName === 'UL' || child.tagName === 'OL') {
+      insertPageBreaksIntoList(child, pageLimit, measureContainer);
     }
   });
 
-  // Добавляем последнюю группу
-  if (currentGroup.length > 0) {
-    groups.push(currentGroup);
-  }
-
-  console.log(`[PDF Optimizer] Список разбит на ${groups.length} частей`);
-
-  // Если список не нужно разбивать, возвращаем оригинал
-  if (groups.length === 1) {
-    return [listElement];
-  }
-
-  // Создаем новые списки для каждой группы
-  let startNumber = 1;
-  if (listElement.tagName === 'OL' && listElement.hasAttribute('start')) {
-    startNumber = parseInt(listElement.getAttribute('start'), 10) || 1;
-  }
-
-  return groups.map((items, groupIndex) => {
-    const newList = listElement.cloneNode(false); // Копируем только тег, без детей
-
-    // Копируем все атрибуты
-    Array.from(listElement.attributes).forEach(attr => {
-      newList.setAttribute(attr.name, attr.value);
-    });
-
-    // Добавляем элементы LI
-    items.forEach(li => newList.appendChild(li.cloneNode(true)));
-
-    // Для OL сохраняем нумерацию
-    if (listElement.tagName === 'OL' && groupIndex > 0) {
-      const itemsBeforeCount = groups.slice(0, groupIndex).reduce((sum, g) => sum + g.length, 0);
-      newList.setAttribute('start', startNumber + itemsBeforeCount);
-      console.log(`[PDF Optimizer]   OL часть #${groupIndex + 1} начинается с ${startNumber + itemsBeforeCount}`);
-    }
-
-    return newList;
+  // Вставляем page-breaks (в обратном порядке чтобы не сбить индексы)
+  insertedBreaks.reverse().forEach(({ beforeElement, pageNumber }) => {
+    const pageBreakEl = document.createElement('div');
+    pageBreakEl.innerHTML = createPageBreakHTML(pageNumber);
+    const pageBreak = pageBreakEl.firstElementChild;
+    listElement.insertBefore(pageBreak, beforeElement);
+    console.log(`[PDF Optimizer]   Вставлен разрыв перед страницей #${pageNumber}`);
   });
+
+  console.log(`[PDF Optimizer] В список ${listElement.tagName} вставлено ${insertedBreaks.length} page-breaks`);
 }
 
 /**
  * Оптимизирует контент для PDF - автоматически расставляет разрывы страниц
- * ВАЖНО: Разбивает большие списки (OL/UL) на части, чтобы они влезали на страницы
+ * ВАЖНО: Вставляет page-break ВНУТРИ списков между элементами для сохранения нумерации
  */
 export function optimizeForPDF(editor) {
   console.log('[PDF Optimizer] Начало оптимизации');
@@ -216,64 +196,67 @@ export function optimizeForPDF(editor) {
 
   document.body.appendChild(measureContainer);
 
+  const pageLimit = PAGE_HEIGHT - CONTENT_PADDING * 2;
+  console.log('[PDF Optimizer] Лимит высоты страницы:', pageLimit, 'px');
+
+  // Шаг 1: Обрабатываем все списки - вставляем breaks внутрь них
+  elements.forEach((el, index) => {
+    if (el.tagName === 'OL' || el.tagName === 'UL') {
+      // Измеряем высоту списка
+      measureContainer.innerHTML = '';
+      measureContainer.appendChild(el.cloneNode(true));
+      const listHeight = measureContainer.offsetHeight;
+
+      console.log(`[PDF Optimizer] Список #${index} (${el.tagName}): ${listHeight}px`);
+
+      // Если список большой - вставляем breaks внутрь
+      if (listHeight > pageLimit) {
+        console.log(`[PDF Optimizer] Список слишком большой, вставляю breaks внутрь`);
+        insertPageBreaksIntoList(el, pageLimit, measureContainer);
+      }
+    }
+  });
+
+  // Шаг 2: Группируем top-level элементы на страницы
+  // Теперь списки уже содержат внутренние page-breaks, поэтому нужно измерять их части
   const fragments = [];
   let currentFragment = [];
   let currentHeight = 0;
   let pageNumber = 1;
-  const pageLimit = PAGE_HEIGHT - CONTENT_PADDING * 2;
 
-  console.log('[PDF Optimizer] Лимит высоты страницы:', pageLimit, 'px');
+  // Получаем обновленный список элементов (включая page-breaks внутри списков)
+  const updatedElements = Array.from(editorElement.children).filter(
+    el => !el.classList.contains('pdf-page-break')
+  );
 
-  elements.forEach((el, index) => {
-    // Измеряем ПОЛНУЮ высоту элемента (включая вложенные элементы)
-    const clone = el.cloneNode(true);
+  updatedElements.forEach((el, index) => {
+    // Измеряем высоту элемента
     measureContainer.innerHTML = '';
-    measureContainer.appendChild(clone);
+
+    // Для списков с внутренними breaks нужно измерять их по частям
+    if ((el.tagName === 'OL' || el.tagName === 'UL') && el.querySelector('.pdf-page-break')) {
+      // Список уже разбит - берем только первую часть до первого break
+      const listClone = el.cloneNode(true);
+      const firstBreak = listClone.querySelector('.pdf-page-break');
+
+      if (firstBreak) {
+        // Удаляем все что после первого break
+        let node = firstBreak;
+        while (node) {
+          const next = node.nextSibling;
+          node.remove();
+          node = next;
+        }
+      }
+
+      measureContainer.appendChild(listClone);
+    } else {
+      measureContainer.appendChild(el.cloneNode(true));
+    }
+
     const elHeight = measureContainer.offsetHeight;
 
     console.log(`[PDF Optimizer] Элемент #${index} (${el.tagName}): ${elHeight}px, текущая высота: ${currentHeight}px`);
-
-    // Если элемент - список и он слишком большой, разбиваем его
-    if ((el.tagName === 'OL' || el.tagName === 'UL') && elHeight > pageLimit) {
-      console.log(`[PDF Optimizer] Элемент ${el.tagName} слишком большой (${elHeight}px > ${pageLimit}px), разбиваю на части`);
-
-      // Рассчитываем доступную высоту на текущей странице
-      const availableHeight = pageLimit - currentHeight;
-
-      // Разбиваем список на части
-      const listParts = splitListElement(el, pageLimit, measureContainer, availableHeight);
-
-      console.log(`[PDF Optimizer] Список разбит на ${listParts.length} частей`);
-
-      // Обрабатываем каждую часть списка
-      listParts.forEach((listPart, partIndex) => {
-        measureContainer.innerHTML = '';
-        measureContainer.appendChild(listPart.cloneNode(true));
-        const partHeight = measureContainer.offsetHeight;
-
-        console.log(`[PDF Optimizer]   Часть #${partIndex + 1}: ${partHeight}px`);
-
-        // Если это первая часть и она влезает на текущую страницу
-        if (partIndex === 0 && currentHeight + partHeight <= pageLimit) {
-          currentFragment.push(listPart);
-          currentHeight += partHeight;
-        } else {
-          // Создаем новую страницу
-          if (currentFragment.length > 0) {
-            fragments.push({
-              elements: [...currentFragment],
-              pageNumber: pageNumber++,
-            });
-            console.log(`[PDF Optimizer]   Создана страница #${pageNumber - 1}`);
-          }
-
-          currentFragment = [listPart];
-          currentHeight = partHeight;
-        }
-      });
-
-      return; // Пропускаем обычную обработку
-    }
 
     // Проверяем, влезет ли элемент на текущую страницу
     if (currentHeight + elHeight > pageLimit && currentFragment.length > 0) {
@@ -308,26 +291,20 @@ export function optimizeForPDF(editor) {
 
   console.log('[PDF Optimizer] Всего фрагментов (страниц):', fragments.length);
 
-  // Теперь нужно ЗАМЕНИТЬ исходные элементы на новые (разбитые)
-  // Очищаем редактор и заполняем заново
-  editorElement.innerHTML = '';
+  // Шаг 3: Вставляем page-breaks между top-level элементами
+  // Работаем в обратном порядке чтобы не сбить индексы
+  for (let i = fragments.length - 1; i > 0; i--) {
+    const fragment = fragments[i];
+    const firstElementOfNextPage = fragment.elements[0];
 
-  fragments.forEach((fragment, fragIndex) => {
-    // Добавляем элементы фрагмента
-    fragment.elements.forEach(el => {
-      editorElement.appendChild(el);
-    });
+    // Вставляем page-break перед первым элементом следующей страницы
+    const pageBreakEl = document.createElement('div');
+    pageBreakEl.innerHTML = createPageBreakHTML(fragment.pageNumber);
+    const pageBreak = pageBreakEl.firstElementChild;
+    editorElement.insertBefore(pageBreak, firstElementOfNextPage);
 
-    // Добавляем разрыв страницы после фрагмента (кроме последнего)
-    if (fragIndex < fragments.length - 1) {
-      const pageBreakEl = document.createElement('div');
-      pageBreakEl.innerHTML = createPageBreakHTML(fragment.pageNumber + 1);
-      const pageBreak = pageBreakEl.firstElementChild;
-      editorElement.appendChild(pageBreak);
-
-      console.log(`[PDF Optimizer] Вставлен разрыв перед страницей #${fragment.pageNumber + 1}`);
-    }
-  });
+    console.log(`[PDF Optimizer] Вставлен top-level разрыв перед страницей #${fragment.pageNumber}`);
+  }
 
   // Синхронизируем значение
   editor.synchronizeValues();
