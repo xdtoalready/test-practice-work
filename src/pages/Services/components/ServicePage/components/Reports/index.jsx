@@ -47,8 +47,48 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
       console.log('[Reports] Получаем контент через prepare_tasks...');
       const prepareResponse = await http.get(`/api/reports/${stage?.id}/prepare_tasks`);
 
-      const htmlContent = prepareResponse.data?.data || prepareResponse.data || '';
+      console.log('[Reports] Полный ответ от prepare_tasks:', prepareResponse);
+      console.log('[Reports] prepareResponse.data:', prepareResponse.data);
+      console.log('[Reports] Тип prepareResponse.data:', typeof prepareResponse.data);
+
+      // Умное извлечение HTML контента из ответа API
+      let htmlContent = '';
+      const responseData = prepareResponse.data;
+
+      if (typeof responseData === 'string') {
+        // Вариант 1: data - это строка напрямую
+        htmlContent = responseData;
+        console.log('[Reports] Используем prepareResponse.data как строку');
+      } else if (responseData && typeof responseData === 'object') {
+        // Вариант 2: data - это объект, ищем HTML в известных свойствах
+        console.log('[Reports] Ответ - объект, ищем HTML контент в свойствах...');
+        console.log('[Reports] Ключи объекта:', Object.keys(responseData));
+
+        // Пробуем разные варианты названий свойств
+        const possibleKeys = ['data', 'html', 'content', 'tasks', 'body', 'htmlContent'];
+
+        for (const key of possibleKeys) {
+          if (responseData[key] && typeof responseData[key] === 'string') {
+            htmlContent = responseData[key];
+            console.log(`[Reports] Найден HTML контент в свойстве '${key}'`);
+            break;
+          }
+        }
+
+        // Если не нашли в известных свойствах, логируем весь объект
+        if (!htmlContent) {
+          console.warn('[Reports] Не удалось найти HTML контент в известных свойствах');
+          console.warn('[Reports] Полная структура responseData:', JSON.stringify(responseData, null, 2));
+        }
+      }
+
       console.log('[Reports] Получен HTML контент:', htmlContent);
+      console.log('[Reports] Длина контента:', htmlContent.length);
+
+      // Проверяем, что контент не пустой
+      if (!htmlContent || htmlContent.trim().length === 0) {
+        throw new Error('Получен пустой HTML контент от prepare_tasks. Проверьте структуру ответа API.');
+      }
 
       // Шаг 2: Разбиваем контент на страницы (с предзагрузкой изображений)
       console.log('[Reports] Разбиваем контент на страницы...');

@@ -21,8 +21,49 @@ const CreateReportModal = ({ stageId, onClose, onSuccess }) => {
       console.log('[CreateReportModal] Получаем контент через prepare_tasks...');
       const prepareResponse = await http.get(`/api/reports/${stageId}/prepare_tasks`);
 
-      const htmlContent = prepareResponse.data?.data || prepareResponse.data || '';
+      // ВАЖНО: Логируем полную структуру ответа для отладки
+      console.log('[CreateReportModal] Полный ответ от prepare_tasks:', prepareResponse);
+      console.log('[CreateReportModal] prepareResponse.data:', prepareResponse.data);
+      console.log('[CreateReportModal] Тип prepareResponse.data:', typeof prepareResponse.data);
+
+      // Умное извлечение HTML контента из ответа API
+      let htmlContent = '';
+      const responseData = prepareResponse.data;
+
+      if (typeof responseData === 'string') {
+        // Вариант 1: data - это строка напрямую
+        htmlContent = responseData;
+        console.log('[CreateReportModal] Используем prepareResponse.data как строку');
+      } else if (responseData && typeof responseData === 'object') {
+        // Вариант 2: data - это объект, ищем HTML в известных свойствах
+        console.log('[CreateReportModal] Ответ - объект, ищем HTML контент в свойствах...');
+        console.log('[CreateReportModal] Ключи объекта:', Object.keys(responseData));
+
+        // Пробуем разные варианты названий свойств
+        const possibleKeys = ['data', 'html', 'content', 'tasks', 'body', 'htmlContent'];
+
+        for (const key of possibleKeys) {
+          if (responseData[key] && typeof responseData[key] === 'string') {
+            htmlContent = responseData[key];
+            console.log(`[CreateReportModal] Найден HTML контент в свойстве '${key}'`);
+            break;
+          }
+        }
+
+        // Если не нашли в известных свойствах, логируем весь объект
+        if (!htmlContent) {
+          console.warn('[CreateReportModal] Не удалось найти HTML контент в известных свойствах');
+          console.warn('[CreateReportModal] Полная структура responseData:', JSON.stringify(responseData, null, 2));
+        }
+      }
+
       console.log('[CreateReportModal] Получен HTML контент:', htmlContent);
+      console.log('[CreateReportModal] Длина контента:', htmlContent.length);
+
+      // Проверяем, что контент не пустой
+      if (!htmlContent || htmlContent.trim().length === 0) {
+        throw new Error('Получен пустой HTML контент от prepare_tasks. Проверьте структуру ответа API.');
+      }
 
       // Шаг 2: Разбиваем контент на страницы (с предзагрузкой изображений)
       console.log('[CreateReportModal] Разбиваем контент на страницы...');
