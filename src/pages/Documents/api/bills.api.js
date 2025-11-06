@@ -43,7 +43,7 @@ const useBillsApi = () => {
       period: getQueryParam('period'),
       document_type:type,
       company_id: getQueryParam('company_id'),
-      
+      legal_entity_id: getQueryParam('legal_entity_id'),
     });
 
     let params = { page };
