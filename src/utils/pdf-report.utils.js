@@ -2,9 +2,54 @@
  * Утилиты для разбивки HTML контента отчётов на страницы PDF
  */
 
-const PAGE_HEIGHT = 900; // px - высота страницы PDF
+const PAGE_HEIGHT_LIMIT = 900; // px - точный лимит высоты контента на странице
 const PAGE_WIDTH = 1920; // px - ширина страницы PDF
-const CONTENT_PADDING = 50; // px - отступы контента
+
+/**
+ * Предзагружает все изображения из HTML контента
+ * Важно для правильного измерения высоты элементов с base64 картинками
+ */
+async function preloadImages(htmlContent) {
+  console.log('[PDF Report] Начало предзагрузки изображений');
+
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = htmlContent;
+  const images = tempDiv.querySelectorAll('img');
+
+  console.log('[PDF Report] Найдено изображений:', images.length);
+
+  if (images.length === 0) {
+    console.log('[PDF Report] Изображений нет, пропускаем предзагрузку');
+    return;
+  }
+
+  const loadPromises = Array.from(images).map((img, index) => {
+    return new Promise((resolve) => {
+      if (img.complete && img.naturalHeight !== 0) {
+        console.log(`[PDF Report] Изображение #${index} уже загружено (${img.naturalWidth}x${img.naturalHeight})`);
+        resolve();
+      } else {
+        img.onload = () => {
+          console.log(`[PDF Report] Изображение #${index} загружено (${img.naturalWidth}x${img.naturalHeight})`);
+          resolve();
+        };
+        img.onerror = () => {
+          console.warn(`[PDF Report] Ошибка загрузки изображения #${index}`);
+          resolve(); // Resolve даже при ошибке, чтобы не блокировать
+        };
+
+        // Устанавливаем таймаут на случай зависания
+        setTimeout(() => {
+          console.warn(`[PDF Report] Таймаут загрузки изображения #${index}`);
+          resolve();
+        }, 10000); // 10 секунд максимум на одно изображение
+      }
+    });
+  });
+
+  await Promise.all(loadPromises);
+  console.log('[PDF Report] Все изображения загружены');
+}
 
 /**
  * Создает HTML маркера разрыва страницы
@@ -90,11 +135,14 @@ function splitListElement(listElement, pageLimit, measureContainer, availableHei
 /**
  * Разбивает HTML контент на страницы с маркерами page-break
  * @param {string} htmlContent - HTML контент для разбивки
- * @returns {string} - HTML с добавленными разрывами страниц
+ * @returns {Promise<string>} - HTML с добавленными разрывами страниц
  */
-export function splitHtmlIntoPages(htmlContent) {
+export async function splitHtmlIntoPages(htmlContent) {
   console.log('[PDF Report] Начало разбивки HTML контента');
   console.log('[PDF Report] Входной HTML:', htmlContent);
+
+  // ВАЖНО: Сначала предзагружаем все изображения
+  await preloadImages(htmlContent);
 
   // Создаем временный контейнер для парсинга HTML
   const tempContainer = document.createElement('div');
@@ -119,7 +167,7 @@ export function splitHtmlIntoPages(htmlContent) {
     position: absolute;
     left: -9999px;
     top: -9999px;
-    width: ${PAGE_WIDTH - CONTENT_PADDING * 2}px;
+    width: ${PAGE_WIDTH}px;
     visibility: hidden;
     font-family: inherit;
     font-size: inherit;
@@ -132,9 +180,8 @@ export function splitHtmlIntoPages(htmlContent) {
   let currentFragment = [];
   let currentHeight = 0;
   let pageNumber = 1;
-  const pageLimit = PAGE_HEIGHT - CONTENT_PADDING * 2;
 
-  console.log('[PDF Report] Лимит высоты страницы:', pageLimit, 'px');
+  console.log('[PDF Report] Лимит высоты страницы:', PAGE_HEIGHT_LIMIT, 'px');
 
   elements.forEach((el, index) => {
     const clone = el.cloneNode(true);
@@ -145,11 +192,11 @@ export function splitHtmlIntoPages(htmlContent) {
     console.log(`[PDF Report] Элемент #${index} (${el.tagName}): ${elHeight}px, текущая высота: ${currentHeight}px`);
 
     // Если элемент - список и он слишком большой, разбиваем его
-    if ((el.tagName === 'OL' || el.tagName === 'UL') && elHeight > pageLimit) {
-      console.log(`[PDF Report] Элемент ${el.tagName} слишком большой (${elHeight}px > ${pageLimit}px), разбиваю на части`);
+    if ((el.tagName === 'OL' || el.tagName === 'UL') && elHeight > PAGE_HEIGHT_LIMIT) {
+      console.log(`[PDF Report] Элемент ${el.tagName} слишком большой (${elHeight}px > ${PAGE_HEIGHT_LIMIT}px), разбиваю на части`);
 
-      const availableHeight = pageLimit - currentHeight;
-      const listParts = splitListElement(el, pageLimit, measureContainer, availableHeight);
+      const availableHeight = PAGE_HEIGHT_LIMIT - currentHeight;
+      const listParts = splitListElement(el, PAGE_HEIGHT_LIMIT, measureContainer, availableHeight);
 
       console.log(`[PDF Report] Список разбит на ${listParts.length} частей`);
 
@@ -160,7 +207,7 @@ export function splitHtmlIntoPages(htmlContent) {
 
         console.log(`[PDF Report]   Часть #${partIndex + 1}: ${partHeight}px`);
 
-        if (partIndex === 0 && currentHeight + partHeight <= pageLimit) {
+        if (partIndex === 0 && currentHeight + partHeight <= PAGE_HEIGHT_LIMIT) {
           currentFragment.push(listPart);
           currentHeight += partHeight;
         } else {
@@ -181,7 +228,7 @@ export function splitHtmlIntoPages(htmlContent) {
     }
 
     // Обычная обработка элемента
-    if (currentHeight + elHeight > pageLimit && currentFragment.length > 0) {
+    if (currentHeight + elHeight > PAGE_HEIGHT_LIMIT && currentFragment.length > 0) {
       console.log(`[PDF Report] Элемент не влез, создаю страницу #${pageNumber}`);
 
       fragments.push({

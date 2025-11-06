@@ -50,9 +50,9 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
       const htmlContent = prepareResponse.data?.data || prepareResponse.data || '';
       console.log('[Reports] Получен HTML контент:', htmlContent);
 
-      // Шаг 2: Разбиваем контент на страницы
+      // Шаг 2: Разбиваем контент на страницы (с предзагрузкой изображений)
       console.log('[Reports] Разбиваем контент на страницы...');
-      const splitContent = splitHtmlIntoPages(htmlContent);
+      const splitContent = await splitHtmlIntoPages(htmlContent);
       console.log('[Reports] Разбитый контент:', splitContent);
 
       // Шаг 3: Отправляем на refresh (теперь POST с телом)
