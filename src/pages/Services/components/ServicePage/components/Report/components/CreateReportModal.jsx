@@ -24,9 +24,9 @@ const CreateReportModal = ({ stageId, onClose, onSuccess }) => {
       const htmlContent = prepareResponse.data?.data || prepareResponse.data || '';
       console.log('[CreateReportModal] Получен HTML контент:', htmlContent);
 
-      // Шаг 2: Разбиваем контент на страницы
+      // Шаг 2: Разбиваем контент на страницы (с предзагрузкой изображений)
       console.log('[CreateReportModal] Разбиваем контент на страницы...');
-      const splitContent = splitHtmlIntoPages(htmlContent);
+      const splitContent = await splitHtmlIntoPages(htmlContent);
       console.log('[CreateReportModal] Разбитый контент:', splitContent);
 
       // Шаг 3: Отправляем на generate (теперь POST с телом)
