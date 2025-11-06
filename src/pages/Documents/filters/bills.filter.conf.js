@@ -165,6 +165,20 @@ export const createBillsFilters = ({
           placeholder: 'Поиск клиента'
         },
         toUrlValue: values => values ? values.map(v => v.value).join(',') : ''
+      },
+      {
+        type: 'select',
+        name: 'legal_entity_id',
+        label: 'Юридическое лицо',
+        props: {
+          isMulti: false,
+          options: [
+            { value: '1', label: 'ИП Шилов Александр Александрович' },
+            { value: '2', label: 'ООО "СОВРЕМЕННЫЙ МАРКЕТИНГ"' },
+            { value: '3', label: 'ООО "СМ-РЕКЛАМА"' },
+          ],
+        },
+        toUrlValue: (values) => values?.value || '',
       }
     ],
   };
