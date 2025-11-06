@@ -22,6 +22,12 @@ export const periodEnumRu = {
   year: 'Год',
 };
 
+export const legalEntityEnum = {
+  1: 'ИП Шилов Александр Александрович',
+  2: 'ООО "СОВРЕМЕННЫЙ МАРКЕТИНГ"',
+  3: 'ООО "СМ-РЕКЛАМА"',
+};
+
 export const createBillsFilters = ({
   appApi,
   periodSelectorRef,
@@ -172,13 +178,23 @@ export const createBillsFilters = ({
         label: 'Юридическое лицо',
         props: {
           isMulti: false,
-          options: [
-            { value: '1', label: 'ИП Шилов Александр Александрович' },
-            { value: '2', label: 'ООО "СОВРЕМЕННЫЙ МАРКЕТИНГ"' },
-            { value: '3', label: 'ООО "СМ-РЕКЛАМА"' },
-          ],
+          options: Object.entries(legalEntityEnum).map(([value, label]) => ({
+            value,
+            label,
+          })),
         },
-        toUrlValue: (values) => values?.value || '',
+        decodeUrlValue: (value) => {
+          const decodedValue = decodeURIComponent(value);
+          const label = legalEntityEnum[decodedValue];
+          return label ? { value: decodedValue, label } : null;
+        },
+        toUrlValue: (values) => {
+          return values
+            ? Array.isArray(values)
+              ? values[0]?.value
+              : values?.value
+            : '';
+        },
       }
     ],
   };
