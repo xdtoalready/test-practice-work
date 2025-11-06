@@ -10,12 +10,14 @@ import CreateReportModal from '../Report/components/CreateReportModal';
 import ConfirmationModal from '../../../../../../components/ConfirmationModal';
 import { handleInfo, handleError } from '../../../../../../utils/snackbar';
 import { http, handleHttpError } from '../../../../../../shared/http';
+import { splitHtmlIntoPages } from '../../../../../../utils/pdf-report.utils';
 
 const Reports = observer(({ company, service, stage, reports = [], onReportGenerated }) => {
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isRefreshModalOpen, setIsRefreshModalOpen] = useState(false);
   const [selectedReport, setSelectedReport] = useState(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleDeleteReport = async () => {
     try {
@@ -36,7 +38,30 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
 
   const handleRefreshReport = async () => {
     try {
-      await http.get(`/api/reports/${selectedReport.id}/refresh`);
+      setIsRefreshing(true);
+
+      console.log('[Reports] Начало обновления отчёта:', selectedReport.id);
+      console.log('[Reports] Stage ID:', stage?.id);
+
+      // Шаг 1: Получаем контент через prepare_tasks для stage
+      console.log('[Reports] Получаем контент через prepare_tasks...');
+      const prepareResponse = await http.get(`/api/reports/${stage?.id}/prepare_tasks`);
+
+      const htmlContent = prepareResponse.data?.data || prepareResponse.data || '';
+      console.log('[Reports] Получен HTML контент:', htmlContent);
+
+      // Шаг 2: Разбиваем контент на страницы
+      console.log('[Reports] Разбиваем контент на страницы...');
+      const splitContent = splitHtmlIntoPages(htmlContent);
+      console.log('[Reports] Разбитый контент:', splitContent);
+
+      // Шаг 3: Отправляем на refresh (теперь POST с телом)
+      console.log('[Reports] Отправляем на refresh для report:', selectedReport.id);
+      await http.post(`/api/reports/${selectedReport.id}/refresh`, {
+        tasks: splitContent
+      });
+
+      console.log('[Reports] Отчёт обновлён');
       handleInfo('Отчет обновлен');
       setIsRefreshModalOpen(false);
       setSelectedReport(null);
@@ -44,10 +69,12 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
         onReportGenerated();
       }
     } catch (error) {
-      console.error('Ошибка при обновлении отчета:', error);
+      console.error('[Reports] Ошибка при обновлении отчета:', error);
       handleHttpError(error);
       handleError('Ошибка при обновлении отчета');
       setIsRefreshModalOpen(false);
+    } finally {
+      setIsRefreshing(false);
     }
   };
 
@@ -157,23 +184,28 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
         id: 'refresh',
         Cell: ({ row }) => {
           const data = row?.original;
+          const isDisabled = isRefreshing && selectedReport?.id === data.id;
           return (
             <div
               onClick={() => {
-                setSelectedReport(data);
-                setIsRefreshModalOpen(true);
+                if (!isRefreshing) {
+                  setSelectedReport(data);
+                  setIsRefreshModalOpen(true);
+                }
               }}
               style={{
-                cursor: 'pointer',
+                cursor: isDisabled ? 'not-allowed' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 width: '24px',
                 height: '24px',
-                backgroundColor: '#FF6A55',
+                backgroundColor: isDisabled ? '#ccc' : '#FF6A55',
                 color: 'white',
                 padding: '0',
                 borderRadius: '50%',
+                opacity: isDisabled ? 0.6 : 1,
+                pointerEvents: isRefreshing ? 'none' : 'auto',
               }}
             >
               <Icon size={12} name={'refresh'} fill={'#FFF'} />
@@ -182,7 +214,7 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
         },
       },
     ],
-    [],
+    [isRefreshing, selectedReport],
   );
 
   const data = useMemo(() => reports ?? [], [reports]);
@@ -232,11 +264,14 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
         <ConfirmationModal
           isOpen={isRefreshModalOpen}
           onClose={() => {
-            setIsRefreshModalOpen(false);
-            setSelectedReport(null);
+            if (!isRefreshing) {
+              setIsRefreshModalOpen(false);
+              setSelectedReport(null);
+            }
           }}
           onConfirm={handleRefreshReport}
-          label="Вы действительно хотите обновить отчет?"
+          label={isRefreshing ? "Разбиваем на страницы..." : "Вы действительно хотите обновить отчет?"}
+          disabled={isRefreshing}
         />
       )}
     </div>
