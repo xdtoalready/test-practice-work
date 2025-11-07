@@ -79,6 +79,153 @@ export function calculateContentHeight(editor) {
 }
 
 /**
+ * Очищает элемент от мусорных атрибутов Jodit
+ */
+function cleanJoditAttributes(element) {
+  const joditAttributes = ['data-start', 'data-end', 'data-is-last-node'];
+  joditAttributes.forEach(attr => {
+    if (element.hasAttribute(attr)) {
+      element.removeAttribute(attr);
+    }
+  });
+
+  // Рекурсивно очищаем дочерние элементы
+  Array.from(element.children).forEach(child => cleanJoditAttributes(child));
+}
+
+/**
+ * Извлекает текстовое содержимое из начала LI (до первого блочного элемента)
+ */
+function extractLiText(li) {
+  const textParts = [];
+  let node = li.firstChild;
+
+  while (node) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent.trim();
+      if (text) textParts.push(text);
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      const tag = node.tagName.toLowerCase();
+      // Если это инлайн элемент (a, span, strong, em, br и т.д.)
+      if (['a', 'span', 'strong', 'b', 'em', 'i', 'u', 's', 'br', 'code'].includes(tag)) {
+        textParts.push(node.outerHTML);
+      } else {
+        // Встретили блочный элемент - останавливаемся
+        break;
+      }
+    }
+    node = node.nextSibling;
+  }
+
+  return textParts.join(' ').trim();
+}
+
+/**
+ * Извлекает вложенные блочные элементы из LI
+ */
+function extractNestedBlocks(li) {
+  const blocks = [];
+  let node = li.firstChild;
+  let skipInitialInline = true;
+
+  while (node) {
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const tag = node.tagName.toLowerCase();
+      // Пропускаем начальные инлайн элементы и текст
+      if (skipInitialInline && ['a', 'span', 'strong', 'b', 'em', 'i', 'u', 's', 'br', 'code'].includes(tag)) {
+        node = node.nextSibling;
+        continue;
+      }
+      // Встретили первый блочный элемент
+      skipInitialInline = false;
+
+      // Добавляем блочный элемент
+      if (!['a', 'span', 'strong', 'b', 'em', 'i', 'u', 's', 'br', 'code'].includes(tag)) {
+        blocks.push(node.cloneNode(true));
+      }
+    } else if (node.nodeType === Node.TEXT_NODE && !skipInitialInline) {
+      const text = node.textContent.trim();
+      if (text) {
+        // Создаем параграф для текста
+        const p = document.createElement('p');
+        p.textContent = text;
+        blocks.push(p);
+      }
+    }
+    node = node.nextSibling;
+  }
+
+  return blocks;
+}
+
+/**
+ * Разворачивает (flatten) структуру списков, извлекая вложенные элементы
+ */
+function flattenListStructure(elements) {
+  console.log('[PDF Optimizer] Разворачиваю структуру списков');
+
+  const flattened = [];
+
+  elements.forEach((el, index) => {
+    if (el.tagName === 'OL' || el.tagName === 'UL') {
+      console.log(`[PDF Optimizer] Обрабатываю список ${el.tagName}`, el);
+
+      const listItems = Array.from(el.children).filter(child => child.tagName === 'LI');
+
+      listItems.forEach((li, liIndex) => {
+        cleanJoditAttributes(li);
+
+        // Извлекаем текст заголовка LI
+        const liText = extractLiText(li);
+
+        // Извлекаем вложенные блоки
+        const nestedBlocks = extractNestedBlocks(li);
+
+        console.log(`[PDF Optimizer]   LI #${liIndex}: текст="${liText}", вложенных блоков=${nestedBlocks.length}`);
+
+        // Создаем новый "чистый" список с одним элементом
+        const newList = el.cloneNode(false);
+        const newLi = document.createElement('li');
+
+        // Копируем только текстовое содержимое (без вложенных блоков)
+        if (liText) {
+          newLi.innerHTML = liText;
+        } else {
+          newLi.textContent = li.textContent.split('\n')[0].trim();
+        }
+
+        newList.appendChild(newLi);
+
+        // Копируем атрибуты списка
+        Array.from(el.attributes).forEach(attr => {
+          newList.setAttribute(attr.name, attr.value);
+        });
+
+        // Для OL корректируем нумерацию
+        if (el.tagName === 'OL') {
+          const startNumber = parseInt(el.getAttribute('start') || '1', 10);
+          newList.setAttribute('start', startNumber + liIndex);
+        }
+
+        flattened.push(newList);
+
+        // Добавляем вложенные блоки как отдельные элементы
+        nestedBlocks.forEach(block => {
+          cleanJoditAttributes(block);
+          flattened.push(block);
+        });
+      });
+    } else {
+      cleanJoditAttributes(el);
+      flattened.push(el);
+    }
+  });
+
+  console.log(`[PDF Optimizer] Развернуто: ${elements.length} -> ${flattened.length} элементов`);
+  return flattened;
+}
+
+/**
  * Разбивает список (OL/UL) на части по элементам LI
  * @param {HTMLElement} listElement - элемент списка (OL или UL)
  * @param {number} pageLimit - лимит высоты страницы
@@ -186,11 +333,17 @@ export function optimizeForPDF(editor) {
   }
 
   // Получаем ТОЛЬКО top-level элементы (не трогаем вложенные!)
-  const elements = Array.from(editorElement.children).filter(
+  let elements = Array.from(editorElement.children).filter(
     el => !el.classList.contains('pdf-page-break')
   );
 
   console.log('[PDF Optimizer] Найдено top-level элементов:', elements.length);
+  console.log('[PDF Optimizer] Типы элементов:', elements.map(el => el.tagName).join(', '));
+
+  // НОВОЕ: Разворачиваем вложенные структуры списков
+  elements = flattenListStructure(elements);
+
+  console.log('[PDF Optimizer] После разворачивания элементов:', elements.length);
   console.log('[PDF Optimizer] Типы элементов:', elements.map(el => el.tagName).join(', '));
 
   if (elements.length === 0) {
