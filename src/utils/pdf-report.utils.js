@@ -339,8 +339,6 @@ export async function splitHtmlIntoPages(htmlContent) {
     font-family: 'Times New Roman', Times, serif;
     font-size: 16px;
     line-height: 1.5;
-    padding: 20px;
-    box-sizing: border-box;
   `;
 
   document.body.appendChild(measureContainer);
