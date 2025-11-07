@@ -47,6 +47,9 @@ export const EditorJsTools = {
     'paragraph',
     'brush',
     '|',
+    'ul',
+    'ol',
+    '|',
     'table',
     'link',
     '|',
@@ -67,21 +70,30 @@ export const EditorJsTools = {
   disablePlugins: ['mobile'],
   iframe: false,
 
+  // Контроль тега при нажатии Enter (используется <p>)
+  enter: 'p',
+
   // Настройки очистки стилей при вставке
   askBeforePasteHTML: false,
   askBeforePasteFromWord: false,
   defaultActionOnPaste: 'insert_clear_html',
   processPasteHTML: true,
 
+  // Настройки для очистки пустых блоков
+  cleaner: {
+    removeEmptyBlocks: true,  // Удаляет пустые <p></p>, <div></div> и т.д.
+  },
+
   // Настройки нормализации HTML
   cleanHTML: {
     removeEmptyElements: true,
-    fillEmptyParagraph: false,
+    fillEmptyParagraph: false,  // НЕ заполнять пустые параграфы &nbsp;
     replaceNBSP: true,
     replaceOldTags: {
       i: 'em',
       b: 'strong',
     },
+    cleanOnPaste: true,  // Очищать HTML при вставке
     allowTags: {
       p: true,
       br: true,
