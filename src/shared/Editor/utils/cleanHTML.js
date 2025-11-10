@@ -1,113 +1,144 @@
 /**
- * Очищает HTML от лишнего экранирования
+ * Очищает HTML от лишнего экранирования и HTML entities
  *
- * Проблема: при сохранении/загрузке контента могут появляться множественные экранирования:
- * - \\\&quot; вместо "
- * - \&quot; вместо "
+ * Проблема: при сохранении/загрузке контента появляются экранированные кавычки:
  * - start="\&quot;1\&quot;" вместо start="1"
+ * - href="\\\&quot;https://...\\\&quot;" вместо href="https://..."
  *
- * Эта функция рекурсивно очищает все такие экранирования
+ * Решение: используем браузерный парсер для правильной обработки HTML
  */
 
 /**
- * Декодирует HTML entities и убирает лишнее экранирование
- * @param {string} html - HTML строка с возможным экранированием
- * @returns {string} - Очищенная HTML строка
+ * Декодирует HTML entities используя браузерный механизм
+ * @param {string} text - Текст с HTML entities
+ * @returns {string} - Декодированный текст
  */
-export function cleanHTML(html) {
-  if (!html || typeof html !== 'string') {
-    return html;
+function decodeHTMLEntities(text) {
+  if (!text || typeof text !== 'string') {
+    return text;
   }
 
-  let cleaned = html;
+  const textarea = document.createElement('textarea');
+  textarea.innerHTML = text;
+  return textarea.value;
+}
 
-  // Убираем множественное экранирование обратных слешей перед &quot;
-  // \\\&quot; -> &quot;
-  // \\&quot; -> &quot;
+/**
+ * Очищает значение атрибута от экранирования
+ * @param {string} value - Значение атрибута
+ * @returns {string} - Очищенное значение
+ */
+function cleanAttributeValue(value) {
+  if (!value) return value;
+
+  let cleaned = value;
+
+  // Убираем обратные слеши перед &quot;
   // \&quot; -> &quot;
+  // \\&quot; -> &quot;
+  // \\\&quot; -> &quot;
   cleaned = cleaned.replace(/\\+&quot;/g, '&quot;');
 
-  // Убираем обратные слеши перед кавычками
+  // Убираем обратные слеши перед обычными кавычками
   // \" -> "
-  cleaned = cleaned.replace(/\\"/g, '"');
+  cleaned = cleaned.replace(/\\+"/g, '"');
 
   // Декодируем HTML entities
-  // &quot; -> "
-  // &amp; -> &
-  // &lt; -> <
-  // &gt; -> >
-  cleaned = cleaned.replace(/&quot;/g, '"');
-  cleaned = cleaned.replace(/&amp;/g, '&');
-  cleaned = cleaned.replace(/&lt;/g, '<');
-  cleaned = cleaned.replace(/&gt;/g, '>');
-  cleaned = cleaned.replace(/&nbsp;/g, ' ');
+  cleaned = decodeHTMLEntities(cleaned);
 
-  // Очищаем атрибуты с экранированными значениями
-  // Например: start="\&quot;1\&quot;" -> start="1"
-  // href="\&quot;http://...\&quot;" -> href="http://..."
-  cleaned = cleaned.replace(/(\w+)=["']\\*&quot;(.+?)\\*&quot;["']/g, '$1="$2"');
-
-  // Убираем экранированные кавычки в атрибутах
-  // start="\"1\"" -> start="1"
-  cleaned = cleaned.replace(/(\w+)=["']\\"(.+?)\\"["']/g, '$1="$2"');
+  // Убираем оставшиеся кавычки в начале и конце (если они есть)
+  cleaned = cleaned.replace(/^["']+|["']+$/g, '');
 
   return cleaned;
 }
 
 /**
- * Рекурсивно очищает HTML до тех пор, пока не останется экранирования
+ * Очищает HTML используя DOMParser
  * @param {string} html - HTML строка
- * @param {number} maxIterations - Максимальное количество итераций (защита от бесконечного цикла)
- * @returns {string} - Полностью очищенная HTML строка
- */
-export function deepCleanHTML(html, maxIterations = 10) {
-  if (!html || typeof html !== 'string') {
-    return html;
-  }
-
-  let cleaned = html;
-  let previousCleaned = '';
-  let iterations = 0;
-
-  // Повторяем очистку пока есть изменения
-  while (cleaned !== previousCleaned && iterations < maxIterations) {
-    previousCleaned = cleaned;
-    cleaned = cleanHTML(cleaned);
-    iterations++;
-  }
-
-  console.log(`[cleanHTML] Очищено за ${iterations} итераций`);
-
-  return cleaned;
-}
-
-/**
- * Очищает HTML и исправляет распространенные проблемы
- * @param {string} html - HTML строка
- * @returns {string} - Очищенная и исправленная HTML строка
+ * @returns {string} - Очищенная HTML строка
  */
 export function sanitizeHTML(html) {
   if (!html || typeof html !== 'string') {
     return html;
   }
 
-  let sanitized = deepCleanHTML(html);
+  console.log('[cleanHTML] Начинаем очистку HTML');
 
-  // Исправляем атрибуты списков с неправильными значениями
-  // <ol start="1"> вместо <ol start="\&quot;1\&quot;">
-  sanitized = sanitized.replace(/<(ol|ul)([^>]*)start=["']([^"']+)["']/gi, (match, tag, attrs, value) => {
-    // Убираем все экранирования из значения start
-    const cleanValue = value.replace(/["'\\]/g, '');
-    return `<${tag}${attrs}start="${cleanValue}"`;
+  // Сначала делаем предварительную очистку строки
+  let cleaned = html;
+
+  // Убираем множественные обратные слеши перед &quot;
+  cleaned = cleaned.replace(/\\+&quot;/g, '&quot;');
+
+  // Создаем временный div для парсинга HTML
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = cleaned;
+
+  // Проходим по всем элементам и очищаем атрибуты
+  const allElements = tempDiv.querySelectorAll('*');
+
+  allElements.forEach((element) => {
+    // Очищаем атрибут start для списков (ol/ul)
+    if (element.hasAttribute('start')) {
+      const startValue = element.getAttribute('start');
+      const cleanedStart = cleanAttributeValue(startValue);
+
+      // Если значение не является числом, удаляем атрибут
+      const numValue = parseInt(cleanedStart, 10);
+      if (!isNaN(numValue)) {
+        element.setAttribute('start', numValue.toString());
+      } else {
+        element.removeAttribute('start');
+      }
+    }
+
+    // Очищаем атрибут href для ссылок
+    if (element.hasAttribute('href')) {
+      const hrefValue = element.getAttribute('href');
+      const cleanedHref = cleanAttributeValue(hrefValue);
+      element.setAttribute('href', cleanedHref);
+    }
+
+    // Очищаем атрибут src для изображений
+    if (element.hasAttribute('src')) {
+      const srcValue = element.getAttribute('src');
+      const cleanedSrc = cleanAttributeValue(srcValue);
+      element.setAttribute('src', cleanedSrc);
+    }
+
+    // Удаляем инлайн стили letter-spacing (это мусор от Word)
+    if (element.hasAttribute('style')) {
+      const style = element.getAttribute('style');
+      if (style.includes('letter-spacing')) {
+        // Убираем letter-spacing из стилей
+        const cleanedStyle = style
+          .split(';')
+          .filter(s => !s.trim().startsWith('letter-spacing'))
+          .join(';')
+          .trim();
+
+        if (cleanedStyle) {
+          element.setAttribute('style', cleanedStyle);
+        } else {
+          element.removeAttribute('style');
+        }
+      }
+    }
   });
 
-  // Исправляем URL в атрибутах href и src
-  // Убираем лишние кавычки и экранирование
-  sanitized = sanitized.replace(/(href|src)=["']([^"']+)["']/gi, (match, attr, url) => {
-    // Убираем экранированные кавычки из URL
-    const cleanUrl = url.replace(/["'\\]/g, '');
-    return `${attr}="${cleanUrl}"`;
-  });
+  const result = tempDiv.innerHTML;
+  console.log('[cleanHTML] Очистка завершена');
 
-  return sanitized;
+  return result;
+}
+
+/**
+ * Для обратной совместимости
+ */
+export function cleanHTML(html) {
+  return sanitizeHTML(html);
+}
+
+export function deepCleanHTML(html) {
+  return sanitizeHTML(html);
 }
