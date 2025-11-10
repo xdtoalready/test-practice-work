@@ -5,7 +5,8 @@ import InlineCode from '@editorjs/inline-code';
 import Marker from '@editorjs/marker';
 import BreakLine from 'editorjs-break-line';
 
-export const EditorJsTools = {
+// Базовая конфигурация для обычных редакторов
+const baseConfig = {
   uploader: {
     insertImageAsBase64URI: true,
     imagesExtensions: ['jpg', 'png', 'jpeg'],
@@ -37,7 +38,7 @@ export const EditorJsTools = {
   buttons: [
     'undo',
     'redo',
-      '|',
+    '|',
     'bold',
     'italic',
     'underline',
@@ -51,7 +52,6 @@ export const EditorJsTools = {
     'link',
     '|',
     'pdfOptimize',
-
   ],
   link: {
     processPastedLink: true,
@@ -67,9 +67,44 @@ export const EditorJsTools = {
   disablePlugins: ['mobile'],
   iframe: false,
 
-  // Настройки очистки стилей при вставке
+  // Базовые настройки очистки стилей
   askBeforePasteHTML: false,
   askBeforePasteFromWord: false,
   defaultActionOnPaste: 'insert_clear_html',
   processPasteHTML: true,
 };
+
+// Конфигурация для редакторов с PDF оптимизацией
+export const EditorJsToolsWithPdfOptimization = {
+  ...baseConfig,
+  buttons: [
+    'undo',
+    'redo',
+    '|',
+    'bold',
+    'italic',
+    'underline',
+    'strikethrough',
+    '|',
+    'font',
+    'paragraph',
+    'brush',
+    '|',
+    'ul', // Маркированный список
+    'ol', // Нумерованный список
+    '|',
+    'table',
+    'link',
+    '|',
+    'eraser', // Кнопка "Ластик" для очистки форматирования
+    '|',
+    'pdfOptimize', // Кнопка для разбивки на страницы
+  ],
+  // Настройки очистки стилей при вставке из Word
+  askBeforePasteFromWord: true, // Показываем диалог при вставке из Word
+  defaultActionOnPasteFromWord: 'insert_clear_html', // По умолчанию очищаем стили
+  defaultActionOnPaste: 'insert_clear_html', // Очищаем стили при любой вставке
+};
+
+// Базовая конфигурация (для обратной совместимости)
+export const EditorJsTools = baseConfig;

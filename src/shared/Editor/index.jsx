@@ -25,7 +25,7 @@ import {
   beforeInitDrop,
   beforeInitKeyDown,
 } from './events';
-import { EditorJsTools } from './config';
+import { EditorJsTools, EditorJsToolsWithPdfOptimization } from './config';
 import { editorIcons } from './utils/icons';
 import { EditorContext } from './context/editor.context';
 
@@ -237,10 +237,11 @@ const Editor = forwardRef(
                 controls: controls,
 
                 className: 'jodit-default',
-                ...EditorJsTools,
-                // Условно добавляем кнопку PDF оптимизации
+                // Используем разные конфигурации в зависимости от enablePdfOptimization
+                ...(enablePdfOptimization ? EditorJsToolsWithPdfOptimization : EditorJsTools),
+                // Для обычных редакторов убираем кнопку PDF оптимизации
                 buttons: enablePdfOptimization
-                  ? EditorJsTools.buttons
+                  ? EditorJsToolsWithPdfOptimization.buttons
                   : EditorJsTools.buttons.filter(btn => btn !== 'pdfOptimize'),
                 placeholder: placeholder || 'Start typing...',
                 minHeight: rest?.height ?? 100,
