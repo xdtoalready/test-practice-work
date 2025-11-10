@@ -28,6 +28,7 @@ import {
 import { EditorJsTools, EditorJsToolsWithPdfOptimization } from './config';
 import { editorIcons } from './utils/icons';
 import { EditorContext } from './context/editor.context';
+import { sanitizeHTML } from './utils/cleanHTML';
 
 // Регистрируем кнопку PDF оптимизации глобально (один раз)
 registerPdfOptimizeButton();
@@ -119,8 +120,11 @@ const Editor = forwardRef(
     }));
     useEffect(() => {
       if (containerRef.current && !editorRef.current) {
+        // Очищаем HTML от лишнего экранирования перед загрузкой
+        const cleanedHTML = sanitizeHTML(initialHTML);
+
         const textarea = document.createElement('textarea');
-        textarea.value = initialHTML || '';
+        textarea.value = cleanedHTML || '';
         textarea.name = name || '';
         containerRef.current.appendChild(textarea);
 
@@ -284,7 +288,7 @@ const Editor = forwardRef(
                 zIndex: 100000,
               };
         editorRef.current = Jodit.make(textarea, configJodit);
-        editorRef.current.value = initialHTML || '';
+        editorRef.current.value = cleanedHTML || '';
         textarea.remove();
 
         registerEditor(editorRef.current);
