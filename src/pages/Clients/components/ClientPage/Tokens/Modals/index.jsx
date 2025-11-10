@@ -10,14 +10,7 @@ import CustomButtonContainer from '../../../../../../shared/Button/CustomButtonC
 import DeleteButton from '../../../../../../shared/Button/Delete';
 import ConfirmationModal from '../../../../../../components/ConfirmationModal';
 
-const CreateSiteModal = ({
-    companyId,
-    onClose,
-    siteId,
-    onSubmit,
-    store,
-    api
-  }) => {
+const CreateSiteModal = ({ companyId, onClose, siteId, onSubmit, store, api }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -27,12 +20,12 @@ const CreateSiteModal = ({
     ymetrics_token: '',
     topvisor_guest_link: '',
   });
+
   const client = useMemo(() => {
     return isEditMode
       ? store.getById(companyId)?.sites?.[siteId]
       : newSite;
   }, [isEditMode, companyId, store.currentClient, store.drafts, newSite]);
-
 
   const handleChange = (name, value, withId = true) => {
 
@@ -66,9 +59,9 @@ const CreateSiteModal = ({
             companyId,
             siteId, null,
             'Сайт клиента обновлен!',
-          )
+          );
       } else {
-        await api.createSite(companyId, newSite)
+        await api.createSite(companyId, newSite);
         handleSubmitSnackbar('Создано контактное лицо!');
       }
       store.submitDraft(companyId);
@@ -80,10 +73,9 @@ const CreateSiteModal = ({
     }
   };
 
-
   const handleDeleteTask = async () => {
     try {
-      await api.deleteSite(companyId, siteId)
+      await api.deleteSite(companyId, siteId);
       handleInfo('Сайт удален');
 
       onClose();
@@ -91,7 +83,6 @@ const CreateSiteModal = ({
       handleInfo('Ошибка при удалении сайта:', e);
     }
   };
-
 
   return (
     <>
@@ -101,94 +92,84 @@ const CreateSiteModal = ({
         onConfirm={handleDeleteTask}
         label="Вы уверены, что хотите удалить данные метрик для сайта?"
       />
-    <FormValidatedModal
-      handleSubmit={()=>{
-        handleSubmit();
-      }}
-      handleClose={handleReset}
-      customButtons={
-        isEditMode && (
-          <CustomButtonContainer>
-            <DeleteButton
-              handleDelete={() => setIsDeleteModalOpen(true)}
-              label={'Удалить доступы к сайту '}
-            />
-          </CustomButtonContainer>
-        )
-      }
-      size={'md'}
-    >
-      <div className={modlaStyles.header}>
-        {isEditMode ? 'Редактирование сайта' : 'Создание сайта'}
-      </div>
-      <div className={modlaStyles.flexDiv}>
-        <TextInput
-          onChange={({ target }) =>
-            handleChange(
-              isEditMode ? `sites.${siteId}.url` : 'url',
-              target.value,
-            )
-          }
-          // name={
-          //   isEditMode ? `sites.${siteId}.url` : 'url'
-          // }
-
-          value={client?.url}
-          edited={true}
-          className={cn(styles.input, modlaStyles.grow)}
-          label={'URL сайта'}
-          required={true}
-          placeholder={'https://example.com'}
-        />
-      </div>
-      <div className={modlaStyles.flexDiv}>
-        <TextInput
-          onChange={({ target }) =>
-            handleChange(
-              isEditMode ? `sites.${siteId}.topvisor_token` : 'topvisor_token',
-              target.value,
-            )
-          }
-          // name={
-          //   isEditMode ? `sites.${siteId}.topvisor_token` : 'topvisor_token'
-          // }
-          value={client?.topvisor_token}
-          edited={true}
-          className={cn(styles.input, modlaStyles.grow)}
-          label={'Id проекта Topvisor'}
-          placeholder={'12345'}
-        />
-        <TextInput
-          onChange={({ target }) =>
-            handleChange(
-              isEditMode ? `sites.${siteId}.ymetrics_token` : 'ymetrics_token',
-              target.value,
-            )
-          }
-          // name={
-          //   isEditMode ? `sites.${siteId}.ymetrics_token` : 'ymetrics_token'
-          // }
-          value={client?.ymetrics_token}
-          edited={true}
-          className={cn(styles.input, modlaStyles.grow)}
-          label={'Id счетчика Яндекс'}
-          placeholder={'67890'}
-        />
-        <TextInput
-          onChange={({ target }) =>
-            handleChange(
-              isEditMode ? `sites.${siteId}.topvisor_guest_link` : 'topvisor_guest_link',
-              target.value,
-            )
-          }
-          value={client?.topvisor_guest_link}
-          edited={true}
-          className={cn(styles.input, modlaStyles.grow)}
-          label={'Гостевая ссылка Topvisor'}
-          placeholder={'https://topvisor.com/guest/...'}
-        />
-      </div>
-    </FormValidatedModal>
+      <FormValidatedModal
+        handleSubmit={() => {
+          handleSubmit();
+        }}
+        handleClose={handleReset}
+        customButtons={
+          isEditMode && (
+            <CustomButtonContainer>
+              <DeleteButton
+                handleDelete={() => setIsDeleteModalOpen(true)}
+                label={'Удалить доступы к сайту '}
+              />
+            </CustomButtonContainer>
+          )
+        }
+        size={'md'}
+      >
+        <div className={modlaStyles.header}>
+          {isEditMode ? 'Редактирование сайта' : 'Добавление сайта'}
+        </div>
+        <div className={modlaStyles.flexDiv}>
+          <TextInput
+            onChange={({ target }) =>
+              handleChange(
+                isEditMode ? `sites.${siteId}.url` : 'url',
+                target.value,
+              )
+            }
+            value={client?.url}
+            edited={true}
+            className={cn(styles.input, modlaStyles.grow)}
+            label={'URL сайта'}
+            required={true}
+            placeholder={'https://example.com'}
+          />
+        </div>
+        <div className={modlaStyles.flexDiv}>
+          <TextInput
+            onChange={({ target }) =>
+              handleChange(
+                isEditMode ? `sites.${siteId}.topvisor_token` : 'topvisor_token',
+                target.value,
+              )
+            }
+            value={client?.topvisor_token}
+            edited={true}
+            className={cn(styles.input, modlaStyles.grow)}
+            label={'Id проекта Topvisor'}
+            placeholder={'12345'}
+          />
+          <TextInput
+            onChange={({ target }) =>
+              handleChange(
+                isEditMode ? `sites.${siteId}.ymetrics_token` : 'ymetrics_token',
+                target.value,
+              )
+            }
+            value={client?.ymetrics_token}
+            edited={true}
+            className={cn(styles.input, modlaStyles.grow)}
+            label={'Id счетчика Яндекс'}
+            placeholder={'67890'}
+          />
+          <TextInput
+            onChange={({ target }) =>
+              handleChange(
+                isEditMode ? `sites.${siteId}.topvisor_guest_link` : 'topvisor_guest_link',
+                target.value,
+              )
+            }
+            value={client?.topvisor_guest_link}
+            edited={true}
+            className={cn(styles.input, modlaStyles.grow)}
+            label={'Гостевая ссылка Topvisor'}
+            placeholder={'https://topvisor.com/guest/...'}
+          />
+        </div>
+      </FormValidatedModal>
     </>
   );
 };

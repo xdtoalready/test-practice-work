@@ -59,167 +59,7 @@ function createPageBreakHTML(pageNumber) {
 }
 
 /**
- * Очищает HTML от экранированных кавычек в атрибутах
- */
-function unescapeHtmlAttributes(html) {
-  // Заменяем экранированные кавычки в атрибутах
-  // start=\"1\" -> start="1"
-  // href=\"...\" -> href="..."
-  return html
-    .replace(/(\w+)=\\"/g, '$1="')  // атрибут=\"  ->  атрибут="
-    .replace(/\\"(\s|>)/g, '"$1');  // \"пробел/закрытие  ->  "пробел/закрытие
-}
-
-/**
- * Очищает элемент от мусорных атрибутов Jodit
- */
-function cleanJoditAttributes(element) {
-  const joditAttributes = ['data-start', 'data-end', 'data-is-last-node'];
-  joditAttributes.forEach(attr => {
-    if (element.hasAttribute(attr)) {
-      element.removeAttribute(attr);
-    }
-  });
-
-  // Рекурсивно очищаем дочерние элементы
-  Array.from(element.children).forEach(child => cleanJoditAttributes(child));
-}
-
-/**
- * Извлекает текстовое содержимое из начала LI (до первого блочного элемента)
- */
-function extractLiText(li) {
-  const textParts = [];
-  let node = li.firstChild;
-
-  while (node) {
-    if (node.nodeType === Node.TEXT_NODE) {
-      const text = node.textContent.trim();
-      if (text) textParts.push(text);
-    } else if (node.nodeType === Node.ELEMENT_NODE) {
-      const tag = node.tagName.toLowerCase();
-      // Если это инлайн элемент (a, span, strong, em, br и т.д.)
-      if (['a', 'span', 'strong', 'b', 'em', 'i', 'u', 's', 'br', 'code'].includes(tag)) {
-        textParts.push(node.outerHTML);
-      } else {
-        // Встретили блочный элемент - останавливаемся
-        break;
-      }
-    }
-    node = node.nextSibling;
-  }
-
-  return textParts.join(' ').trim();
-}
-
-/**
- * Извлекает вложенные блочные элементы из LI
- */
-function extractNestedBlocks(li) {
-  const blocks = [];
-  let node = li.firstChild;
-  let skipInitialInline = true;
-
-  while (node) {
-    if (node.nodeType === Node.ELEMENT_NODE) {
-      const tag = node.tagName.toLowerCase();
-      // Пропускаем начальные инлайн элементы и текст
-      if (skipInitialInline && ['a', 'span', 'strong', 'b', 'em', 'i', 'u', 's', 'br', 'code'].includes(tag)) {
-        node = node.nextSibling;
-        continue;
-      }
-      // Встретили первый блочный элемент
-      skipInitialInline = false;
-
-      // Добавляем блочный элемент
-      if (!['a', 'span', 'strong', 'b', 'em', 'i', 'u', 's', 'br', 'code'].includes(tag)) {
-        blocks.push(node.cloneNode(true));
-      }
-    } else if (node.nodeType === Node.TEXT_NODE && !skipInitialInline) {
-      const text = node.textContent.trim();
-      if (text) {
-        // Создаем параграф для текста
-        const p = document.createElement('p');
-        p.textContent = text;
-        blocks.push(p);
-      }
-    }
-    node = node.nextSibling;
-  }
-
-  return blocks;
-}
-
-/**
- * Разворачивает (flatten) структуру списков, извлекая вложенные элементы
- */
-function flattenListStructure(elements) {
-  console.log('[PDF Report] Разворачиваю структуру списков');
-
-  const flattened = [];
-
-  elements.forEach((el, index) => {
-    if (el.tagName === 'OL' || el.tagName === 'UL') {
-      console.log(`[PDF Report] Обрабатываю список ${el.tagName}`, el);
-
-      const listItems = Array.from(el.children).filter(child => child.tagName === 'LI');
-
-      listItems.forEach((li, liIndex) => {
-        cleanJoditAttributes(li);
-
-        // Извлекаем текст заголовка LI
-        const liText = extractLiText(li);
-
-        // Извлекаем вложенные блоки
-        const nestedBlocks = extractNestedBlocks(li);
-
-        console.log(`[PDF Report]   LI #${liIndex}: текст="${liText}", вложенных блоков=${nestedBlocks.length}`);
-
-        // Создаем новый "чистый" список с одним элементом
-        const newList = el.cloneNode(false);
-        const newLi = document.createElement('li');
-
-        // Копируем только текстовое содержимое (без вложенных блоков)
-        if (liText) {
-          newLi.innerHTML = liText;
-        } else {
-          newLi.textContent = li.textContent.split('\n')[0].trim();
-        }
-
-        newList.appendChild(newLi);
-
-        // Копируем атрибуты списка
-        Array.from(el.attributes).forEach(attr => {
-          newList.setAttribute(attr.name, attr.value);
-        });
-
-        // Для OL корректируем нумерацию
-        if (el.tagName === 'OL') {
-          const startNumber = parseInt(el.getAttribute('start') || '1', 10);
-          newList.setAttribute('start', startNumber + liIndex);
-        }
-
-        flattened.push(newList);
-
-        // Добавляем вложенные блоки как отдельные элементы
-        nestedBlocks.forEach(block => {
-          cleanJoditAttributes(block);
-          flattened.push(block);
-        });
-      });
-    } else {
-      cleanJoditAttributes(el);
-      flattened.push(el);
-    }
-  });
-
-  console.log(`[PDF Report] Развернуто: ${elements.length} -> ${flattened.length} элементов`);
-  return flattened;
-}
-
-/**
  * Разбивает список (OL/UL) на части по элементам LI
- * ВАЖНО: Теперь списки должны содержать только один LI (после flatten)
  */
 function splitListElement(listElement, pageLimit, measureContainer, availableHeight = pageLimit) {
   console.log(`[PDF Report] Разбиваю список ${listElement.tagName}, доступная высота: ${availableHeight}px`);
@@ -301,10 +141,6 @@ export async function splitHtmlIntoPages(htmlContent) {
   console.log('[PDF Report] Начало разбивки HTML контента');
   console.log('[PDF Report] Входной HTML:', htmlContent);
 
-  // ВАЖНО: Очищаем экранированные кавычки
-  htmlContent = unescapeHtmlAttributes(htmlContent);
-  console.log('[PDF Report] HTML после очистки кавычек:', htmlContent);
-
   // ВАЖНО: Сначала предзагружаем все изображения
   await preloadImages(htmlContent);
 
@@ -313,22 +149,19 @@ export async function splitHtmlIntoPages(htmlContent) {
   tempContainer.innerHTML = htmlContent;
 
   // Получаем все top-level элементы
-  let elements = Array.from(tempContainer.children).filter(
+  const elements = Array.from(tempContainer.children).filter(
     el => !el.classList.contains('pdf-page-break')
   );
 
   console.log('[PDF Report] Найдено top-level элементов:', elements.length);
   console.log('[PDF Report] Типы элементов:', elements.map(el => el.tagName).join(', '));
 
-  // Очищаем элементы от мусорных атрибутов Jodit
-  elements.forEach(el => cleanJoditAttributes(el));
-
   if (elements.length === 0) {
     console.log('[PDF Report] Нет элементов для обработки');
     return htmlContent;
   }
 
-  // Создаем измерительный контейнер с правильными стилями
+  // Создаем измерительный контейнер
   const measureContainer = document.createElement('div');
   measureContainer.style.cssText = `
     position: absolute;
@@ -336,9 +169,9 @@ export async function splitHtmlIntoPages(htmlContent) {
     top: -9999px;
     width: ${PAGE_WIDTH}px;
     visibility: hidden;
-    font-family: 'Times New Roman', Times, serif;
-    font-size: 16px;
-    line-height: 1.5;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
   `;
 
   document.body.appendChild(measureContainer);
@@ -351,17 +184,50 @@ export async function splitHtmlIntoPages(htmlContent) {
   console.log('[PDF Report] Лимит высоты страницы:', PAGE_HEIGHT_LIMIT, 'px');
 
   elements.forEach((el, index) => {
-    // Клонируем элемент и измеряем его высоту
     const clone = el.cloneNode(true);
     measureContainer.innerHTML = '';
     measureContainer.appendChild(clone);
-
-    // Добавляем небольшую задержку для рендеринга
-    const elHeight = measureContainer.scrollHeight || measureContainer.offsetHeight;
+    const elHeight = measureContainer.offsetHeight;
 
     console.log(`[PDF Report] Элемент #${index} (${el.tagName}): ${elHeight}px, текущая высота: ${currentHeight}px`);
 
-    // Обычная обработка элемента - просто проверяем, влезет ли на текущую страницу
+    // Если элемент - список и он слишком большой, разбиваем его
+    if ((el.tagName === 'OL' || el.tagName === 'UL') && elHeight > PAGE_HEIGHT_LIMIT) {
+      console.log(`[PDF Report] Элемент ${el.tagName} слишком большой (${elHeight}px > ${PAGE_HEIGHT_LIMIT}px), разбиваю на части`);
+
+      const availableHeight = PAGE_HEIGHT_LIMIT - currentHeight;
+      const listParts = splitListElement(el, PAGE_HEIGHT_LIMIT, measureContainer, availableHeight);
+
+      console.log(`[PDF Report] Список разбит на ${listParts.length} частей`);
+
+      listParts.forEach((listPart, partIndex) => {
+        measureContainer.innerHTML = '';
+        measureContainer.appendChild(listPart.cloneNode(true));
+        const partHeight = measureContainer.offsetHeight;
+
+        console.log(`[PDF Report]   Часть #${partIndex + 1}: ${partHeight}px`);
+
+        if (partIndex === 0 && currentHeight + partHeight <= PAGE_HEIGHT_LIMIT) {
+          currentFragment.push(listPart);
+          currentHeight += partHeight;
+        } else {
+          if (currentFragment.length > 0) {
+            fragments.push({
+              elements: [...currentFragment],
+              pageNumber: pageNumber++,
+            });
+            console.log(`[PDF Report]   Создана страница #${pageNumber - 1}`);
+          }
+
+          currentFragment = [listPart];
+          currentHeight = partHeight;
+        }
+      });
+
+      return;
+    }
+
+    // Обычная обработка элемента
     if (currentHeight + elHeight > PAGE_HEIGHT_LIMIT && currentFragment.length > 0) {
       console.log(`[PDF Report] Элемент не влез, создаю страницу #${pageNumber}`);
 

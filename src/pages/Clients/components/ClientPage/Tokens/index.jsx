@@ -5,35 +5,21 @@ import { handleError, handleInfo } from '../../../../../utils/snackbar';
 import CardInput from '../../../../../shared/Input/Card';
 import React from 'react';
 import styles from './Tokens.module.sass';
-import personStyles from '../Persons/Persons.module.sass'
+import personStyles from '../Persons/Persons.module.sass';
 import useMappedObj from '../../../../../hooks/useMappedObj';
 import CardDropdown from '../../../../../shared/Dropdown/Card';
 import { motion } from 'framer-motion';
 
-const ClientTokens = ({
-  sites,
-  onRemove,
-  onChange,
-  onSubmit,
-  onReset,
-  onAdd,
-                        setSiteModalData
-}) => {
+const ClientTokens = ({ sites, onRemove, onChange, onSubmit, onReset, onAdd, setSiteModalData }) => {
   const mappedSites = useMappedObj(sites);
-  const defaultActions = (path, success, info,siteId, copy = 'Элемент скопирован') => {
-    // console.log(properties,'smile')
+  const defaultActions = (path, success, info, siteId, copy = 'Элемент скопирован') => {
     return {
       copy: (text) => {
         navigator.clipboard.writeText(text).then((r) => handleInfo(copy));
       },
-      // delete: ({ name }) => {
-      //   onRemove(name);
-      //   // setLength((prev) => ({...prev,[middleProp]:prev[middleProp]-1}))
-      //   handleError('Элемент удален');
-      // },
       edit: ({ name, value }) => onChange(name, value),
       submit: () => {
-        onSubmit(path,siteId,success);
+        onSubmit(path, siteId, success);
       },
       reset: () => {
         onReset(path);
@@ -45,13 +31,13 @@ const ClientTokens = ({
   return (
     <Card classTitle={styles.title} className={styles.card}>
       <Title smallTable={true}
-             actions={{
-               add: {
-                 action: () => onAdd(),
-                 title: 'Добавить сайт',
-               },
-             }}
-             title={'Доступы к сайтам'} />
+        actions={{
+          add: {
+            action: () => onAdd(),
+            title: 'Добавить сайт',
+          },
+        }}
+        title={'Токены для личного кабинета'} />
       {mappedSites?.map(([key, site]) => {
         return (
           <CardDropdown
@@ -106,18 +92,18 @@ const ClientTokens = ({
                 )}
               />
               <CardInput
-              placeholder={'Гостевая ссылка Topvisor...'}
-              label={'Topvisor Guest Link'}
-              name={`sites.${site.id}.topvisor_guest_link`}
-              type={'text'}
-              value={site.topvisor_guest_link}
-              actions={defaultActions(
-                `sites.${site.id}.topvisor_guest_link`,
-                'Topvisor Guest Link сохранен',
-                '',
-                site.id,
-              )}
-            />
+                placeholder={'Гостевая ссылка Topvisor...'}
+                label={'Topvisor Guest Link'}
+                name={`sites.${site.id}.topvisor_guest_link`}
+                type={'text'}
+                value={site.topvisor_guest_link}
+                actions={defaultActions(
+                  `sites.${site.id}.topvisor_guest_link`,
+                  'Topvisor Guest Link сохранен',
+                  '',
+                  site.id,
+                )}
+              />
             </motion.div>
           </CardDropdown>
         );

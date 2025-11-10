@@ -47,9 +47,6 @@ export const EditorJsTools = {
     'paragraph',
     'brush',
     '|',
-    'ul',
-    'ol',
-    '|',
     'table',
     'link',
     '|',
@@ -70,73 +67,9 @@ export const EditorJsTools = {
   disablePlugins: ['mobile'],
   iframe: false,
 
-  // Контроль тега при нажатии Enter (используется <p>)
-  enter: 'p',
-
   // Настройки очистки стилей при вставке
   askBeforePasteHTML: false,
   askBeforePasteFromWord: false,
   defaultActionOnPaste: 'insert_clear_html',
   processPasteHTML: true,
-
-  // Настройки для очистки пустых блоков
-  cleaner: {
-    removeEmptyBlocks: true,  // Удаляет пустые <p></p>, <div></div> и т.д.
-  },
-
-  // Настройки нормализации HTML
-  cleanHTML: {
-    removeEmptyElements: true,
-    fillEmptyParagraph: false,  // НЕ заполнять пустые параграфы &nbsp;
-    replaceNBSP: true,
-    replaceOldTags: {
-      i: 'em',
-      b: 'strong',
-    },
-    cleanOnPaste: true,  // Очищать HTML при вставке
-    allowTags: {
-      p: true,
-      br: true,
-      ul: true,
-      ol: true,
-      li: true,
-      a: true,
-      strong: true,
-      em: true,
-      u: true,
-      s: true,
-      span: true,
-      div: true,
-      h1: true,
-      h2: true,
-      h3: true,
-      h4: true,
-      h5: true,
-      h6: true,
-      table: true,
-      thead: true,
-      tbody: true,
-      tr: true,
-      td: true,
-      th: true,
-      img: true,
-      code: true,
-    },
-    denyTags: {
-      script: true,
-      style: true,
-    },
-  },
-
-  // Удаление мусорных атрибутов при вставке и редактировании
-  sanitizeOptions: {
-    allowedAttributes: {
-      '*': ['class', 'style'],
-      'a': ['href', 'target', 'rel'],
-      'img': ['src', 'alt', 'width', 'height'],
-      'table': ['border', 'cellpadding', 'cellspacing'],
-      'ol': ['start', 'type'],
-      'ul': ['type'],
-    },
-  },
 };
