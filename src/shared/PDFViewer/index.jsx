@@ -7,9 +7,9 @@ import Button from '../Button';
 import Loader from '../Loader';
 import Icon from '../Icon';
 
-// Настройка worker для PDF.js
-// Используем jsdelivr CDN с динамической версией для автоматической совместимости
-pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
+// Настройка worker для PDF.js (версия 5.x для pdfjs-dist@5.4.394)
+// Используем CDN с правильной версией для совместимости с react-pdf 10.x
+pdfjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 /**
  * Компонент для просмотра PDF документов
