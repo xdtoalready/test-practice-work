@@ -7,6 +7,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { useNavigate } from 'react-router-dom';
 import usePagingData from '../../../../hooks/usePagingData';
 import TableLink from '../../../../shared/Table/Row/Link';
 import EditModal from './components/EditModal';
@@ -40,6 +41,7 @@ const BillsTable = observer(({currentSwitcher}) => {
   const { billsStore } = useStore();
   const api = useBillsApi();
   const appApi = useAppApi();
+  const navigate = useNavigate();
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [currentBill, setCurrentBill] = useState(null);
   const [billToDelete, setBillToDelete] = useState(null);
@@ -77,12 +79,12 @@ const BillsTable = observer(({currentSwitcher}) => {
     }
   };
 
-  const handleDownload = (urlToBill) => {
-    window.open(urlToBill, '_blank');
+  const handleView = (id) => {
+    navigate(`/bills/${id}?stamp=true`);
   };
 
   const getActions = (data) => [
-    { label: 'Скачать', onClick: () => handleDownload(data.stampedBill) },
+    { label: 'Просмотр', onClick: () => handleView(data.id) },
     { label: 'Редактировать', onClick: () => handleEdit(data) },
     {
       label: 'Удалить',
