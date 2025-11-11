@@ -21,7 +21,7 @@ const useDocumentsPrintApi = () => {
 
     try {
       const response = await http.get(`/api/bills/${billId}/print`, {
-        params: { stamp },
+        params: { stamp: stamp ? 1 : 0 }, // Конвертируем boolean в 1/0 для API
         responseType: 'blob', // Важно для получения файла
       });
 
@@ -55,7 +55,7 @@ const useDocumentsPrintApi = () => {
 
     try {
       const response = await http.get(`/api/acts/${actId}/print`, {
-        params: { stamp },
+        params: { stamp: stamp ? 1 : 0 }, // Конвертируем boolean в 1/0 для API
         responseType: 'blob',
       });
 

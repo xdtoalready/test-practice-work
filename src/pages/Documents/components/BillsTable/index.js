@@ -80,7 +80,7 @@ const BillsTable = observer(({currentSwitcher}) => {
   };
 
   const handleView = (id) => {
-    navigate(`/bills/${id}?stamp=true`);
+    navigate(`/bills/${id}?stamp=1`);
   };
 
   const getActions = (data) => [
