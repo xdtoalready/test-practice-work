@@ -4,6 +4,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { useNavigate } from 'react-router-dom';
 import usePagingData from '../../../../hooks/usePagingData';
 import TableLink from '../../../../shared/Table/Row/Link';
 import useStore from '../../../../hooks/useStore';
@@ -25,6 +26,7 @@ const ReportsTable = observer(({ currentSwitcher }) => {
   const { reportsStore } = useStore();
   const api = useReportsApi();
   const appApi = useAppApi();
+  const navigate = useNavigate();
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [currentReport, setCurrentReport] = useState(null);
   const [reportToDelete, setReportToDelete] = useState(null);
@@ -58,8 +60,8 @@ const ReportsTable = observer(({ currentSwitcher }) => {
     }
   };
 
-  const handleDownload = (urlToReport) => {
-    window.open(urlToReport, '_blank');
+  const handleView = (id) => {
+    navigate(`/reports/${id}`);
   };
 
   const handleAgree = async (id) => {
@@ -73,7 +75,7 @@ const ReportsTable = observer(({ currentSwitcher }) => {
 
   const getActions = (data) => {
     const actions = [
-      { label: 'Скачать', onClick: () => handleDownload(data.viewUrl) },
+      { label: 'Просмотр', onClick: () => handleView(data.id) },
       {
         label: 'Удалить',
         onClick: () => setReportToDelete(data.id),
