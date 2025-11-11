@@ -8,7 +8,8 @@ import Loader from '../Loader';
 import Icon from '../Icon';
 
 // Настройка worker для PDF.js
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+// Используем unpkg для надёжной загрузки worker'а совместимой версии
+pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@4.8.69/build/pdf.worker.min.js`;
 
 /**
  * Компонент для просмотра PDF документов
