@@ -9,7 +9,7 @@ import Icon from '../Icon';
 
 // Настройка worker для PDF.js
 // Используем jsdelivr CDN с динамической версией для автоматической совместимости
-pdfjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 
 /**
  * Компонент для просмотра PDF документов
