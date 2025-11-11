@@ -7,7 +7,7 @@ import styles from './BillViewer.module.sass';
 
 /**
  * Страница для просмотра счетов в PDF формате
- * URL: /bills/:id?stamp=true/false
+ * URL: /bills/:id?stamp=1/0
  */
 const BillViewer = () => {
   const { id } = useParams();
@@ -18,8 +18,9 @@ const BillViewer = () => {
   const [pdfBlob, setPdfBlob] = useState(null);
   const [error, setError] = useState(null);
 
-  // Получаем параметр stamp из URL (по умолчанию true)
-  const stamp = searchParams.get('stamp') !== 'false';
+  // Получаем параметр stamp из URL (по умолчанию 1, т.е. с печатью)
+  const stampParam = searchParams.get('stamp') || '1';
+  const stamp = stampParam === '1';
 
   useEffect(() => {
     const loadPdf = async () => {

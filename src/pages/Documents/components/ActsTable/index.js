@@ -82,7 +82,7 @@ const ActsTable = observer(({currentSwitcher}) => {
   };
 
   const handleView = (id) => {
-    navigate(`/acts/${id}?stamp=true`);
+    navigate(`/acts/${id}?stamp=1`);
   };
 
   const getActions = (data) => [
