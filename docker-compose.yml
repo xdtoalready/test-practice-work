@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ${COMPOSE_PREFIX:-crm_stage}_frontend
+    ports:
+      - "${EXTERNAL_PORT:-8082}:3000"
+    environment:
+      - REACT_APP_API_URL=${REACT_APP_API_URL}
+      - REACT_APP_LK_URL=${REACT_APP_LK_URL}
+      - REACT_APP_REVERB_APP_KEY=${REACT_APP_REVERB_APP_KEY}
+      - REACT_APP_REVERB_HOST=${REACT_APP_REVERB_HOST}
+      - REACT_APP_REVERB_PORT=${REACT_APP_REVERB_PORT}
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - crm_network
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+
+networks:
+  crm_network:
+    driver: bridge

@@ -25,10 +25,9 @@ import {
   beforeInitDrop,
   beforeInitKeyDown,
 } from './events';
-import { EditorJsTools, EditorJsToolsWithPdfOptimization } from './config';
+import { EditorJsTools } from './config';
 import { editorIcons } from './utils/icons';
 import { EditorContext } from './context/editor.context';
-import { sanitizeHTML } from './utils/cleanHTML';
 
 // Регистрируем кнопку PDF оптимизации глобально (один раз)
 registerPdfOptimizeButton();
@@ -120,11 +119,8 @@ const Editor = forwardRef(
     }));
     useEffect(() => {
       if (containerRef.current && !editorRef.current) {
-        // Очищаем HTML от лишнего экранирования перед загрузкой
-        const cleanedHTML = sanitizeHTML(initialHTML);
-
         const textarea = document.createElement('textarea');
-        textarea.value = cleanedHTML || '';
+        textarea.value = initialHTML || '';
         textarea.name = name || '';
         containerRef.current.appendChild(textarea);
 
@@ -241,11 +237,10 @@ const Editor = forwardRef(
                 controls: controls,
 
                 className: 'jodit-default',
-                // Используем разные конфигурации в зависимости от enablePdfOptimization
-                ...(enablePdfOptimization ? EditorJsToolsWithPdfOptimization : EditorJsTools),
-                // Для обычных редакторов убираем кнопку PDF оптимизации
+                ...EditorJsTools,
+                // Условно добавляем кнопку PDF оптимизации
                 buttons: enablePdfOptimization
-                  ? EditorJsToolsWithPdfOptimization.buttons
+                  ? EditorJsTools.buttons
                   : EditorJsTools.buttons.filter(btn => btn !== 'pdfOptimize'),
                 placeholder: placeholder || 'Start typing...',
                 minHeight: rest?.height ?? 100,
@@ -288,7 +283,7 @@ const Editor = forwardRef(
                 zIndex: 100000,
               };
         editorRef.current = Jodit.make(textarea, configJodit);
-        editorRef.current.value = cleanedHTML || '';
+        editorRef.current.value = initialHTML || '';
         textarea.remove();
 
         registerEditor(editorRef.current);

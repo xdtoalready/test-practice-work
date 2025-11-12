@@ -143,7 +143,7 @@ const PDFViewer = ({ pdfBlob, fileName = 'document.pdf', onClose }) => {
             className={styles.iconButton}
             title="Уменьшить"
           >
-            <Icon name="minus" size={20} />
+            <Icon name="minus" size={20} viewBox={20} />
           </button>
 
           <span className={styles.zoomLevel}>{Math.round(scale * 100)}%</span>

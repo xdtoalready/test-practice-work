@@ -7,7 +7,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import usePagingData from '../../../../hooks/usePagingData';
 import TableLink from '../../../../shared/Table/Row/Link';
 import useStore from '../../../../hooks/useStore';
@@ -43,8 +43,7 @@ const ActsTable = observer(({currentSwitcher}) => {
   const { actsStore } = useStore();
   const docApi = useBillsApi();
   const api = useActsApi();
-  const appApi = useAppApi();
-  const navigate = useNavigate();
+  const appApi = useAppApi()
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [currentAct, setCurrentAct] = useState(null);
   const [actToDelete, setActToDelete] = useState(null);
@@ -81,12 +80,12 @@ const ActsTable = observer(({currentSwitcher}) => {
     }
   };
 
-  const handleView = (id) => {
-    navigate(`/acts/${id}?stamp=1`);
+  const handleDownload = (urlToBill) => {
+    window.open(urlToBill, '_blank');
   };
 
   const getActions = (data) => [
-    { label: 'Просмотр', onClick: () => handleView(data.id) },
+    { label: 'Скачать', onClick: () => handleDownload(data.stampedBill) },
     { label: 'Редактировать', onClick: () => handleEdit(data) },
     {
       label: 'Удалить',
