@@ -23,6 +23,9 @@ import {CallsProvider} from "../providers/CallsProvider";
 import FabProvider from '../providers/FabProvider';
 import { NotificationProvider } from '../providers/NotificationProvider';
 import Documents from '../pages/Documents';
+import BillViewer from '../pages/Documents/components/BillViewer';
+import ActViewer from '../pages/Documents/components/ActViewer';
+import ReportViewer from '../pages/Documents/components/ReportViewer';
 
 export const paths = {
   MAIN: '/',
@@ -35,6 +38,9 @@ export const paths = {
   CALENDAR: '/calendar',
   SETTINGS: '/settings',
   DOCUMENTS: '/documents',
+  BILLS_VIEW: '/bills/:id',
+  ACTS_VIEW: '/acts/:id',
+  REPORTS_VIEW: '/reports/:id',
   TIME_TRACKINGS: '/timetrackings',
   CALLS: '/calls',
   LOGIN: '/login',
@@ -109,6 +115,18 @@ const protectedRoutes = [
   {
     path: paths.DOCUMENTS,
     element: <Documents />,
+  },
+  {
+    path: paths.BILLS_VIEW,
+    element: <BillViewer />,
+  },
+  {
+    path: paths.ACTS_VIEW,
+    element: <ActViewer />,
+  },
+  {
+    path: paths.REPORTS_VIEW,
+    element: <ReportViewer />,
   },
   {
     path: paths.TIME_TRACKINGS,
