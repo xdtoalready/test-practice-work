@@ -12,6 +12,7 @@ import TableLink from '../../../../shared/Table/Row/Link';
 import EditModal from './components/EditModal';
 import useStore from '../../../../hooks/useStore';
 import useBillsApi from '../../api/bills.api';
+import useDocumentsPrintApi from '../../api/documents-print.api';
 import Table from '../../../../shared/Table';
 import Badge, { statusTypes } from '../../../../shared/Badge';
 import styles from './Table.module.sass';
@@ -40,6 +41,7 @@ const BillsTable = observer(({currentSwitcher}) => {
   const { billsStore } = useStore();
   const api = useBillsApi();
   const appApi = useAppApi();
+  const documentsPrintApi = useDocumentsPrintApi();
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [currentBill, setCurrentBill] = useState(null);
   const [billToDelete, setBillToDelete] = useState(null);
@@ -77,12 +79,21 @@ const BillsTable = observer(({currentSwitcher}) => {
     }
   };
 
-  const handleDownload = (urlToBill) => {
-    window.open(urlToBill, '_blank');
+  const handleView = (billId) => {
+    window.open(`/bills/${billId}?stamp=1`, '_blank');
+  };
+
+  const handleDownload = async (billId) => {
+    try {
+      await documentsPrintApi.downloadBillPdf(billId, true);
+    } catch (error) {
+      handleError('Ошибка при скачивании счета');
+    }
   };
 
   const getActions = (data) => [
-    { label: 'Скачать', onClick: () => handleDownload(data.stampedBill) },
+    { label: 'Просмотр', onClick: () => handleView(data.id) },
+    { label: 'Скачать', onClick: () => handleDownload(data.id) },
     { label: 'Редактировать', onClick: () => handleEdit(data) },
     {
       label: 'Удалить',
