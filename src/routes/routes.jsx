@@ -113,10 +113,6 @@ const protectedRoutes = [
     element: <Documents />,
   },
   {
-    path: paths.DOCUMENTS_VIEW,
-    element: <DocumentViewer />,
-  },
-  {
     path: paths.TIME_TRACKINGS,
     element: <TimeTrackings />,
   },
@@ -141,6 +137,14 @@ const openRoutes = [
   },
 ];
 
+// Роуты для просмотра документов без дизайна сайта (только PDF)
+const plainRoutes = [
+  {
+    path: paths.DOCUMENTS_VIEW,
+    element: <DocumentViewer />,
+  },
+];
+
 export const prepareRoutes = () => {
   return (
     <Routes>
@@ -152,6 +156,9 @@ export const prepareRoutes = () => {
         />
       ))}
       {openRoutes.map(({ path, element }) => (
+        <Route key={path} path={path} element={element} />
+      ))}
+      {plainRoutes.map(({ path, element }) => (
         <Route key={path} path={path} element={element} />
       ))}
       <Route path="*" element={<Navigate to={paths.NOTFOUND} />} />
