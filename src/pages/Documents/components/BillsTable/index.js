@@ -79,12 +79,8 @@ const BillsTable = observer(({currentSwitcher}) => {
     }
   };
 
-  const handleView = async (billId) => {
-    try {
-      await documentsPrintApi.viewBillPdf(billId, true);
-    } catch (error) {
-      handleError('Ошибка при просмотре счета');
-    }
+  const handleView = (billId) => {
+    window.open(`/documents/bills/${billId}`, '_blank');
   };
 
   const handleDownload = async (billId) => {
