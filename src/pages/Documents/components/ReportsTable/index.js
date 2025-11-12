@@ -8,7 +8,6 @@ import usePagingData from '../../../../hooks/usePagingData';
 import TableLink from '../../../../shared/Table/Row/Link';
 import useStore from '../../../../hooks/useStore';
 import useReportsApi from '../../api/reports.api';
-import useDocumentsPrintApi from '../../api/documents-print.api';
 import Table from '../../../../shared/Table';
 import Badge, { statusTypes } from '../../../../shared/Badge';
 import styles from './Table.module.sass';
@@ -26,7 +25,6 @@ const ReportsTable = observer(({ currentSwitcher }) => {
   const { reportsStore } = useStore();
   const api = useReportsApi();
   const appApi = useAppApi();
-  const documentsPrintApi = useDocumentsPrintApi();
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [currentReport, setCurrentReport] = useState(null);
   const [reportToDelete, setReportToDelete] = useState(null);
@@ -60,16 +58,8 @@ const ReportsTable = observer(({ currentSwitcher }) => {
     }
   };
 
-  const handleView = (reportId) => {
-    window.open(`/reports/${reportId}`, '_blank');
-  };
-
-  const handleDownload = async (reportId) => {
-    try {
-      await documentsPrintApi.downloadReportPdf(reportId);
-    } catch (error) {
-      handleError('Ошибка при скачивании отчета');
-    }
+  const handleDownload = (urlToReport) => {
+    window.open(urlToReport, '_blank');
   };
 
   const handleAgree = async (id) => {
@@ -83,8 +73,7 @@ const ReportsTable = observer(({ currentSwitcher }) => {
 
   const getActions = (data) => {
     const actions = [
-      { label: 'Просмотр', onClick: () => handleView(data.id) },
-      { label: 'Скачать', onClick: () => handleDownload(data.id) },
+      { label: 'Скачать', onClick: () => handleDownload(data.viewUrl) },
       {
         label: 'Удалить',
         onClick: () => setReportToDelete(data.id),
@@ -92,9 +81,9 @@ const ReportsTable = observer(({ currentSwitcher }) => {
       },
     ];
 
-    // Добавляем действие "Согласовать" между "Скачать" и "Удалить" если can_be_agreed = true
+    // Добавляем действие "Согласовать" только если can_be_agreed = true
     if (data.canBeAgreed) {
-      actions.splice(2, 0, {
+      actions.splice(1, 0, {
         label: 'Согласовать',
         onClick: () => handleAgree(data.id),
       });

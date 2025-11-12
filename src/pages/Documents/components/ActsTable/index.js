@@ -12,7 +12,6 @@ import usePagingData from '../../../../hooks/usePagingData';
 import TableLink from '../../../../shared/Table/Row/Link';
 import useStore from '../../../../hooks/useStore';
 import useBillsApi from '../../api/bills.api';
-import useDocumentsPrintApi from '../../api/documents-print.api';
 import Table from '../../../../shared/Table';
 import Badge, { statusTypes } from '../../../../shared/Badge';
 import styles from './Table.module.sass';
@@ -44,8 +43,7 @@ const ActsTable = observer(({currentSwitcher}) => {
   const { actsStore } = useStore();
   const docApi = useBillsApi();
   const api = useActsApi();
-  const appApi = useAppApi();
-  const documentsPrintApi = useDocumentsPrintApi();
+  const appApi = useAppApi()
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [currentAct, setCurrentAct] = useState(null);
   const [actToDelete, setActToDelete] = useState(null);
@@ -82,21 +80,12 @@ const ActsTable = observer(({currentSwitcher}) => {
     }
   };
 
-  const handleView = (actId) => {
-    window.open(`/acts/${actId}?stamp=1`, '_blank');
-  };
-
-  const handleDownload = async (actId) => {
-    try {
-      await documentsPrintApi.downloadActPdf(actId, true);
-    } catch (error) {
-      handleError('Ошибка при скачивании акта');
-    }
+  const handleDownload = (urlToBill) => {
+    window.open(urlToBill, '_blank');
   };
 
   const getActions = (data) => [
-    { label: 'Просмотр', onClick: () => handleView(data.id) },
-    { label: 'Скачать', onClick: () => handleDownload(data.id) },
+    { label: 'Скачать', onClick: () => handleDownload(data.stampedBill) },
     { label: 'Редактировать', onClick: () => handleEdit(data) },
     {
       label: 'Удалить',
