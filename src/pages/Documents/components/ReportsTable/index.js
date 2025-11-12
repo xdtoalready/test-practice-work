@@ -60,12 +60,8 @@ const ReportsTable = observer(({ currentSwitcher }) => {
     }
   };
 
-  const handleView = async (reportId) => {
-    try {
-      await documentsPrintApi.viewReportPdf(reportId);
-    } catch (error) {
-      handleError('Ошибка при просмотре отчета');
-    }
+  const handleView = (reportId) => {
+    window.open(`/documents/reports/${reportId}`, '_blank');
   };
 
   const handleDownload = async (reportId) => {

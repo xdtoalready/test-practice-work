@@ -23,6 +23,7 @@ import {CallsProvider} from "../providers/CallsProvider";
 import FabProvider from '../providers/FabProvider';
 import { NotificationProvider } from '../providers/NotificationProvider';
 import Documents from '../pages/Documents';
+import DocumentViewer from '../pages/Documents/components/DocumentViewer';
 
 export const paths = {
   MAIN: '/',
@@ -35,6 +36,7 @@ export const paths = {
   CALENDAR: '/calendar',
   SETTINGS: '/settings',
   DOCUMENTS: '/documents',
+  DOCUMENTS_VIEW: '/documents/:type/:id',
   TIME_TRACKINGS: '/timetrackings',
   CALLS: '/calls',
   LOGIN: '/login',
@@ -109,6 +111,10 @@ const protectedRoutes = [
   {
     path: paths.DOCUMENTS,
     element: <Documents />,
+  },
+  {
+    path: paths.DOCUMENTS_VIEW,
+    element: <DocumentViewer />,
   },
   {
     path: paths.TIME_TRACKINGS,

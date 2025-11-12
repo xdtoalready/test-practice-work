@@ -82,12 +82,8 @@ const ActsTable = observer(({currentSwitcher}) => {
     }
   };
 
-  const handleView = async (actId) => {
-    try {
-      await documentsPrintApi.viewActPdf(actId, true);
-    } catch (error) {
-      handleError('Ошибка при просмотре акта');
-    }
+  const handleView = (actId) => {
+    window.open(`/documents/acts/${actId}`, '_blank');
   };
 
   const handleDownload = async (actId) => {

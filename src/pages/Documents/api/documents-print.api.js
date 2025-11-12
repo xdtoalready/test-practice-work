@@ -147,6 +147,91 @@ const useDocumentsPrintApi = () => {
   };
 
   /**
+   * Получить blob PDF счета (для компонента просмотра)
+   * @param {number} billId - ID счета
+   * @param {boolean} stamp - С печатью или без (true/false)
+   * @returns {Promise<Blob>}
+   */
+  const getBillPdfBlob = async (billId, stamp = true) => {
+    try {
+      const token = getToken();
+      const stampParam = stamp ? 1 : 0;
+      const url = `${API_URL}/api/bills/${billId}/print?stamp=${stampParam}`;
+
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.blob();
+    } catch (error) {
+      console.error('Error fetching bill PDF blob:', error);
+      throw error;
+    }
+  };
+
+  /**
+   * Получить blob PDF акта (для компонента просмотра)
+   * @param {number} actId - ID акта
+   * @param {boolean} stamp - С печатью или без (true/false)
+   * @returns {Promise<Blob>}
+   */
+  const getActPdfBlob = async (actId, stamp = true) => {
+    try {
+      const token = getToken();
+      const stampParam = stamp ? 1 : 0;
+      const url = `${API_URL}/api/acts/${actId}/print?stamp=${stampParam}`;
+
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.blob();
+    } catch (error) {
+      console.error('Error fetching act PDF blob:', error);
+      throw error;
+    }
+  };
+
+  /**
+   * Получить blob PDF отчета (для компонента просмотра)
+   * @param {number} reportId - ID отчета
+   * @returns {Promise<Blob>}
+   */
+  const getReportPdfBlob = async (reportId) => {
+    try {
+      const token = getToken();
+      const url = `${API_URL}/api/reports/${reportId}/print`;
+
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.blob();
+    } catch (error) {
+      console.error('Error fetching report PDF blob:', error);
+      throw error;
+    }
+  };
+
+  /**
    * Скачать PDF счета
    * @param {number} billId - ID счета
    * @param {boolean} stamp - С печатью или без (true/false)
@@ -280,6 +365,9 @@ const useDocumentsPrintApi = () => {
     viewBillPdf,
     viewActPdf,
     viewReportPdf,
+    getBillPdfBlob,
+    getActPdfBlob,
+    getReportPdfBlob,
     downloadBillPdf,
     downloadActPdf,
     downloadReportPdf,
