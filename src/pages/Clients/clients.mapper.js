@@ -16,6 +16,7 @@ import {
 } from '../Calendar/calendar.mapper';
 import { format } from 'date-fns';
 import { mapCallsResponse } from '../Calls/calls.mapper';
+import { mapTimeTrackingsFromApi } from '../TimeTracking/timeTracking.mapper';
 import {LK_URL} from "../../shared/constants";
 
 export const mapClientFromApi = (
@@ -152,6 +153,7 @@ export const mapBusinesses = (apiBusinesses) => {
       createdAt: new Date(business.created_at),
       updatedAt: new Date(business.updated_at),
       cost: business.cost,
+      timeTrackings: mapTimeTrackingsFromApi(business?.time_tracking || []),
     };
     return acc;
   }, {});
