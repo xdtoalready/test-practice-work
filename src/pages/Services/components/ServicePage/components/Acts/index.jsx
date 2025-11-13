@@ -1,8 +1,6 @@
 import styles from './Acts.module.sass';
-import { formatDateWithoutHours } from '../../../../../../utils/formate.date';
 import React, { useMemo, useState } from 'react';
 import TextLink from '../../../../../../shared/Table/TextLink';
-import { formatSum } from '../../../../../../utils/format.number';
 import ServiceBadge, { serviceStatuses } from '../Statuses';
 import Table from '../../../../../../shared/Table';
 import AdaptiveCard from '../../../../../Clients/components/ClientPage/Deals/AdaptiveCard';
@@ -14,10 +12,6 @@ import EditModal from '../../../../../Acts/components/ActsTable/components/EditM
 import { colorActStatusTypes } from '../../../../../Acts/acts.types';
 
 const Acts = observer(({ acts, service, company, stage }) => {
-  const downloadAct = (url) => {
-    window.open(url, '_blank');
-  };
-
   const [actModalOpen, setActModalOpen] = useState(false);
   const [actData, setActData] = useState(null);
 
@@ -46,9 +40,9 @@ const Acts = observer(({ acts, service, company, stage }) => {
         width: '30%',
         id: 'actWithSign',
         Cell: ({ row }) => {
-          return row?.original.stampedAct && (
+          return (
             <Button
-              onClick={() => downloadAct(row?.original.stampedAct)}
+              onClick={() => window.open(`/documents/acts/${row?.original.id}?stamp=1`, '_blank')}
               type={'secondary'}
               after={<Icon size={24} name={'download'} />}
               classname={cn(styles.button, styles.button_acts)}
@@ -62,9 +56,9 @@ const Acts = observer(({ acts, service, company, stage }) => {
         width: '30%',
         id: 'actWithoutSign',
         Cell: ({ row }) => {
-          return row?.original.unstampedAct && (
+          return (
             <Button
-              onClick={() => downloadAct(row?.original.unstampedAct)}
+              onClick={() => window.open(`/documents/acts/${row?.original.id}?stamp=0`, '_blank')}
               type={'secondary'}
               after={<Icon size={24} name={'download'} />}
               classname={cn(styles.button, styles.button_acts)}
@@ -76,7 +70,6 @@ const Acts = observer(({ acts, service, company, stage }) => {
       {
         Header: 'Сумма',
         width: '15%',
-
         id: 'sum',
         Cell: ({ row }) => {
           const data = row?.original;
@@ -86,9 +79,7 @@ const Acts = observer(({ acts, service, company, stage }) => {
       {
         Header: 'Статус',
         width: '20%',
-
         id: 'status',
-
         Cell: ({ row }) => {
           const data = row?.original;
           return (
@@ -99,15 +90,12 @@ const Acts = observer(({ acts, service, company, stage }) => {
           );
         },
       },
-      // {
-      //   Header: 'Дата',
-      //   id: 'date',
-      //   width: '30%',
-      //   Cell: ({ row }) => {
-      //     const data = row?.original;
-      //     return <p>{formatDateWithoutHours(data.date)}</p>;
-      //   },
-      // },
+      {
+        Header: '',
+        id: 'empty_column',
+        width: '30%',
+        Cell: () => '',
+      },
     ],
     [],
   );

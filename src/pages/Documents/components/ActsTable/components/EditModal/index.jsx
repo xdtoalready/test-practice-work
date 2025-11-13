@@ -32,7 +32,8 @@ import {
 import useAppApi from '../../../../../../api';
 import useStore from '../../../../../../hooks/useStore';
 import { observer } from 'mobx-react';
-import taskStyles from '../../../../../Stages/components/StagesPage/components/StagesTable/components/EditModal/components/TaskDescriptionPart/Description.module.sass';
+import taskStyles
+  from '../../../../../Stages/components/StagesPage/components/StagesTable/components/EditModal/components/TaskDescriptionPart/Description.module.sass';
 import ServiceItems from './components/ServiceItems';
 import useClientsApi from '../../../../../Clients/clients.api';
 import Icon from '../../../../../../shared/Icon';
@@ -49,12 +50,6 @@ const EditModal = observer(({ billId, onClose, company, service, stage }) => {
   const appApi = useAppApi();
   const { appStore } = useStore();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  // const {
-  //   data: { clients },
-  // } = useClients();
-  // const {
-  //   data: { legalEntities },
-  // } = useLegals();
   const api = useBillsApi();
   const serviceApi = useServiceApi();
 
@@ -74,7 +69,6 @@ const EditModal = observer(({ billId, onClose, company, service, stage }) => {
     paymentReason: '',
     service: service ?? null,
     stage: stage ?? null,
-    stampedBill: null,
     items: [],
   });
 
@@ -146,10 +140,6 @@ const EditModal = observer(({ billId, onClose, company, service, stage }) => {
   }, [bill?.service?.id]);
 
   useEffect(() => {
-    // asyncSearch={async (search) => {
-    //   const response = await appApi.getLegalEntities(search);
-    //   return response;
-    // }}
     const loadLegalEntities = async () => {
       if (!appStore.legalEntities.length) {
         await appApi.getLegalEntities('');
@@ -177,7 +167,7 @@ const EditModal = observer(({ billId, onClose, company, service, stage }) => {
     }
   };
 
-  const handleSubmit = async (onError=null) => {
+  const handleSubmit = async (onError = null) => {
     if (isDeleteModalOpen) return;
 
     try {
@@ -189,7 +179,7 @@ const EditModal = observer(({ billId, onClose, company, service, stage }) => {
             ...localBill,
             legalEntityId: bill?.legalEntity?.id ?? 0,
             companyId: bill?.company?.id ?? 0,
-          },stage?.id  ?? null)
+          }, stage?.id ?? null)
           .then(
             () => service && stage && serviceApi.getServiceById(service.id),
           );
@@ -203,7 +193,7 @@ const EditModal = observer(({ billId, onClose, company, service, stage }) => {
     } catch (error) {
       console.error('Ошибка при сохранении:', error);
       handleError('Ошибка при сохранении:', error);
-      onError && onError()
+      onError && onError();
     }
   };
 
@@ -275,10 +265,6 @@ const EditModal = observer(({ billId, onClose, company, service, stage }) => {
           <Dropdown
             required={true}
             name={'legalEntity'}
-            // asyncSearch={async (search) => {
-            //   const response = await appApi.getLegalEntities(search);
-            //   return response;
-            // }}
             setValue={(e) => {
               handleChange('legalEntity', e);
             }}
@@ -330,24 +316,6 @@ const EditModal = observer(({ billId, onClose, company, service, stage }) => {
           label={'Назначение платежа'}
         />
 
-        {/*<ValuesSelector*/}
-        {/*  placeholder={'Юридическое лицо'}*/}
-        {/*  onChange={(e) =>*/}
-        {/*    handleChange(*/}
-        {/*      'legalEntity',*/}
-        {/*      e.length ? legalEntities.find((el) => el.id === e[0]?.value) : null,*/}
-        {/*    )*/}
-        {/*  }*/}
-        {/*  isMulti={false}*/}
-        {/*  label={'Юридическое лицо'}*/}
-        {/*  options={legalEntities.map((el) => ({ value: el.id, label: el.name }))}*/}
-        {/*  value={*/}
-        {/*    bill?.legalEntity*/}
-        {/*      ? { value: bill?.legalEntity.id, label: bill?.legalEntity.name }*/}
-        {/*      : null*/}
-        {/*  }*/}
-        {/*/>*/}
-
         <ValuesSelector
           required={true}
           name={'company'}
@@ -393,8 +361,8 @@ const EditModal = observer(({ billId, onClose, company, service, stage }) => {
                 'service',
                 e.length
                   ? appStore?.servicesByCompany.find(
-                      (el) => el.id === e[0]?.value,
-                    )
+                    (el) => el.id === e[0]?.value,
+                  )
                   : null,
               );
               handleClearInfoAfterService();
@@ -402,21 +370,12 @@ const EditModal = observer(({ billId, onClose, company, service, stage }) => {
             isMulti={false}
             label={<div className={styles.client_label}>Услуга</div>}
             options={services}
-            // options={( () => {
-            //   const response =  appApi.getServicesByCompany(bill?.company.id);
-            //
-            //   const data = response
-            //   return data.map(item => ({
-            //     value: item.id,
-            //     label: item.name
-            //   }));
-            // })()}
             value={
               bill?.service
                 ? {
-                    value: bill?.service.id,
-                    label: bill?.service?.name ?? '',
-                  }
+                  value: bill?.service.id,
+                  label: bill?.service?.name ?? '',
+                }
                 : null
             }
           />
@@ -434,23 +393,14 @@ const EditModal = observer(({ billId, onClose, company, service, stage }) => {
                 'stage',
                 e.length
                   ? appStore?.stagesByService.find(
-                      (el) => el.id === e[0]?.value,
-                    )
+                    (el) => el.id === e[0]?.value,
+                  )
                   : null,
               )
             }
             isMulti={false}
             label={<div className={styles.client_label}>Этап</div>}
             options={stages}
-            // options={( () => {
-            //   const response =  appApi.getServicesByCompany(bill?.company.id);
-            //
-            //   const data = response
-            //   return data.map(item => ({
-            //     value: item.id,
-            //     label: item.name
-            //   }));
-            // })()}
             value={
               bill?.stage
                 ? { value: bill?.stage.id, label: bill?.stage?.name ?? '' }
@@ -458,16 +408,6 @@ const EditModal = observer(({ billId, onClose, company, service, stage }) => {
             }
           />
         )}
-        {/*<div className={styles.lowZIndex}>*/}
-        {/*  <Dropdown*/}
-        {/*    setValue={(e) => handleChange('status', e[0])}*/}
-        {/*    classNameContainer={styles.input}*/}
-        {/*    label={'Статус'}*/}
-        {/*    value={billStatusTypesRu[bill?.status] || ''}*/}
-        {/*    renderOption={(opt) => opt[1]}*/}
-        {/*    options={Object.entries(billStatusTypesRu)}*/}
-        {/*  />*/}
-        {/*</div>*/}
         <ServiceItems
           items={bill?.items}
           onChange={(items) => handleChange('items', items, true)}

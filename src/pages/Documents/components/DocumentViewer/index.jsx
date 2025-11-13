@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import useDocumentsPrintApi from '../../api/documents-print.api';
 import Loader from '../../../../shared/Loader';
 import styles from './DocumentViewer.module.sass';
@@ -11,6 +11,7 @@ import styles from './DocumentViewer.module.sass';
  */
 const DocumentViewer = () => {
   const { type, id } = useParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const documentsPrintApi = useDocumentsPrintApi();
 
@@ -24,13 +25,16 @@ const DocumentViewer = () => {
         setIsLoading(true);
         setError(null);
 
+        const stampParam = searchParams.get('stamp');
+        const stamp = stampParam !== '0';
+
         let blob;
         switch (type) {
           case 'bills':
-            blob = await documentsPrintApi.getBillPdfBlob(id, true);
+            blob = await documentsPrintApi.getBillPdfBlob(id, stamp);
             break;
           case 'acts':
-            blob = await documentsPrintApi.getActPdfBlob(id, true);
+            blob = await documentsPrintApi.getActPdfBlob(id, stamp);
             break;
           case 'reports':
             blob = await documentsPrintApi.getReportPdfBlob(id);
@@ -61,7 +65,7 @@ const DocumentViewer = () => {
         URL.revokeObjectURL(pdfUrl);
       }
     };
-  }, [type, id]);
+  }, [type, id, searchParams]);
 
   const handleClose = () => {
     navigate('/documents');
@@ -85,8 +89,8 @@ const DocumentViewer = () => {
             {error.response?.status === 403
               ? 'У вас нет доступа к этому документу'
               : error.response?.status === 404
-              ? 'Документ не найден'
-              : 'Не удалось загрузить документ. Попробуйте еще раз.'}
+                ? 'Документ не найден'
+                : 'Не удалось загрузить документ. Попробуйте еще раз.'}
           </p>
           <button onClick={handleClose} className={styles.backButton}>
             Вернуться к списку

@@ -7,21 +7,16 @@ import useStore from '../../hooks/useStore';
 import { LoadingProvider } from '../../providers/LoadingProvider';
 import { calendarViewTypes, calendarViewTypesRu } from './calendar.types';
 import MonthView from './components/MonthView';
-// import DayView from './components/DayView';
 import styles from './Calendar.module.sass';
 import useCalendarApi from './calendar.api';
-import { addMonths, endOfWeek, format, startOfWeek, subMonths } from 'date-fns';
-import { ru } from 'date-fns/locale/ru';
+import { endOfWeek, format, startOfWeek } from 'date-fns';
 import Selector from './components/Selector';
 import WeekView from './components/WeekView';
 import useAppApi from '../../api';
 import { FiltersProvider } from '../../providers/FilterProvider';
-import CalendarModal from '../../components/CalendarModal';
 import { createCalendarFilters } from './calendar.filters';
-import { useLocation } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import withBusinessModalHandler from '../../components/CalendarModal/HocHandler';
-import useQueryParam from '../../hooks/useQueryParam';
 
 const CalendarContent = observer(({ onEditBusiness, onCreateBusiness }) => {
   const api = useCalendarApi();
@@ -29,16 +24,8 @@ const CalendarContent = observer(({ onEditBusiness, onCreateBusiness }) => {
   const appApi = useAppApi();
   const currentView = calendarStore.currentView;
   const currentDate = calendarStore.currentDate;
-  const [businessData, setbusinessData] = useState(null);
-  const [isCreateMode, setIsCreateMode] = useState(false);
   const [currentFilters, setCurrentFilters] = useState({});
-  const viewType = useQueryParam('view');
-  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-  //
-  // useEffect(() => {
-  //   calendarStore.currentView = viewType;
-  // }, [location.search, viewType]);
 
   // Определяем диапазон дат в зависимости от текущего представления
   const getCurrentDateRange = () => {
@@ -100,17 +87,6 @@ const CalendarContent = observer(({ onEditBusiness, onCreateBusiness }) => {
   };
 
   const handleOpenModalViaDayCell = (data) => {
-    function setTimeToDate({ day, hour, minute }) {
-      const newDate = new Date(day);
-
-      newDate.setHours(hour);
-      newDate.setMinutes(minute);
-
-      newDate.setSeconds(0);
-      newDate.setMilliseconds(0);
-
-      return newDate;
-    }
     if (currentView === calendarViewTypes.month)
       onCreateBusiness({
         startDate: data,
@@ -149,18 +125,6 @@ const CalendarContent = observer(({ onEditBusiness, onCreateBusiness }) => {
           />
         );
     }
-  };
-
-  // const handleCreateBusiness = () => {
-  //   setbusinessData(null);
-  //   setIsCreateMode(true);
-  // };
-
-  const handleCloseModal = () => {
-    setbusinessData(null);
-    setIsCreateMode(false);
-    // Перезагружаем данные после закрытия модалки
-    // loadData();
   };
 
   // Получаем текущий диапазон дат для инициализации фильтров

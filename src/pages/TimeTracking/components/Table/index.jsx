@@ -1,6 +1,4 @@
 import React, {
-  useCallback,
-  useEffect,
   useMemo,
   useRef,
   useState,
@@ -8,37 +6,29 @@ import React, {
 import { observer } from 'mobx-react';
 import Table from '../../../../shared/Table';
 import styles from './Table.module.sass';
-import { formatDateToQuery } from '../../../../utils/formate.date';
 import usePagingData from '../../../../hooks/usePagingData';
 import { FiltersProvider } from '../../../../providers/FilterProvider';
 import { LoadingProvider } from '../../../../providers/LoadingProvider';
 import { usePermissions } from '../../../../providers/PermissionProvider';
-import TextLink from '../../../../shared/Table/TextLink';
-import useQueryParam from '../../../../hooks/useQueryParam';
-import { formatDateForUrl } from '../../../Documents/components/BillsTable';
 import TimeSpendingStats from './components/Stats';
 import { createTimeSpendingFilters } from '../../timetracking.filters';
 import useStore from '../../../../hooks/useStore';
 import useTimeTrackingApi from '../../timeTracking.api';
-import { startOfDay, sub } from 'date-fns';
-import { handleError, handleInfo } from '../../../../utils/snackbar';
+import { handleError } from '../../../../utils/snackbar';
 import ManagerCell from '../../../../components/ManagerCell';
 import EditModal from '../../../Settings/components/EmployesTable/components/EditModal';
-import ConfirmationModal from '../../../../components/ConfirmationModal';
 import useEmployesApi from '../../../Settings/api/employes.api';
 import useAppApi from '../../../../api';
 import { getQueryParam } from '../../../../utils/window.utils';
-import Link from '../../../../shared/Table/Row/Link';
 import TableLink from '../../../../shared/Table/Row/Link';
 import { UserPermissions } from '../../../../shared/userPermissions';
-// import { Permissions } from '../../../../shared/permissions';
 
 const TimeTrackingsTable = observer(() => {
   const { timeTrackingStore } = useStore();
   const api = useTimeTrackingApi();
   const appApi = useAppApi();
-  const employeApi = useEmployesApi();
-  const { hasPermission, permissions, Permissions } = usePermissions();
+  useEmployesApi();
+  const { hasPermission, permissions } = usePermissions();
   const periodCalendarRef = useRef();
 
   const handleFilterChange = async (filters) => {
@@ -50,9 +40,8 @@ const TimeTrackingsTable = observer(() => {
     }
   };
   const { time: totalTime, cost: totalCost } =
-    timeTrackingStore.getStats() ?? {};
+  timeTrackingStore.getStats() ?? {};
   const [currentEmploye, setCurrentEmploye] = useState(null);
-  const [employeeDelete, setEmployeeDelete] = useState(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
 
   const {
@@ -74,11 +63,6 @@ const TimeTrackingsTable = observer(() => {
   const formatDuration = (timeSpent) => {
     if (!timeSpent) return '-';
     return `${timeSpent.hours} ч ${timeSpent.minutes} мин`;
-  };
-
-  const handleEdit = (employe) => {
-    setCurrentEmploye(employe);
-    setEditModalOpen(true);
   };
 
   const cols = useMemo(
@@ -106,7 +90,6 @@ const TimeTrackingsTable = observer(() => {
           <span>{new Date(value).toLocaleDateString()}</span>
         ),
       },
-
       {
         Header: 'Затраченное время',
         id: 'timeSpent',
@@ -134,15 +117,6 @@ const TimeTrackingsTable = observer(() => {
     ],
     [],
   );
-
-  const handleDeleteEmployee = async (employeeId) => {
-    try {
-      await employeApi.deleteEmployee(employeeId, currentPage);
-      handleInfo('Сотрудник уволен');
-    } catch (error) {
-      handleError('Ошибка при уольнении:', error);
-    }
-  };
 
   return (
     <FiltersProvider>
@@ -191,18 +165,6 @@ const TimeTrackingsTable = observer(() => {
             }}
           />
         </div>
-        {employeeDelete !== null && (
-          <ConfirmationModal
-            isOpen={employeeDelete !== null}
-            onClose={() => setEmployeeDelete(null)}
-            onConfirm={() => {
-              handleDeleteEmployee(employeeDelete).then(() => {
-                setEmployeeDelete(null);
-              });
-            }}
-            label="Вы уверены, что хотите уволить сотрудника?"
-          />
-        )}
       </LoadingProvider>
     </FiltersProvider>
   );

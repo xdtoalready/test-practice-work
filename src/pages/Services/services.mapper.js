@@ -19,9 +19,9 @@ export const mapServiceFromApi = (
     contractNumber: apiService?.contract_number, // Номер договора
     client: apiService?.company
       ? {
-          id: apiService?.company.id,
-          title: apiService?.company.name,
-        }
+        id: apiService?.company.id,
+        title: apiService?.company.name,
+      }
       : null,
     type: apiService?.type,
     creator: mapManager(apiService?.creator),
@@ -31,7 +31,7 @@ export const mapServiceFromApi = (
     stages: mapStages(stagesData || apiService?.stages), // Этапы
     tasks: mapTasks(stagesData?.tasks || apiService?.tasks), // Задачи
     passwords: apiPasswords ? mapPasswords(apiPasswords) : {},
-    site: apiService.site ?? null
+    site: apiService.site ?? null,
   };
 };
 
@@ -85,20 +85,6 @@ const mapStages = (stages) => {
         },
       },
       act: {
-        stampedAct: stage?.stamped_act,
-        unstampedAct: stage?.unstamped_act,
-        // scanStatus: statusActTypes.notAssignedScan,
-        // originalStatus: statusActTypes.notAssignedOriginal,
-        // withSign: {
-        //   id: 0,
-        //   file: 'Act with sign',
-        //   extension: '.pdf',
-        // },
-        // withoutSign: {
-        //   id: 1,
-        //   file: 'Act without sign',
-        //   extension: '.pdf',
-        // },
       },
       taskCount: stage?.task_count,
       bills: stage?.bills ? mapBill(stage?.bills ?? []) : null,
@@ -141,20 +127,6 @@ const mapAct = (acts) => {
     id: act?.id,
     number: act?.number,
     sum: act?.sum,
-    // creationDate: new Date(act?.creation_date ?? act?.date),
-    // paymentDate: new Date(act?.payment_date),
-    // paymentReason: act?.payment_reason,
-    // stage: act?.stage,
-    // company: act?.company ?? null,
-    //
-    // service: act?.service ?? null,
-    //
-    // legalEntity: act?.legal_entity
-    //   ? {
-    //     id: act?.legal_entity.id,
-    //     name: act?.legal_entity.name,
-    //   }
-    //   : null,
     items: act?.items.map((item) => ({
       id: item.id,
       name: item.name,
@@ -162,12 +134,7 @@ const mapAct = (acts) => {
       quantity: item.quantity,
       measurementUnit: item.measurement_unit,
     })),
-    // sum: act?.sum,
     status: act?.signed ? actStatusTypes.stamped : actStatusTypes.unstamped,
-    // stampedBill: act?.stamped_bill,
-    // unstampedBill: act?.unstamped_bill,
-    stampedAct: act?.stamped_act,
-    unstampedAct: act?.unstamped_act,
   }));
 };
 
@@ -180,14 +147,12 @@ const mapBill = (bills) => {
     paymentReason: bill?.payment_reason,
     stage: bill?.stage,
     company: bill?.company ?? null,
-
     service: bill?.service ?? null,
-
     legalEntity: bill?.legal_entity
       ? {
-          id: bill?.legal_entity.id,
-          name: bill?.legal_entity.name,
-        }
+        id: bill?.legal_entity.id,
+        name: bill?.legal_entity.name,
+      }
       : null,
     items: bill?.items.map((item) => ({
       id: item.id,
@@ -198,10 +163,6 @@ const mapBill = (bills) => {
     })),
     sum: bill?.sum,
     status: bill?.status,
-    stampedBill: bill?.stamped_bill,
-    unstampedBill: bill?.unstamped_bill,
-    stampedAct: bill?.stamped_act,
-    unstampedAct: bill?.unstamped_act,
   }));
 };
 
@@ -274,7 +235,6 @@ export const mapServiceDataToBackend = (drafts, changedFieldsSet, propId) => {
     const keyMapping = {
       manager: 'manager_id',
       client: 'company_id',
-      // 'client': 'company_id',
       deadline: 'deadline',
       status: 'active',
       command: 'participants_ids',

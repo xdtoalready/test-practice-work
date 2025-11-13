@@ -1,8 +1,6 @@
 import { observer } from 'mobx-react';
 
 import React, {
-  useCallback,
-  useEffect,
   useMemo,
   useRef,
   useState,
@@ -18,16 +16,10 @@ import Badge, { statusTypes } from '../../../../shared/Badge';
 import styles from './Table.module.sass';
 import TextLink from '../../../../shared/Table/TextLink';
 import BillsStats from './components/BillsStats';
-import useQueryParam from '../../../../hooks/useQueryParam';
-import { formatDateToQuery } from '../../../../utils/formate.date';
-import { format, startOfDay, sub } from 'date-fns';
+import { format } from 'date-fns';
 import ConfirmationModal from '../../../../components/ConfirmationModal';
 import { handleError, handleInfo } from '../../../../utils/snackbar';
-import TaskFilter from '../../../Tasks/components/TaskFilter';
-import BillsTableFilter from './components/BillsFilters/BillsTableFilter';
-import BillsFilter from './components/BillsFilters/BillsFilter';
 import { FiltersProvider } from '../../../../providers/FilterProvider';
-import { createTaskFilters } from '../../../Tasks/tasks.filter.conf';
 import { createBillsFilters } from '../../filters/bills.filter.conf';
 import { LoadingProvider } from '../../../../providers/LoadingProvider';
 import { getQueryParam } from '../../../../utils/window.utils';
@@ -37,7 +29,7 @@ export const formatDateForUrl = (date) => {
   return format(date, 'yyyy-MM-dd');
 };
 
-const BillsTable = observer(({currentSwitcher}) => {
+const BillsTable = observer(({ currentSwitcher }) => {
   const { billsStore } = useStore();
   const api = useBillsApi();
   const appApi = useAppApi();
@@ -50,7 +42,7 @@ const BillsTable = observer(({currentSwitcher}) => {
 
   const handleFilterChange = async (filters) => {
     if (filters?.date_range && !getQueryParam('date_range')) return;
-    await api.getBills(Number(currentPage),currentSwitcher);
+    await api.getBills(Number(currentPage), currentSwitcher);
   };
 
   const {
@@ -61,9 +53,8 @@ const BillsTable = observer(({currentSwitcher}) => {
     itemsPerPage,
     handlePageChange,
   } = usePagingData(billsStore, handleFilterChange, () =>
-    billsStore?.getBills(1,currentSwitcher),
+    billsStore?.getBills(1, currentSwitcher),
   );
-
 
   const handleEdit = (bill) => {
     setCurrentBill(bill);
@@ -73,14 +64,10 @@ const BillsTable = observer(({currentSwitcher}) => {
   const handleDelete = async (id) => {
     try {
       await api.deleteBill(id, currentPage);
-      handleInfo('Услуга удалена');
+      handleInfo('Счет удален');
     } catch (error) {
       handleError('Ошибка при удалении:', error);
     }
-  };
-
-  const handleView = (billId) => {
-    window.open(`/documents/bills/${billId}`, '_blank');
   };
 
   const handleDownload = async (billId) => {
@@ -92,14 +79,10 @@ const BillsTable = observer(({currentSwitcher}) => {
   };
 
   const getActions = (data) => [
-    { label: 'Просмотр', onClick: () => handleView(data.id) },
+    { label: 'Просмотр', onClick: () => window.open(`/documents/bills/${data.id}?stamp=1`, '_blank') },
     { label: 'Скачать', onClick: () => handleDownload(data.id) },
     { label: 'Редактировать', onClick: () => handleEdit(data) },
-    {
-      label: 'Удалить',
-      onClick: () => setBillToDelete(data.id),
-      disabled: data.id === 0,
-    },
+    { label: 'Удалить', onClick: () => setBillToDelete(data.id), disabled: data.id === 0 },
   ];
 
   const cols = useMemo(
@@ -182,20 +165,15 @@ const BillsTable = observer(({currentSwitcher}) => {
           <Table
             settingsSwithcerValue={currentSwitcher}
             switchers={[
-              {key:'bill',to:'?filter=bill',name:'Счета'},
-              {key:'act',to:'?filter=act',name:'Акты'},
-              {key:'report',to:'?filter=report',name:'Отчеты'},
+              { key: 'bill', to: '?filter=bill', name: 'Счета' },
+              { key: 'act', to: '?filter=act', name: 'Акты' },
+              { key: 'report', to: '?filter=report', name: 'Отчеты' },
             ]}
             beforeTable={() => (
               <div>
-                {/*<BillsTableFilter />*/}
                 <BillsStats />
               </div>
             )}
-            // cardComponent={(data) => (
-            //   <AdaptiveCard data={data} statusType={statusTypes.bills} />
-            // )}
-
             headerActions={{
               sorting: true,
               settings: true,
@@ -242,7 +220,7 @@ const BillsTable = observer(({currentSwitcher}) => {
         )}
         {billToDelete !== null && (
           <ConfirmationModal
-            isOpen={billToDelete !== null}
+            isOpen={true}
             onClose={() => setBillToDelete(null)}
             onConfirm={() => {
               handleDelete(billToDelete).then(() => {

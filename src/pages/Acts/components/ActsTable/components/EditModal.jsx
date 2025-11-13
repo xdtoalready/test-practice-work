@@ -11,7 +11,8 @@ import Icon from '../../../../../shared/Icon';
 import useStore from '../../../../../hooks/useStore';
 import useAppApi from '../../../../../api';
 import useActsApi from '../../../acts.api';
-import taskStyles from '../../../../Stages/components/StagesPage/components/StagesTable/components/EditModal/components/TaskDescriptionPart/Description.module.sass';
+import taskStyles
+  from '../../../../Stages/components/StagesPage/components/StagesTable/components/EditModal/components/TaskDescriptionPart/Description.module.sass';
 
 import { handleError } from '../../../../../utils/snackbar';
 import { handleSubmit as handleSubmitSnackbar } from '../../../../../utils/snackbar';
@@ -21,7 +22,6 @@ import cn from 'classnames';
 import useActs from '../../../hooks/useActs';
 import Calendar from '../../../../../shared/Datepicker';
 import useTasksApi from '../../../../Tasks/tasks.api';
-
 
 const EditModal = observer(({ actId, onClose, company, service, stage }) => {
   stage && useActs(actId);
@@ -40,7 +40,7 @@ const EditModal = observer(({ actId, onClose, company, service, stage }) => {
 
   const [localAct, setLocalAct] = useState({
     number: '',
-    status:actStatusTypes.unstamped,
+    status: actStatusTypes.unstamped,
     items: [],
   });
 
@@ -128,7 +128,7 @@ const EditModal = observer(({ actId, onClose, company, service, stage }) => {
         await api
           .createAct({
             ...localAct,
-            stage:stage ?? act?.stage
+            stage: stage ?? act?.stage,
           }, stage?.id ?? null)
           .then(() => service && stage && serviceApi.getServiceById(service.id));
       }
@@ -194,7 +194,6 @@ const EditModal = observer(({ actId, onClose, company, service, stage }) => {
         customButtons={
           isEditMode && (
             <div className={styles.addButtons}>
-              <DownloadButton handleDownload={handleDownloadAct} />
               <DeleteButton handleDelete={() => setIsDeleteModalOpen(true)} />
             </div>
           )
@@ -231,7 +230,7 @@ const EditModal = observer(({ actId, onClose, company, service, stage }) => {
           {/*/>*/}
         </div>
 
-        { !stage && !isEditMode && ( <ValuesSelector
+        {!stage && !isEditMode && (<ValuesSelector
             name={`stage`}
             placeholder={'Привязать к...'}
             onChange={(e) => {
@@ -243,8 +242,8 @@ const EditModal = observer(({ actId, onClose, company, service, stage }) => {
                   title: selected.name,
                   type: selected.type,
                 };
-                if (r.type==='stage' && isEditMode){
-                  handleChange(`stage`,r);
+                if (r.type === 'stage' && isEditMode) {
+                  handleChange(`stage`, r);
                 }
                 handleChange(`stage`, r);
               } else {
@@ -293,9 +292,9 @@ const EditModal = observer(({ actId, onClose, company, service, stage }) => {
                 : null
             }
           />
-        ) }
+        )}
 
-        { isEditMode && !company &&
+        {isEditMode && !company &&
           <ValuesSelector
             required={true}
             name={'company'}
@@ -398,15 +397,6 @@ const EditModal = observer(({ actId, onClose, company, service, stage }) => {
     </>
   );
 });
-
-const DownloadButton = ({ handleDownload }) => {
-  return (
-    <div className={styles.download} onClick={handleDownload}>
-      <span>Скачать акт</span>
-      <Icon name={'download'} size={20} />
-    </div>
-  );
-};
 
 const DeleteButton = ({ handleDelete }) => {
   return (

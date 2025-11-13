@@ -1,14 +1,9 @@
 import { observer } from 'mobx-react';
 import useStore from '../../../../hooks/useStore';
-import useServiceApi from '../../../Services/services.api';
 import { useCallback, useState } from 'react';
 import usePagingData from '../../../../hooks/usePagingData';
-import TableLink from '../../../../shared/Table/Row/Link';
 import ManagerCell from '../../../../components/ManagerCell';
-import { Tooltip } from 'recharts';
-import { getCorrectWordForm } from '../../../../utils/format.string';
 import Badge, { statusTypes } from '../../../../shared/Badge';
-import StagesCell from '../../../Services/components/ServicesTable/components/StagesCell';
 import Table from '../../../../shared/Table';
 import useEmployesApi from '../../api/employes.api';
 import { genderTypeRu } from '../../settings.types';
@@ -17,7 +12,6 @@ import React from 'react';
 import { LoadingProvider } from '../../../../providers/LoadingProvider';
 import EditModal from './components/EditModal';
 import {
-  formatDateWithDateAndYear,
   formatDateWithOnlyDigits,
 } from '../../../../utils/formate.date';
 import ConfirmationModal from '../../../../components/ConfirmationModal';
@@ -36,7 +30,6 @@ const EmployesTable = observer(({ currentSwitcher }) => {
 
   const {
     currentPage,
-    totalPages,
     totalItems,
     paginatedData,
     itemsPerPage,
@@ -55,7 +48,7 @@ const EmployesTable = observer(({ currentSwitcher }) => {
       await api.deleteEmployee(employeeId, currentPage);
       handleInfo('Сотрудник уволен');
     } catch (error) {
-      handleError('Ошибка при уольнении:', error);
+      handleError('Ошибка при увольнении:', error);
     }
   };
 
@@ -127,9 +120,6 @@ const EmployesTable = observer(({ currentSwitcher }) => {
     <LoadingProvider isLoading={api.isLoading}>
       <div className={styles.table}>
         <Table
-          // cardComponent={(data) => (
-          //     <AdaptiveCard data={data} statusType={statusTypes.employes} />
-          // )}
           headerActions={{
             sorting: true,
             add: {
@@ -139,8 +129,8 @@ const EmployesTable = observer(({ currentSwitcher }) => {
           }}
           title="Сотрудники"
           switchers={[
-            {key:'legals',to:'?filter=legals',name:'Юр. лица'},
-            {key:'employers',to:'?filter=employers',name:'Сотрудники'},
+            { key: 'legals', to: '?filter=legals', name: 'Юр. лица' },
+            { key: 'employers', to: '?filter=employers', name: 'Сотрудники' },
           ]}
           settingsSwithcerValue={currentSwitcher}
           data={paginatedData}
@@ -166,7 +156,7 @@ const EmployesTable = observer(({ currentSwitcher }) => {
 
       {employeeDelete !== null && (
         <ConfirmationModal
-          isOpen={employeeDelete !== null}
+          isOpen={true}
           onClose={() => setEmployeeDelete(null)}
           onConfirm={() => {
             handleDeleteEmployee(employeeDelete).then(() => {

@@ -1,11 +1,9 @@
 import { observer } from 'mobx-react';
 import React, {
   useMemo,
-  useRef,
   useState,
 } from 'react';
 import usePagingData from '../../../../hooks/usePagingData';
-import TableLink from '../../../../shared/Table/Row/Link';
 import useStore from '../../../../hooks/useStore';
 import useReportsApi from '../../api/reports.api';
 import useDocumentsPrintApi from '../../api/documents-print.api';
@@ -19,7 +17,6 @@ import { handleError, handleInfo } from '../../../../utils/snackbar';
 import { FiltersProvider } from '../../../../providers/FilterProvider';
 import { createReportsFilters } from '../../filters/reports.filter.conf';
 import { LoadingProvider } from '../../../../providers/LoadingProvider';
-import { getQueryParam } from '../../../../utils/window.utils';
 import useAppApi from '../../../../api';
 
 const ReportsTable = observer(({ currentSwitcher }) => {
@@ -28,7 +25,6 @@ const ReportsTable = observer(({ currentSwitcher }) => {
   const appApi = useAppApi();
   const documentsPrintApi = useDocumentsPrintApi();
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [currentReport, setCurrentReport] = useState(null);
   const [reportToDelete, setReportToDelete] = useState(null);
 
   const handleFilterChange = async (filters) => {
@@ -46,11 +42,6 @@ const ReportsTable = observer(({ currentSwitcher }) => {
     reportsStore?.getReports(),
   );
 
-  const handleEdit = (report) => {
-    setCurrentReport(report);
-    setEditModalOpen(true);
-  };
-
   const handleDelete = async (id) => {
     try {
       await api.deleteReport(id, currentPage);
@@ -58,10 +49,6 @@ const ReportsTable = observer(({ currentSwitcher }) => {
     } catch (error) {
       handleError('Ошибка при удалении:', error);
     }
-  };
-
-  const handleView = (reportId) => {
-    window.open(`/documents/reports/${reportId}`, '_blank');
   };
 
   const handleDownload = async (reportId) => {
@@ -83,13 +70,9 @@ const ReportsTable = observer(({ currentSwitcher }) => {
 
   const getActions = (data) => {
     const actions = [
-      { label: 'Просмотр', onClick: () => handleView(data.id) },
+      { label: 'Просмотр', onClick: () => window.open(`/documents/reports/${data.id}`, '_blank') },
       { label: 'Скачать', onClick: () => handleDownload(data.id) },
-      {
-        label: 'Удалить',
-        onClick: () => setReportToDelete(data.id),
-        disabled: data.id === 0,
-      },
+      { label: 'Удалить', onClick: () => setReportToDelete(data.id), disabled: data.id === 0 },
     ];
 
     // Добавляем действие "Согласовать" между "Скачать" и "Удалить" если can_be_agreed = true
@@ -110,12 +93,7 @@ const ReportsTable = observer(({ currentSwitcher }) => {
         id: 'number',
         accessor: 'id',
         width: '10%',
-        Cell: ({ row }) => (
-          <TableLink
-            onClick={() => handleEdit(row.original)}
-            name={row.original.id}
-          />
-        ),
+        Cell: ({ row }) => (<span>{row.original.id}</span>),
       },
       {
         Header: 'Дата создания',
@@ -241,16 +219,14 @@ const ReportsTable = observer(({ currentSwitcher }) => {
             }}
           />
         </div>
-        {/* EditModal будет добавлен позже */}
         {editModalOpen && (
           <div>
-            {/* Placeholder для модалки редактирования */}
             <button onClick={() => setEditModalOpen(false)}>Закрыть</button>
           </div>
         )}
         {reportToDelete !== null && (
           <ConfirmationModal
-            isOpen={reportToDelete !== null}
+            isOpen={true}
             onClose={() => setReportToDelete(null)}
             onConfirm={() => {
               handleDelete(reportToDelete).then(() => {

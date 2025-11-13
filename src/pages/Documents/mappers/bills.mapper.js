@@ -12,14 +12,12 @@ export const mapBillFromApi = (apiBill) => {
     paymentReason: apiBill?.payment_reason,
     stage: apiBill?.stage,
     company: apiBill?.company ?? null,
-
     service: apiBill?.service ?? null,
-
     legalEntity: apiBill?.legal_entity
       ? {
-          id: apiBill?.legal_entity.id,
-          name: apiBill?.legal_entity.name,
-        }
+        id: apiBill?.legal_entity.id,
+        name: apiBill?.legal_entity.name,
+      }
       : null,
     items: apiBill?.items.map((item) => ({
       id: item.id,
@@ -30,10 +28,6 @@ export const mapBillFromApi = (apiBill) => {
     })),
     sum: apiBill?.sum,
     status: apiBill?.status,
-    stampedBill: apiBill?.stamped_bill,
-    unstampedBill: apiBill?.unstamped_bill,
-    stampedAct: apiBill?.stamped_act,
-    unstampedAct: apiBill?.unstamped_act,
   };
 };
 

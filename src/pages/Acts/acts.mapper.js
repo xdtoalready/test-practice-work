@@ -18,9 +18,7 @@ export const mapActFromApi = (apiAct) => {
       quantity: item.quantity,
       measurementUnit: item.measurement_unit,
     })) ?? [],
-    sum:apiAct?.sum,
-    stampedAct: apiAct?.stamped_act,
-    unstampedAct: apiAct?.unstamped_act,
+    sum: apiAct?.sum,
     status: apiAct?.signed === 0 ? actStatusTypes.unstamped : actStatusTypes.stamped,
   };
 };

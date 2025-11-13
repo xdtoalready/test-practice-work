@@ -1,22 +1,16 @@
 import React, {
   useCallback,
-  useEffect,
   useMemo,
   useRef,
-  useState,
 } from 'react';
 import { observer } from 'mobx-react';
 import Table from '../../../../shared/Table';
 import styles from './Table.module.sass';
 import {
   formatDate,
-  formatDateOnlyHours,
-  formatDateToQuery,
-  formatDateWithoutHours,
 } from '../../../../utils/formate.date';
-import Badge, { statusTypes } from '../../../../shared/Badge';
+import Badge from '../../../../shared/Badge';
 import {
-  callDirectionTypesRu,
   colorDirectionTypes,
   colorStatusTypes,
 } from '../../calls.types';
@@ -25,16 +19,12 @@ import useStore from '../../../../hooks/useStore';
 import useCallsApi from '../../calls.api';
 import { FiltersProvider } from '../../../../providers/FilterProvider';
 import { LoadingProvider } from '../../../../providers/LoadingProvider';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { format, startOfDay, sub } from 'date-fns';
-import useQueryParam from '../../../../hooks/useQueryParam';
 import { createCallsFilters } from '../../calls.filter.conf';
 import usePagingData from '../../../../hooks/usePagingData';
 import { getQueryParam } from '../../../../utils/window.utils';
 import CallsStats from './CallStats';
-import { formatSeconds } from '../../../../utils/format.time';
-import ManagerCell from "../../../../components/ManagerCell";
-import useAppApi from "../../../../api";
+import ManagerCell from '../../../../components/ManagerCell';
+import useAppApi from '../../../../api';
 import CallAudioPlayer from '../CallAudioPlayer';
 
 const CallsTable = observer(() => {
@@ -42,9 +32,7 @@ const CallsTable = observer(() => {
   const api = useCallsApi();
   const periodCalendarRef = useRef();
   const periodSelectorRef = useRef();
-  const location = useLocation();
-  const navigate = useNavigate();
-  const appApi = useAppApi()
+  const appApi = useAppApi();
 
   const fetchCalls = useCallback(
     (page) => {
@@ -62,15 +50,6 @@ const CallsTable = observer(() => {
     handlePageChange,
   } = usePagingData(callsStore, fetchCalls, () => callsStore?.getCalls());
 
-  const handleCheckRecord = (urlToRecord) => {
-
-    window.open(urlToRecord, '_blank');
-  };
-
-  // useEffect(() => {
-  //   api.getCalls(currentPage);
-  // }, [currentPage, location.search]);
-
   const handleFilterChange = async (filters) => {
 
     if (filters.date_range && !getQueryParam('date_range')) return;
@@ -87,58 +66,51 @@ const CallsTable = observer(() => {
         {entity.name && (
           <TextLink to={`/clients/${entity.id}`}>{entity.name}</TextLink>
         )}
-        {/*<div className={styles.info}>{entity.phone || '-'}</div>*/}
       </div>
     );
   }, []);
 
-  const renderManagerContactInfo = useCallback((entity,phone) => {
+  const renderManagerContactInfo = useCallback((entity, phone) => {
     if (!entity) return <span>-</span>;
 
     return (
-        <div className={styles.contactInfo}>
-         <ManagerCell disableRole={true} manager={entity}>
-           <span className={styles.info}>{phone}</span>
-         </ManagerCell>
-        </div>
+      <div className={styles.contactInfo}>
+        <ManagerCell disableRole={true} manager={entity}>
+          <span className={styles.info}>{phone}</span>
+        </ManagerCell>
+      </div>
     );
-  },[])
+  }, []);
 
   const renderPhone = useCallback((phone) => {
     return <div className={styles.phone}>{phone}</div>;
   }, []);
 
-  const renderWhoCallWithPhone = useCallback(({client,company},phone) => {
+  const renderWhoCallWithPhone = useCallback(({ client, company }, phone) => {
     if (!client) return <span>-</span>;
 
     return (
-        <div className={styles.contactInfo}>
-          <ManagerCell fioContainerClass={styles.fioContainer} companyName={company.name} companyLink={`/clients/${company.id}`} disableAvatar={true} disableRole={true} manager={client}>
-            <span className={styles.info}>{phone}</span>
-          </ManagerCell>
-        </div>
+      <div className={styles.contactInfo}>
+        <ManagerCell fioContainerClass={styles.fioContainer} companyName={company.name} companyLink={`/clients/${company.id}`} disableAvatar={true} disableRole={true} manager={client}>
+          <span className={styles.info}>{phone}</span>
+        </ManagerCell>
+      </div>
     );
-  },[])
+  }, []);
 
 
   const renderWhoCallInfo = useCallback((entity) => {
     if (!entity) return <span>-</span>;
-    if (entity.client){
-      return renderWhoCallWithPhone(entity,entity.phoneClient)
-    }
-    else if (entity.company){
-      return renderContactInfo(entity.company)
-    }
-    else return renderPhone(entity.phoneClient)
-  })
+    if (entity.client) {
+      return renderWhoCallWithPhone(entity, entity.phoneClient);
+    } else if (entity.company) {
+      return renderContactInfo(entity.company);
+    } else return renderPhone(entity.phoneClient);
+  });
 
   // Table columns definition
   const cols = useMemo(
     () => [
-      // {
-      //   Header: 'ID',
-      //   accessor: 'mangoId',
-      // },
       {
         Header: 'Тип/Дата',
         accessor: 'type',
@@ -167,17 +139,16 @@ const CallsTable = observer(() => {
         Header: 'Кто звонил',
         accessor: 'company',
         Cell: ({ row }) => {
-
           return row.original?.manager
-              ? renderManagerContactInfo(row.original.manager,row.original.phone)
-              : renderPhone(row.original.phone);
+            ? renderManagerContactInfo(row.original.manager, row.original.phone)
+            : renderPhone(row.original.phone);
         },
       },
       {
         Header: 'Кому звонили',
         accessor: 'manager',
         Cell: ({ row }) => {
-          return renderWhoCallInfo(row.original)
+          return renderWhoCallInfo(row.original);
         },
       },
       {

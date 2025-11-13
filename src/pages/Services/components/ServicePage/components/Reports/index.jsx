@@ -58,7 +58,7 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
       // Шаг 3: Отправляем на refresh (теперь POST с телом)
       console.log('[Reports] Отправляем на refresh для report:', selectedReport.id);
       await http.post(`/api/reports/${selectedReport.id}/refresh`, {
-        tasks: splitContent
+        tasks: splitContent,
       });
 
       console.log('[Reports] Отчёт обновлён');
@@ -108,10 +108,9 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
         id: 'status',
         width: '20%',
         Cell: ({ row }) => {
-          const data = row?.original;
           return (
             <Badge
-              status={data.status}
+              status={row?.original.status}
               statusType={statusTypes.reports}
             />
           );
@@ -122,14 +121,9 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
         width: '20%',
         id: 'download',
         Cell: ({ row }) => {
-          const data = row?.original;
           return (
             <Button
-              onClick={() => {
-                if (data.view) {
-                  window.open(data.view, '_blank');
-                }
-              }}
+              onClick={() => window.open(`/documents/reports/${row?.original.id}`, '_blank')}
               type={'secondary'}
               after={<Icon size={24} name={'download'} />}
               classname={cn(styles.button, styles.button_bills)}
@@ -143,11 +137,10 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
         width: '20%',
         id: 'delete',
         Cell: ({ row }) => {
-          const data = row?.original;
           return (
             <Button
               onClick={() => {
-                setSelectedReport(data);
+                setSelectedReport(row?.original);
                 setIsDeleteModalOpen(true);
               }}
               type={'secondary'}
@@ -270,7 +263,7 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
             }
           }}
           onConfirm={handleRefreshReport}
-          label={isRefreshing ? "Разбиваем на страницы..." : "Вы действительно хотите обновить отчет?"}
+          label={isRefreshing ? 'Разбиваем на страницы...' : 'Вы действительно хотите обновить отчет?'}
           disabled={isRefreshing}
         />
       )}

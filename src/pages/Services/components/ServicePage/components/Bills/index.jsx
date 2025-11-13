@@ -10,10 +10,8 @@ import Icon from '../../../../../../shared/Icon';
 import cn from 'classnames';
 import EditModal from '../../../../../Documents/components/BillsTable/components/EditModal';
 import { observer } from 'mobx-react';
+
 const Bills = observer(({ bills, service, company, stage }) => {
-  const downloadBill = (url) => {
-    window.open(url, '_blank');
-  };
   const [billModalOpen, setBillModalOpen] = useState(false);
   const [billData, setBillData] = useState(null);
   const cols = React.useMemo(
@@ -41,9 +39,9 @@ const Bills = observer(({ bills, service, company, stage }) => {
         width: '30%',
         id: 'billWithSign',
         Cell: ({ row }) => {
-          return row?.original.stampedBill &&  (
+          return (
             <Button
-              onClick={() => downloadBill(row?.original.stampedBill)}
+              onClick={() => window.open(`/documents/bills/${row?.original.id}?stamp=1`, '_blank')}
               type={'secondary'}
               after={<Icon size={24} name={'download'} />}
               classname={cn(styles.button, styles.button_bills)}
@@ -55,12 +53,11 @@ const Bills = observer(({ bills, service, company, stage }) => {
       {
         Header: '',
         width: '30%',
-
         id: 'billWithoutSign',
         Cell: ({ row }) => {
-          return row?.original.unstampedBill &&  (
+          return (
             <Button
-              onClick={() => downloadBill(row?.original.unstampedBill)}
+              onClick={() => window.open(`/documents/bills/${row?.original.id}?stamp=0`, '_blank')}
               type={'secondary'}
               after={<Icon size={24} name={'download'} />}
               classname={cn(styles.button, styles.button_bills)}
@@ -69,11 +66,9 @@ const Bills = observer(({ bills, service, company, stage }) => {
           );
         },
       },
-
       {
         Header: 'Сумма',
         width: '15%',
-
         id: 'sum',
         Cell: ({ row }) => {
           const data = row?.original;
@@ -83,9 +78,7 @@ const Bills = observer(({ bills, service, company, stage }) => {
       {
         Header: 'Статус',
         width: '20%',
-
         id: 'status',
-
         Cell: ({ row }) => {
           const data = row?.original;
           return (
@@ -100,7 +93,6 @@ const Bills = observer(({ bills, service, company, stage }) => {
         Header: 'Дата оплаты',
         id: 'date',
         width: '30%',
-
         Cell: ({ row }) => {
           const data = row?.original;
           return <p>{formatDateWithoutHours(data.paymentDate)}</p>;
@@ -114,7 +106,7 @@ const Bills = observer(({ bills, service, company, stage }) => {
   return (
     <div className={styles.table_container}>
       <Table
-          withHeaderWhenEmpty={false}
+        withHeaderWhenEmpty={false}
         smallTable={true}
         cardComponent={(data, onPagination) => (
           <AdaptiveCard data={data} onPagination={onPagination} />
@@ -146,20 +138,6 @@ const Bills = observer(({ bills, service, company, stage }) => {
       )}
     </div>
   );
-  // return (
-  //     <div className="bills">
-  //         {bills.map(bill => (
-  //             <div key={bill.id}>
-  //                 <span>{bill.title}</span>
-  //                 <button>{bill.withoutSign.file}</button>
-  //                 <button>{bill.withSign.file}</button>
-  //                 <span>{bill.sum}₽</span>
-  //                 <span>{bill.status}</span>
-  //                 <span>{formatDateWithoutHours(bill.payedDate)}</span>
-  //             </div>
-  //         ))}
-  //     </div>
-  // );
 });
 
 export default Bills;

@@ -1,34 +1,23 @@
 import { observer } from 'mobx-react';
 
 import React, {
-  useCallback,
-  useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
-import { Link } from 'react-router-dom';
 import usePagingData from '../../../../hooks/usePagingData';
 import TableLink from '../../../../shared/Table/Row/Link';
 import useStore from '../../../../hooks/useStore';
-import useBillsApi from '../../api/bills.api';
 import useDocumentsPrintApi from '../../api/documents-print.api';
 import Table from '../../../../shared/Table';
 import Badge, { statusTypes } from '../../../../shared/Badge';
 import styles from './Table.module.sass';
 import TextLink from '../../../../shared/Table/TextLink';
 import BillsStats from './components/BillsStats';
-import useQueryParam from '../../../../hooks/useQueryParam';
-import { formatDateToQuery } from '../../../../utils/formate.date';
-import { format, startOfDay, sub } from 'date-fns';
+import { format } from 'date-fns';
 import ConfirmationModal from '../../../../components/ConfirmationModal';
 import { handleError, handleInfo } from '../../../../utils/snackbar';
-import TaskFilter from '../../../Tasks/components/TaskFilter';
-import BillsTableFilter from './components/BillsFilters/BillsTableFilter';
-import BillsFilter from './components/BillsFilters/BillsFilter';
 import { FiltersProvider } from '../../../../providers/FilterProvider';
-import { createTaskFilters } from '../../../Tasks/tasks.filter.conf';
-import { createBillsFilters } from '../../filters/bills.filter.conf';
 import { LoadingProvider } from '../../../../providers/LoadingProvider';
 import { getQueryParam } from '../../../../utils/window.utils';
 import { createActsFilter } from '../../filters/acts.filter.conf';
@@ -40,9 +29,8 @@ export const formatDateForUrl = (date) => {
   return format(date, 'yyyy-MM-dd');
 };
 
-const ActsTable = observer(({currentSwitcher}) => {
+const ActsTable = observer(({ currentSwitcher }) => {
   const { actsStore } = useStore();
-  const docApi = useBillsApi();
   const api = useActsApi();
   const appApi = useAppApi();
   const documentsPrintApi = useDocumentsPrintApi();
@@ -54,7 +42,7 @@ const ActsTable = observer(({currentSwitcher}) => {
 
   const handleFilterChange = async (filters) => {
     if (filters?.date_range && !getQueryParam('date_range')) return;
-    await api.getActs(Number(currentPage),currentSwitcher);
+    await api.getActs(Number(currentPage), currentSwitcher);
   };
 
   const {
@@ -65,8 +53,8 @@ const ActsTable = observer(({currentSwitcher}) => {
     itemsPerPage,
     handlePageChange,
   } = usePagingData(actsStore, handleFilterChange, () =>
-    actsStore?.getActs(1,currentSwitcher),
-);
+    actsStore?.getActs(1, currentSwitcher),
+  );
 
   const handleEdit = (bill) => {
     setCurrentAct(bill);
@@ -76,14 +64,10 @@ const ActsTable = observer(({currentSwitcher}) => {
   const handleDelete = async (id) => {
     try {
       await api.deleteAct(id, currentPage);
-      handleInfo('Услуга удалена');
+      handleInfo('Акт удален');
     } catch (error) {
       handleError('Ошибка при удалении:', error);
     }
-  };
-
-  const handleView = (actId) => {
-    window.open(`/documents/acts/${actId}`, '_blank');
   };
 
   const handleDownload = async (actId) => {
@@ -95,14 +79,10 @@ const ActsTable = observer(({currentSwitcher}) => {
   };
 
   const getActions = (data) => [
-    { label: 'Просмотр', onClick: () => handleView(data.id) },
+    { label: 'Просмотр', onClick: () => window.open(`/documents/acts/${data.id}?stamp=1`, '_blank') },
     { label: 'Скачать', onClick: () => handleDownload(data.id) },
     { label: 'Редактировать', onClick: () => handleEdit(data) },
-    {
-      label: 'Удалить',
-      onClick: () => setActToDelete(data.id),
-      disabled: data.id === 0,
-    },
+    { label: 'Удалить', onClick: () => setActToDelete(data.id), disabled: data.id === 0 },
   ];
 
   const cols = useMemo(
@@ -130,15 +110,6 @@ const ActsTable = observer(({currentSwitcher}) => {
           </span>
         ),
       },
-      // {
-      //   Header: 'План. дата оплаты',
-      //   id: 'paymentDate',
-      //   width: '15%',
-      //   accessor: 'paymentDate',
-      //   Cell: ({ row }) => (
-      //     <span>{new Date(row.original.paymentDate).toLocaleDateString()}</span>
-      //   ),
-      // },
       {
         Header: 'Сумма',
         id: 'sum',
@@ -187,18 +158,14 @@ const ActsTable = observer(({currentSwitcher}) => {
             settingsSwithcerValue={currentSwitcher}
             beforeTable={() => (
               <div>
-                {/*<BillsTableFilter />*/}
                 <BillsStats />
               </div>
             )}
             switchers={[
-              {key:'bill',to:'?filter=bill',name:'Счета'},
-              {key:'act',to:'?filter=act',name:'Акты'},
-              {key:'report',to:'?filter=report',name:'Отчеты'},
+              { key: 'bill', to: '?filter=bill', name: 'Счета' },
+              { key: 'act', to: '?filter=act', name: 'Акты' },
+              { key: 'report', to: '?filter=report', name: 'Отчеты' },
             ]}
-            // cardComponent={(data) => (
-            //   <AdaptiveCard data={data} statusType={statusTypes.bills} />
-            // )}
 
             headerActions={{
               sorting: true,
@@ -222,8 +189,7 @@ const ActsTable = observer(({currentSwitcher}) => {
                 },
               },
             }}
-            title="Акты
-           "
+            title="Акты"
             data={paginatedData}
             columns={cols}
             actions={getActions}
@@ -247,7 +213,7 @@ const ActsTable = observer(({currentSwitcher}) => {
         )}
         {actToDelete !== null && (
           <ConfirmationModal
-            isOpen={actToDelete !== null}
+            isOpen={true}
             onClose={() => setActToDelete(null)}
             onConfirm={() => {
               handleDelete(actToDelete).then(() => {

@@ -31,8 +31,6 @@ const Act = ({ act }) => {
           />}
         </BasisComponent>
         <BasisComponent basis={960} className={styles.statusContainer}>
-          {/*<ServiceBadge statusType={serviceStatuses.act} status={act.scanStatus}/>*/}
-          {/*<ServiceBadge statusType={serviceStatuses.act} status={act.originalStatus}/>*/}
         </BasisComponent>
       </CardField>}
     </div>
