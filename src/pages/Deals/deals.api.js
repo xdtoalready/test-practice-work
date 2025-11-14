@@ -279,6 +279,24 @@ const useDealsApi = () => {
       .finally(() => setIsLoading(false));
   };
 
+  const deleteBusiness = (businessId, dealId) => {
+    setIsLoading(true);
+    return http
+      .delete(`/api/businesses/${businessId}`)
+      .then(handleHttpResponse)
+      .then(() => {
+        const currDeal = dealsStore.getById(dealId);
+        const updatedBusinesses = { ...currDeal.businesses };
+        delete updatedBusinesses[businessId];
+        dealsStore.setCurrentDeal({
+          ...currDeal,
+          businesses: updatedBusinesses,
+        });
+      })
+      .catch(handleHttpError)
+      .finally(() => setIsLoading(false));
+  };
+
   return {
     getDeals,
     createDeal,
@@ -286,6 +304,7 @@ const useDealsApi = () => {
     getDealById,
     createBusiness,
     updateBusiness,
+    deleteBusiness,
     deleteDeal,
     updateDealStatus,
     isLoading,

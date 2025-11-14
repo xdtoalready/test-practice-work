@@ -351,7 +351,12 @@ const CalendarModal = observer(
     // Handle business deletion
     const handleDeleteBusiness = async () => {
       try {
-        await contextData.api.deleteBusiness(businessId);
+        // Для календаря передаём только businessId, для клиентов и дел - ещё и contextId
+        if (mode === 'calendar') {
+          await contextData.api.deleteBusiness(businessId);
+        } else {
+          await contextData.api.deleteBusiness(businessId, contextData.id);
+        }
 
         // Вызываем afterDelete, если он определен
         if (contextData.afterDelete) {
