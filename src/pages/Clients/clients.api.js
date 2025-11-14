@@ -408,6 +408,24 @@ const useClientsApi = () => {
       .finally(() => setIsLoading(false));
   };
 
+  const deleteBusiness = (businessId, clientId) => {
+    setIsLoading(true);
+    return http
+      .delete(`/api/businesses/${businessId}`)
+      .then(handleHttpResponse)
+      .then(() => {
+        const currClient = clientsStore.getById(clientId);
+        const updatedBusinesses = { ...currClient.businesses };
+        delete updatedBusinesses[businessId];
+        clientsStore.setCurrentClient({
+          ...currClient,
+          businesses: updatedBusinesses,
+        });
+      })
+      .catch(handleHttpError)
+      .finally(() => setIsLoading(false));
+  };
+
   return {
     getClients,
     createPassword,
@@ -424,6 +442,7 @@ const useClientsApi = () => {
     updateBusiness,
     createAccount,
     createBusiness,
+    deleteBusiness,
     getFlatClientById,
     createSite,
     updateSite,
