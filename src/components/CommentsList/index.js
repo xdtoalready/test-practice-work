@@ -1,44 +1,33 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import React from 'react';
 import Comment from './Comment';
-import {
-  formatDateOnlyHours,
-  formatDateWithDateAndYear,
-  formatDateWithoutHours,
-  formatHours,
-} from '../../utils/formate.date';
+import { formatDateOnlyHours } from '../../utils/formate.date';
 import styles from './CommentList.module.sass';
-import { sortByDate } from '../../utils/sort.by';
 import { LoadingProvider } from '../../providers/LoadingProvider';
 import useAppApi from '../../api';
 import cn from 'classnames';
 import useUser from '../../hooks/useUser';
-import { getPageTypeFromUrl } from '../../utils/window.utils';
 import useScrollAfterDelete from '../../hooks/useScrollAfterDelete';
 import useGroupByDate from '../../hooks/useGroupByDate';
-import Loader from '../../shared/Loader';
-import useTasksApi from '../../pages/Tasks/tasks.api';
-import CallAudioPlayer from '../../pages/Calls/components/CallAudioPlayer';
 import Call from './Call';
 import { usePermissions } from '../../providers/PermissionProvider';
 import { UserPermissions } from '../../shared/userPermissions';
 
 const CommentsList = ({
-  comments = {},
-  filterComments,
-  filterFiles,
-  cls,
-  isLoadingUpper,
-  onDelete,
-  isLoading,
-  deleteComments,
-  onChange,
-  ...rest
-}) => {
+                        comments = {},
+                        filterComments,
+                        filterFiles,
+                        cls,
+                        isLoadingUpper,
+                        onDelete,
+                        isLoading,
+                        deleteComments,
+                        onChange,
+                        ...rest
+                      }) => {
   const { user } = useUser();
   const appApi = useAppApi();
   const { hasPermission } = usePermissions();
 
-  console.log(rest,rest?.inTask===true,'res');
   const filterFunc = (comment) => {
     if (filterComments && !comment.value?.files?.length) {
       return false;
@@ -48,7 +37,7 @@ const CommentsList = ({
   const { groupedByDate: groupedComments, isLoading: groupedLoading } =
     useGroupByDate(comments, filterFunc);
 
-  const { ref, isDeleting, isRendered } = useScrollAfterDelete(comments);
+  const { ref, isDeleting } = useScrollAfterDelete(comments);
 
   const handleDeleteComment = (commentId) => {
     isDeleting.current = true;

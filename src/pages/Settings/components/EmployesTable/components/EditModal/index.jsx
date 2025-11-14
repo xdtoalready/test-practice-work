@@ -2,45 +2,33 @@ import useEmployes from '../../../../hooks/useEmployes';
 import useEmployesApi from '../../../../api/employes.api';
 import { observer } from 'mobx-react';
 import React, { useEffect, useMemo, useState } from 'react';
-import {
-  handleError,
-  handleInfo,
-  handleSubmit as handleSubmitSnackbar,
-} from '../../../../../../utils/snackbar';
-import Modal from '../../../../../../shared/Modal';
+import { handleError, handleInfo, handleSubmit as handleSubmitSnackbar } from '../../../../../../utils/snackbar';
 import styles from './Modal.module.sass';
 import Calendar from '../../../../../../shared/Datepicker';
-import useAppApi from '../../../../../../api';
 import Dropdown from '../../../../../../shared/Dropdown/Default';
 import { useSelectorEmployeePositions } from '../../../../../../hooks/useSelectors';
 import TextInput from '../../../../../../shared/TextInput';
-import Radio from '../../../../../../shared/Radio';
-import { genderType, genderTypeRu } from '../../../../settings.types';
+import { genderType } from '../../../../settings.types';
 import cn from 'classnames';
-import { formatDateToBackend } from '../../../../../../utils/formate.date';
 import RadioGenderInput from '../../../../../../components/RadioGenderInput';
 import FormValidatedModal from '../../../../../../shared/Modal/FormModal';
 import CustomButtonContainer from '../../../../../../shared/Button/CustomButtonContainer';
 import DeleteButton from '../../../../../../shared/Button/Delete';
 import ConfirmationModal from '../../../../../../components/ConfirmationModal';
 import useQueryParam from '../../../../../../hooks/useQueryParam';
-import {
-  mapEmployeesFromApi,
-  mapSettingsDataToBackend,
-} from '../../../../settings.mapper';
+import { mapSettingsDataToBackend } from '../../../../settings.mapper';
 import Switch from '../../../../../../shared/Switch';
-import { PermissionGroups, UserPermissions } from '../../../../../../shared/userPermissions';
+import { UserPermissions } from '../../../../../../shared/userPermissions';
 import { usePermissions } from '../../../../../../providers/PermissionProvider';
 
 const EditModal = observer(({ employeId, onClose }) => {
   const { store: employeStore } = useEmployes();
   const api = useEmployesApi();
   const positions = useSelectorEmployeePositions();
-  console.log(positions, 'positions');
   const [isEditMode, setIsEditMode] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const page = useQueryParam('page', 1);
-  const { hasPermission, permissions } = usePermissions();
+  const { hasPermission } = usePermissions();
 
   const [localEmploye, setlocalEmploye] = useState({
     birthday: '',
@@ -57,7 +45,7 @@ const EditModal = observer(({ employeId, onClose }) => {
     permissions: [],
   });
 
-  const [errors, setErrors] = useState({
+  const [errors] = useState({
     passwordError: null,
     confirmPasswordError: null,
   });
@@ -74,7 +62,6 @@ const EditModal = observer(({ employeId, onClose }) => {
     employeStore,
     employeStore.drafts,
     employeStore.services,
-    ,
     localEmploye,
   ]);
   useEffect(() => {
@@ -123,11 +110,6 @@ const EditModal = observer(({ employeId, onClose }) => {
   const validatePassword = (value) => {
     return value.length >= 4 ? true : 'Пароль должен быть не менее 4 символов';
   };
-
-  const validateConfirmPassword = (value) => {
-    return value === employe.password ? true : 'Пароли должны совпадать';
-  };
-
   const handleReset = (path) => {
     if (isEditMode) {
       employeStore.resetDraft(employeId); // Сброс черновика в режиме редактирования
@@ -316,7 +298,6 @@ const EditModal = observer(({ employeId, onClose }) => {
               required={!isEditMode && true}
               placeholder={'Новый пароль'}
               onChange={(e) => {
-                console.log('target', e);
                 handleChange(
                   isEditMode ? 'password' : 'password',
                   e.target.value,
@@ -332,7 +313,7 @@ const EditModal = observer(({ employeId, onClose }) => {
               label={'Новый пароль'}
               validate={validatePassword}
             />
-            <div/>
+            <div />
           </div>
         )}
         <PermissionsSection

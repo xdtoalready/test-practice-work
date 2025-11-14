@@ -6,47 +6,25 @@ import {
   mockHttp,
   resetApiProvider,
 } from '../../shared/http';
-import { statusTypes } from './clients.types';
-import mocks from './clients.mocks';
 import useStore from '../../hooks/useStore';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import {
   mapClientDataToBackend,
   mapClientFromApi,
   mapCommentDataToBackend,
 } from './clients.mapper';
-import useQueryParam from '../../hooks/useQueryParam';
 import { getQueryParam, sanitizeUrlFilters } from '../../utils/window.utils';
-import { enqueueSnackbar } from 'notistack';
 import { handleSubmit } from '../../utils/snackbar';
-import useCalendarApi from '../Calendar/calendar.api';
 import {
   mapBusinessFromApi,
   mapBusinessToBackend,
 } from '../Calendar/calendar.mapper';
-import { useLocation } from 'react-router-dom';
-import { useNavigate } from 'react-router';
 
 let blob = new Blob([], { type: 'application/pdf' });
 let fakeFile = blob;
 
 resetApiProvider();
 
-// mockHttp.onGet('/api/companies').reply(200, mocks.createClients());
-// mockHttp.onPost('/api/companies').reply(200, mocks.createClients());
-// mockHttp.onGet(/\/api\/companies\/\d+/).reply((config) => {
-//   const id = parseInt(config.url.split('/').pop());
-//
-//   const clients = mocks.createClients();
-//   const client = clients.find((c) => c.id === id);
-//
-//   if (client) {
-//     return [200, client];
-//   } else {
-//     console.log(`Client with id ${id} not found`);
-//     return [404, { message: 'Client not found' }];
-//   }
-// });
 mockHttp.onGet(`/download/file`).reply((config) => {
   return [200, fakeFile];
 });
@@ -62,9 +40,6 @@ const getRelatedEntity = (id) => {
 const useClientsApi = () => {
   const { clientsStore } = useStore();
   const [isLoading, setIsLoading] = useState(false);
-  const businessApi = useCalendarApi();
-  const navigate = useNavigate();
-  const location = useLocation();
 
   const getClients = (page = 1, filters = {}) => {
 
@@ -140,15 +115,15 @@ const useClientsApi = () => {
         // .then(handleHttpResponse)
         .then(
           ([
-            clientRes,
-            passwordsRes,
-            contactRes,
-            commentsRes,
-            servicesRes,
-            dealsRes,
-            businessRes,
-            callsRes,
-          ]) => {
+             clientRes,
+             passwordsRes,
+             contactRes,
+             commentsRes,
+             servicesRes,
+             dealsRes,
+             businessRes,
+             callsRes,
+           ]) => {
 
             const clientData = clientRes?.data?.data;
             const passwordsData = passwordsRes?.data?.data;
@@ -330,11 +305,6 @@ const useClientsApi = () => {
       .catch(handleHttpError)
       .finally(() => setIsLoading(false));
   };
-
-
-
-
-
 
 
   const deletePassword = (clientId, passId) => {

@@ -2,23 +2,13 @@ import React from 'react';
 import Card from '../../../../../../shared/Card';
 import styles from '../../page.module.sass';
 import cn from 'classnames';
-import Button from '../../../../../../shared/Button';
-import Icon from '../../../../../../shared/Icon';
 import LabeledParagraph from '../../../../../../shared/LabeledParagraph';
-import {
-  serviceTypeEnumRu,
-  statusTypes,
-  statusTypesRu,
-} from '../../../../services.types';
+import { serviceTypeEnumRu, statusTypes, statusTypesRu } from '../../../../services.types';
 import ManagerCell from '../../../../../../components/ManagerCell';
-import {
-  formatDateWithDateAndYear,
-  formatDateWithoutHours,
-} from '../../../../../../utils/formate.date';
+import { formatDateWithDateAndYear } from '../../../../../../utils/formate.date';
 import PasswordsDisplay from '../PasswordsDisplay';
 
 const Index = ({ service, passwords }) => {
-  console.log(service, 'service', passwords);
   return (
     <div className={styles.infoCards}>
       <Card
@@ -84,13 +74,4 @@ const Index = ({ service, passwords }) => {
     </div>
   );
 };
-
-const ServicePasswordInfo = ({ password }) => (
-  <div className={styles.passwordContainer}>
-    <span className={styles.loginInfo}>{password.values.login}</span>
-    <span className={styles.separator}>|</span>
-    <span className={styles.passwordInfo}>{password.values.password}</span>
-  </div>
-);
-
 export default Index;

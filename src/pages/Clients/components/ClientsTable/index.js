@@ -1,30 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styles from './Table.module.sass';
 import Table from '../../../../shared/Table';
 import { observer } from 'mobx-react';
 import useStore from '../../../../hooks/useStore';
-import { Link, useSearchParams } from 'react-router-dom';
 import TableLink from '../../../../shared/Table/Row/Link';
 import Badge, { statusTypes } from '../../../../shared/Badge';
 import ManagerCell from '../../../../components/ManagerCell';
 import ServicesCell from './Cells/ServicesCell';
-import ActivitiesCell from './Cells/ActivitiesCell';
-import logo from '../../../../shared/Logo';
 import AdaptiveCard from './Cells/AdaptiveCard';
 import usePagingData from '../../../../hooks/usePagingData';
 import CreateModal from './CreateModal';
 import useClientsApi from '../../clients.api';
 import ConfirmationModal from '../../../../components/ConfirmationModal';
-import {
-  handleError,
-  handleInfo,
-  handleSubmit,
-} from '../../../../utils/snackbar';
-import { useLocation, useNavigate } from 'react-router';
-import {
-  getQueryParam,
-  removeLastPathSegment,
-} from '../../../../utils/window.utils';
+import { handleError, handleInfo } from '../../../../utils/snackbar';
+import { getQueryParam } from '../../../../utils/window.utils';
 import { createClientsFilters } from '../../clients.filter.conf';
 import { FiltersProvider } from '../../../../providers/FilterProvider';
 import useAppApi from '../../../../api';
@@ -33,8 +22,6 @@ const ClientsTable = observer(() => {
   const { clientsStore } = useStore();
   const api = useClientsApi();
   const appApi = useAppApi();
-  const navigate = useNavigate();
-  const location = useLocation();
   const [createModalOpen, setModalOpen] = useState(false);
   const page = getQueryParam('page', 1);
   const fetchClients = React.useCallback((page) => {
@@ -42,7 +29,6 @@ const ClientsTable = observer(() => {
   }, []);
   const {
     currentPage,
-    totalPages,
     totalItems,
     paginatedData,
     itemsPerPage,
@@ -112,7 +98,7 @@ const ClientsTable = observer(() => {
 
         Cell: ({ row }) => {
           const data = row?.original;
-          // return <ActivitiesCell activities={data.activities} />;
+          // return <ActivitiesCell activities={data.activities} />; //тут должно быть business
         },
       },
     ],
@@ -123,7 +109,6 @@ const ClientsTable = observer(() => {
     try {
       await api.deleteCompany(clientId, currentPage);
       handleInfo('Клиент удален');
-      // navigate(`${removeLastPathSegment(location.pathname)}${location.search}`);
     } catch (error) {
       handleError('Ошибка при удалении:', error);
     }
@@ -166,10 +151,11 @@ const ClientsTable = observer(() => {
               title: 'Фильтр',
               config: createClientsFilters(appApi),
               onChange: (filters) => {
-                handlePageChange(1)
-                return handleFilterChange(filters)
+                handlePageChange(1);
+                return handleFilterChange(filters);
+              },
             },
-          }}}
+          }}
           title={'Клиенты'}
           data={paginatedData}
           columns={cols}
@@ -195,7 +181,7 @@ const ClientsTable = observer(() => {
       )}
       {clientDelete !== null && (
         <ConfirmationModal
-          isOpen={clientDelete !== null}
+          isOpen={true}
           onClose={() => setClientDelete(null)}
           onConfirm={() => {
             handleDeleteClient(clientDelete).then(() => {

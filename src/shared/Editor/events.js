@@ -1,11 +1,11 @@
 import { compressImage } from './utils/compressImage';
 
-export const beforeInitKeyDown = function (
+export const beforeInitKeyDown = function(
   editor,
   selectionRange,
   setSelectionRange,
 ) {
-  editor.events.on('keydown', function (event) {
+  editor.events.on('keydown', function(event) {
     if (event.ctrlKey && event.key === 'a') {
       event.preventDefault(); // Prevent default browser select all
 
@@ -41,10 +41,10 @@ export const beforeInitKeyDown = function (
   });
 };
 
-export const beforeInitDrop = function (editor) {
+export const beforeInitDrop = function(editor) {
   editor.events.on(
     'drop',
-    function (e) {
+    function(e) {
       if (
         e.dataTransfer &&
         e.dataTransfer.files &&
@@ -73,8 +73,8 @@ export const beforeInitDrop = function (editor) {
   );
 };
 
-export const afterInitClick = function (editor) {
-  editor.editor.addEventListener('click', function (e) {
+export const afterInitClick = function(editor) {
+  editor.editor.addEventListener('click', function(e) {
     const link = e.target.closest('a');
     if (link) {
       e.preventDefault();
@@ -88,28 +88,27 @@ export const afterInitClick = function (editor) {
   }
 };
 
-export const afterInitPasteComment = function (editor, onFileUpload) {
-  editor.editor.addEventListener('paste', async function (e) {
+export const afterInitPasteComment = function(editor, onFileUpload) {
+  editor.editor.addEventListener('paste', async function(e) {
     const items = e.clipboardData?.items;
     const files = [];
-    if(!e.clipboardData.getData('text')){
+    if (!e.clipboardData.getData('text')) {
       if (!items) return;
       for (const item of items)
         if (item.kind === 'file') {
           const file = item.getAsFile();
-          if (file) 
+          if (file)
             files.push(file);
         }
       onFileUpload(files);
       e.preventDefault();
       e.stopPropagation();
-      console.log('paste items', e.clipboardData.items);
     }
   });
 };
 
-export const afterInitPaste = function (editor) {
-  editor.editor.addEventListener('paste', async function (e) {
+export const afterInitPaste = function(editor) {
+  editor.editor.addEventListener('paste', async function(e) {
 
     const items = (e.clipboardData || e.originalEvent.clipboardData).items;
 
@@ -128,7 +127,7 @@ export const afterInitPaste = function (editor) {
   });
 
   // Очистка стилей после вставки
-  editor.events.on('afterPaste', function () {
+  editor.events.on('afterPaste', function() {
     setTimeout(() => {
       cleanupPastedStyles(editor);
     }, 50);
@@ -177,8 +176,9 @@ function cleanupPastedStyles(editor) {
   // Синхронизируем изменения
   editor.synchronizeValues();
 }
-export const afterInitDblClick = function (editor) {
-  editor.editor.addEventListener('dblclick', function (e) {
+
+export const afterInitDblClick = function(editor) {
+  editor.editor.addEventListener('dblclick', function(e) {
     const link = e.target.closest('a');
     if (link) {
       e.preventDefault();

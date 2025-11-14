@@ -1,6 +1,4 @@
-// hooks/useNavigation.js
 import { useContext, useState } from 'react';
-import useStore from '../hooks/useStore';
 import { AuthContext } from '../providers/AuthProvider';
 
 const useAppNavigation = () => {
@@ -8,59 +6,68 @@ const useAppNavigation = () => {
   const { logout } = useContext(AuthContext);
 
   const handleLogout = () => {
-
     logout();
   };
 
   const navigation = [
     {
       title: 'Сделки',
-      action: () => {},
+      action: () => {
+      },
       url: '/deals',
     },
     {
       title: 'Клиенты',
-      action: () => {},
+      action: () => {
+      },
       url: '/clients',
     },
     {
       title: 'Услуги',
-      action: () => {},
+      action: () => {
+      },
       url: '/services',
     },
     {
       title: 'Задачи',
-      action: () => {},
+      action: () => {
+      },
       url: '/tasks',
     },
     {
       title: 'Календарь',
-      action: () => {},
+      action: () => {
+      },
       url: '/calendar',
     },
     {
       title: 'Документы',
-      action: () => {},
+      action: () => {
+      },
       url: '/documents',
     },
     {
       title: 'Сотрудники',
-      action: () => {},
+      action: () => {
+      },
       url: '/settings',
     },
     {
       title: 'Трекер',
-      action: () => {},
+      action: () => {
+      },
       url: '/timetrackings',
     },
     {
       title: 'Звонки',
-      action: () => {},
+      action: () => {
+      },
       url: '/calls',
     },
     {
       title: 'Wiki',
-      action: () => {},
+      action: () => {
+      },
       url: 'https://wiki.lead-bro.ru',
     },
     {
@@ -84,5 +91,4 @@ const useAppNavigation = () => {
   };
 };
 
-// nav.js
 export { useAppNavigation };

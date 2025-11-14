@@ -6,13 +6,11 @@ export const taskStatusTypes = {
 
   finished: 'finished',
   paused: 'paused',
-  // waiting: 'waiting',
 };
 export const taskStatusTypesRu = {
   time_evaluation: 'На согласовании',
   in_work: 'В работе',
   finished: 'Завершено',
-  // waiting: 'Ожидает',
   created: 'Создана',
   waiting_for_approval: 'На проверке',
   paused: 'Отложено',
@@ -41,7 +39,6 @@ export const colorStatusTaskTypes = {
   },
   finished: { status: taskStatusTypesRu.finished, class: 'status-red' },
   paused: { status: taskStatusTypesRu.paused, class: 'status-disabled' },
-  // waiting: { status: taskStatusTypesRu.waiting, class: 'status-disabled' },
 };
 
 export const colorStatusTaskTypesForTaskList = {
@@ -54,7 +51,6 @@ export const colorStatusTaskTypesForTaskList = {
     class: 'status-task-aqua',
   },
 
-  // waiting: { status: taskStatusTypesRu.waiting, class: 'status-task-brown' },
   finished: { status: taskStatusTypesRu.finished, class: 'status-task-red' },
   created: { status: taskStatusTypesRu.created, class: 'status-task-blue' },
   waiting_for_approval: {

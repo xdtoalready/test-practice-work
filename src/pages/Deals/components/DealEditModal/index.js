@@ -1,26 +1,14 @@
-// components/Deals/components/DealEditModal/index.js
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 import useMembers from '../../../Members/hooks/useMembers';
-import useClients from '../../../Clients/hooks/useClients';
-import {
-  colorStatusDealTypes,
-  dealStatusTypes,
-  sourceType,
-  sourceTypeRu,
-} from '../../deals.types';
-import {
-  serviceTypeEnum,
-  serviceTypeEnumRu,
-} from '../../../Services/services.types';
+import { colorStatusDealTypes, dealStatusTypes, sourceType, sourceTypeRu } from '../../deals.types';
+import { serviceTypeEnum, serviceTypeEnumRu } from '../../../Services/services.types';
 import { handleSubmit as handleSubmitSnackbar } from '../../../../utils/snackbar';
-import Modal from '../../../../shared/Modal';
 import TextInput from '../../../../shared/TextInput';
 import ValuesSelector from '../../../../shared/Selector';
 import styles from './Modal.module.sass';
 import Dropdown from '../../../../shared/Dropdown/Default';
 import useServiceTypes from '../../../Services/hooks/useServiceTypes';
-import { colorStatusTypes } from '../../../Clients/clients.types';
 import StatusDropdown from '../../../../components/StatusDropdown';
 import cn from 'classnames';
 import useAppApi from '../../../../api';
@@ -31,8 +19,6 @@ import { useNavigate } from 'react-router';
 import ConfirmationModal from '../../../../components/ConfirmationModal';
 import FormValidatedModal from '../../../../shared/Modal/FormModal';
 import useQueryParam from '../../../../hooks/useQueryParam';
-import { stageStatusTypesRu } from '../../../Stages/stages.types';
-import { tasksTypesRu } from '../../../Tasks/tasks.types';
 import useMappedObj from '../../../../hooks/useMappedObj';
 
 const DealEditModal = observer(
@@ -40,13 +26,12 @@ const DealEditModal = observer(
     const { members } = useMembers();
     const { appStore } = useStore();
     const navigate = useNavigate();
-    const { data: companies } = useClients();
     const serviceTypes = useServiceTypes();
     const sourceTypes = useMappedObj(sourceType);
     const appApi = useAppApi();
-    const [isEditMode, setIsEditMode] = useState(data?.id ?? false);
+    const [isEditMode] = useState(data?.id ?? false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const page = useQueryParam('page', 1);
+    useQueryParam('page', 1);
     const [localDeal, setLocalDeal] = useState({
       name: '',
       description: ' ',
@@ -54,19 +39,10 @@ const DealEditModal = observer(
       serviceType: serviceTypeEnum.seo,
       price: '',
       status: dealStatusTypes.new_lead,
-
       auditor: [],
       manager: null,
       company: props?.currentClient ?? null,
     });
-
-    // useEffect(() => {
-    //   if (data?.id) {
-    //     setIsEditMode(true);
-    //   } else {
-    //     setIsEditMode(false);
-    //   }
-    // }, [data]);
 
     const deal = isEditMode ? dealStore.getById(data.id) : localDeal;
 
@@ -100,7 +76,6 @@ const DealEditModal = observer(
         onError && onError();
       }
     };
-    console.log(deal, 'deal123');
     const handleDeleteDeal = () => {
       dealApi
         .deleteDeal(deal.id)
@@ -235,44 +210,20 @@ const DealEditModal = observer(
             value={
               deal.manager
                 ? {
-                    value: deal.manager.id,
-                    label: `${deal?.manager?.surname ?? deal?.manager?.lastName ?? ''} ${deal?.manager?.name ?? ''} ${deal?.manager?.middleName ?? ''}`,
-                  }
+                  value: deal.manager.id,
+                  label: `${deal?.manager?.surname ?? deal?.manager?.lastName ?? ''} ${deal?.manager?.name ?? ''} ${deal?.manager?.middleName ?? ''}`,
+                }
                 : null
             }
           />
-          {/*<ValuesSelector*/}
-          {/*    required={true}*/}
-
-          {/*    onChange={(e) => {*/}
-          {/*    handleChange(*/}
-          {/*      'responsible',*/}
-          {/*      e.length ? members.find((el) => el.id === e[0]?.value) : null,*/}
-          {/*    );*/}
-          {/*  }}*/}
-          {/*  isMulti={false}*/}
-          {/*  label="Ответственный"*/}
-          {/*  options={members.map((el) => ({*/}
-          {/*    value: el.id,*/}
-          {/*    label: `${el?.surname ?? ''} ${el?.name ?? ''} ${el?.middleName ?? ''}`,*/}
-          {/*  }))}*/}
-          {/*  value={*/}
-          {/*    deal.responsible*/}
-          {/*      ? {*/}
-          {/*          value: deal.responsible.id,*/}
-          {/*          label: `${deal?.responsible?.surname ?? deal?.responsible?.lastName ?? ''} ${deal?.responsible?.name ?? ''} ${deal?.responsible?.middleName ?? ''}`,*/}
-          {/*        }*/}
-          {/*      : null*/}
-          {/*  }*/}
-          {/*/>*/}
           <ValuesSelector
             onChange={(e) =>
               handleChange(
                 'auditor',
                 e.length
                   ? members.filter((member) =>
-                      e.some((option) => option.value === member.id),
-                    )
+                    e.some((option) => option.value === member.id),
+                  )
                   : [],
               )
             }
@@ -285,9 +236,9 @@ const DealEditModal = observer(
             value={
               deal.auditor
                 ? deal.auditor.map((el) => ({
-                    value: el.id,
-                    label: `${el?.surname ?? el?.lastName ?? ''} ${el?.name ?? ''} ${el?.middleName ?? ''}`,
-                  }))
+                  value: el.id,
+                  label: `${el?.surname ?? el?.lastName ?? ''} ${el?.name ?? ''} ${el?.middleName ?? ''}`,
+                }))
                 : []
             }
           />
@@ -309,8 +260,7 @@ const DealEditModal = observer(
             isAsync
             asyncSearch={async (query) => {
               const response = await appApi.getCompanies(query);
-              const data = response;
-              return data.map((item) => ({
+              return response.map((item) => ({
                 value: item?.id,
                 label: item?.name,
               }));
@@ -318,9 +268,9 @@ const DealEditModal = observer(
             value={
               deal?.company
                 ? {
-                    value: deal?.company?.id,
-                    label: deal?.company?.name ?? deal?.company?.title ?? '',
-                  }
+                  value: deal?.company?.id,
+                  label: deal?.company?.name ?? deal?.company?.title ?? '',
+                }
                 : null
             }
           />

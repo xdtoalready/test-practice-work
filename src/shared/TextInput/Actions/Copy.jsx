@@ -2,12 +2,10 @@ import React from 'react';
 import styles from '../TextInput.module.sass';
 import Icon from '../../Icon';
 
-const Copy = ({ inputRef, actions, label, setClose, props }) => {
+const Copy = ({ inputRef, actions, label, setClose }) => {
   return (
     <div
       onClick={() => {
-        // console.log(inputRef.current,'curr')
-
         setClose && setClose();
         actions.copy(inputRef.current.value);
       }}

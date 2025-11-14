@@ -2,13 +2,13 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { observer } from 'mobx-react';
 import { taskableTypes, tasksTypes } from '../../pages/Tasks/tasks.types';
 import { taskStatusTypes } from '../../pages/Stages/stages.types';
-import { handleError, handleInfo } from '../../utils/snackbar';
+import { handleError, handleInfo, handleSubmit as handleSubmitSnackbar } from '../../utils/snackbar';
 import { mapStageDataToBackend } from '../../pages/Stages/stages.mapper';
-import Modal from '../../shared/Modal';
 import styles from './Modal.module.sass';
-import { handleSubmit as handleSubmitSnackbar } from '../../utils/snackbar';
-import TaskDescriptionPart from '../../pages/Stages/components/StagesPage/components/StagesTable/components/EditModal/components/TaskDescriptionPart';
-import TaskTypePart from '../../pages/Stages/components/StagesPage/components/StagesTable/components/EditModal/components/TaskTypePart';
+import TaskDescriptionPart
+  from '../../pages/Stages/components/StagesPage/components/StagesTable/components/EditModal/components/TaskDescriptionPart';
+import TaskTypePart
+  from '../../pages/Stages/components/StagesPage/components/StagesTable/components/EditModal/components/TaskTypePart';
 import Comments from '../Comments';
 import FormValidatedModal from '../../shared/Modal/FormModal';
 import { usePermissions } from '../../providers/PermissionProvider';
@@ -26,30 +26,25 @@ const draftSet = new Set();
 
 const TaskEditModal = observer(
   ({
-    // Базовые пропсы
-    id,
-    data,
-    handleClose,
-    // Пропсы для режима работы со стейджами
-    stage,
-    stagesStore,
-    stageApi,
-    // Пропсы для режима работы со сделками
-    deal,
-    dealsStore,
-    dealApi,
-    // Пропсы для режима работы с тасками
-    taskStore,
-    taskApi,
-    isLoading,
-  }) => {
+     id,
+     data,
+     handleClose,
+     stage,
+     stagesStore,
+     stageApi,
+     deal,
+     dealsStore,
+     dealApi,
+     taskStore,
+     taskApi,
+     isLoading,
+   }) => {
     const isEditMode = Boolean(data);
-    const { hasPermission, permissions } = usePermissions();
+    const { hasPermission } = usePermissions();
     const navigate = useNavigate();
     const location = useLocation();
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const pageFrom = useParamSearch('page' ?? 1);
-    console.log(data, isLoading, 'test', 'task');
     const mode = useMemo(() => {
       if (stage) return 'stage';
       if (deal) return 'deal';
@@ -95,7 +90,8 @@ const TaskEditModal = observer(
               );
               taskStore.setTasks(newTasks);
             },
-            afterCreate: () => {},
+            afterCreate: () => {
+            },
           };
       }
     }, [mode, stage, deal, stagesStore, dealsStore, taskStore]);
@@ -122,7 +118,7 @@ const TaskEditModal = observer(
         [mode]: {
           title: contextData.title,
           id: contextData.id,
-        }
+        },
       } : null,
       ...(mode !== 'task' && {
         taskable_type: contextData.type,
@@ -149,11 +145,10 @@ const TaskEditModal = observer(
           contextData.store.getById(contextData.id)?.tasks,
         ).find((el) => el.id === data?.id);
         if (taskFromContext) {
-          const newTaskWithTimeTracking = {
+          return {
             ...taskFromContext,
             timeTrackings: taskStore.currentTask.timeTrackings,
           };
-          return newTaskWithTimeTracking;
         }
       }
       return taskStore.getById(data?.id ?? Number(id));
@@ -167,21 +162,9 @@ const TaskEditModal = observer(
       taskStore.currentTask,
       id,
     ]);
-    console.log(taskData,'taskData');
     const [comments, setComments] = useState(taskData?.comments ?? {});
 
-    const [isLoadingComments, setIsLoadingComments] = useState(false);
-
-    const canNavigate = useMemo(
-      () =>
-        (mode === 'stage' && hasPermission(UserPermissions.ACCESS_SERVICES)) ||
-        (mode === 'deal' && hasPermission(UserPermissions.ACCESS_DEALS)) ||
-        (mode === 'task' &&
-          ((taskData?.stage?.id &&
-            hasPermission(UserPermissions.ACCESS_SERVICES)) ||
-            (taskData?.deal?.id && hasPermission(UserPermissions.ACCESS_DEALS)))),
-      [stage, deal, taskData, permissions],
-    );
+    const [isLoadingComments,setIsLoadingComments] = useState(false);
 
     const handleChange = (name, value, withId = true) => {
       if (name.includes('responsibles') && value.length) {
@@ -246,11 +229,11 @@ const TaskEditModal = observer(
           const payload =
             mode !== 'task'
               ? {
-                  ...taskData,
-                  [`${mode}_id`]: contextData.id,
-                  taskable_type: contextData.type,
-                  taskable_id: contextData.id,
-                }
+                ...taskData,
+                [`${mode}_id`]: contextData.id,
+                taskable_type: contextData.type,
+                taskable_id: contextData.id,
+              }
               : taskData;
 
           await taskApi
@@ -320,7 +303,6 @@ const TaskEditModal = observer(
       }
     };
 
-    // Загружаем комментарии при первом рендере и при изменении ID задачи
     useEffect(() => {
       if (isEditMode) {
         loadComments();
@@ -328,7 +310,6 @@ const TaskEditModal = observer(
     }, [taskData?.id, isEditMode]);
 
     const handleNavigateToTaskableEntity = () => {
-      // if (!canNavigate) return;
       if (!taskData) return;
 
       if (taskData.stage?.id) {
@@ -359,15 +340,8 @@ const TaskEditModal = observer(
     const handleCopyTask = () => {
       navigator.clipboard
         .writeText(`${window.location.origin}/tasks?taskId=${taskData?.id}`)
-        .then((r) => handleInfo('Ссылка на задачу скопирована!'));
+        .then(() => handleInfo('Ссылка на задачу скопирована!'));
     };
-    //
-    // if (isLoading){
-    //   return <FormValidatedModal
-    //       size={mode !== 'task' ? 'lg' : 'md_up'}>
-    //     <Loader/>
-    //   </FormValidatedModal>
-    // }
 
     useEffect(() => {
       return () => {
@@ -413,9 +387,7 @@ const TaskEditModal = observer(
               {
                 <span
                   onClick={handleNavigateToTaskableEntity}
-                  className={cn(styles.entityLink, {
-                    // [styles.clickable]: canNavigate,
-                  })}
+                  className={cn(styles.entityLink, {})}
                 >
                   {getBelongsToText() ?? ''}
                 </span>

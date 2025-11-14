@@ -1,32 +1,25 @@
 import React, {
   useCallback,
-  useEffect,
   useMemo,
-  useRef,
   useState,
 } from 'react';
 import { observer } from 'mobx-react';
 import useStageApi from '../../../../stages.api';
 import ManagerCell from '../../../../../../components/ManagerCell';
-import styles1 from '../../../../../Clients/components/ClientsTable/Table.module.sass';
 import styles from './Stages.module.sass';
 import Table from '../../../../../../shared/Table';
 import { formatDateWithDateAndYear } from '../../../../../../utils/formate.date';
 import StageBadge, { StageStatuses } from './components/StagesBadge';
 import ClientInfo from '../ClientInfo';
 import DeadLineTimeCell from './components/DeadLineTimeCell';
-import EditModal from './components/EditModal';
 import { convertToHours } from '../../../../../../utils/format.time';
-import AdaptiveCard from './components/AdaptiveCard';
 import TextLink from '../../../../../../shared/Table/TextLink';
-import useOutsideClick from '../../../../../../hooks/useOutsideClick';
 import useStore from '../../../../../../hooks/useStore';
 import usePagingData from '../../../../../../hooks/usePagingData';
 import EditStage from '../../../../../../components/EditStage';
 import { useNavigate, useParams } from 'react-router';
 import TaskEditModal from '../../../../../../components/TaskModal';
 import useTasksApi from '../../../../../Tasks/tasks.api';
-import DescriptionInfo from '../DescriptionInfo';
 import ConfirmationModal from '../../../../../../components/ConfirmationModal';
 import { handleError, handleInfo } from '../../../../../../utils/snackbar';
 import withTaskModalHandler from '../../../../../../components/TaskModal/HocHandler';
@@ -42,7 +35,6 @@ const StagesTable = observer(({ stage, onEditTask, onCreateTasks }) => {
   const [editStageModalOpen, setEditStageModalOpen] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState(null);
   const [editTaskModalOpen, setEditTaskModalOpen] = useState(false);
-  // const ref = useRef();
   const taskApi = useTasksApi();
   const fetchStages = useCallback(async (page) => {
     await api.getTaskStages(stageId, page);
@@ -50,29 +42,11 @@ const StagesTable = observer(({ stage, onEditTask, onCreateTasks }) => {
 
   let {
     currentPage,
-    totalPages,
     totalItems,
     paginatedData,
     itemsPerPage,
     handlePageChange,
   } = usePagingData(stagesStore, fetchStages, () => stagesStore?.getStages());
-
-  // useEffect(() => {
-  //   return () => {
-  //     stage = null;
-  //     stagesStore.clearCurrentStage();
-  //     paginatedData = null;
-  //   };
-  // }, []);
-  console.log(paginatedData, 'paginatedData');
-  const handleEditTask = (data) => {
-    setTaskData(data);
-    setEditTaskModalOpen(true);
-  };
-  const handleCreateTask = () => {
-    setTaskData(null);
-    setEditTaskModalOpen(true);
-  };
 
   const handleCloseTaskModal = () => {
     setTaskData(null);
@@ -271,7 +245,7 @@ const StagesTable = observer(({ stage, onEditTask, onCreateTasks }) => {
       )}
       {taskToDelete !== null && (
         <ConfirmationModal
-          isOpen={taskToDelete !== null}
+          isOpen={true}
           onClose={() => setTaskToDelete(null)}
           onConfirm={() => {
             handleDelete(taskToDelete).then(() => {

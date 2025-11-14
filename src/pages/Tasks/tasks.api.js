@@ -5,7 +5,6 @@ import {
   http,
   mockHttp,
   resetApiProvider,
-  setMockProvider,
 } from '../../shared/http';
 import mocks from './tasks.mocks';
 import useStore from '../../hooks/useStore';
@@ -14,7 +13,6 @@ import { useCallback, useState } from 'react';
 import { useParams } from 'react-router';
 import useStageApi from '../Stages/stages.api';
 import { mapStageDataToBackend } from '../Stages/stages.mapper';
-import { taskStatusTypes } from '../Stages/stages.types';
 import { mapCommentsFromApi } from '../Clients/clients.mapper';
 
 mockHttp.onGet('/tasks').reply(200, mocks.createTasks());
@@ -28,7 +26,6 @@ mockHttp.onGet(/\/tasks\/\d+/).reply((config) => {
   if (task) {
     return [200, task];
   } else {
-    console.log(`Task with id ${taskId} not found`);
     return [404, { message: 'Task not found' }];
   }
 });
@@ -75,7 +72,6 @@ const useTasksApi = () => {
   const getTasksByRole = useCallback(async () => {
     resetApiProvider();
     setIsLoading(true);
-    ;
     // Получаем все параметры из URL
     const searchParams = new URLSearchParams(window.location.search);
 
@@ -235,7 +231,7 @@ const useTasksApi = () => {
       })
       .catch(handleHttpError)
       .finally(() => setIsLoading(false));
-  })
+  });
 
   return {
     isLoading,

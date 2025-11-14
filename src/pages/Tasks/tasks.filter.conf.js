@@ -1,6 +1,5 @@
-import { taskStatusTypes, taskStatusTypesRu } from '../Stages/stages.types';
+import { taskStatusTypesRu } from '../Stages/stages.types';
 import { taskableTypes, tasksTypesRu } from './tasks.types';
-import { getQueryParam } from '../../utils/window.utils';
 
 export const createTaskFilters = (appApi) => ({
   filters: [
@@ -25,7 +24,6 @@ export const createTaskFilters = (appApi) => ({
         isAsync: true,
         asyncSearch: async (query) => {
           const response = await appApi.getEmployees(query);
-          const data = response;
           return response.map((item) => ({
             value: item?.id,
             label: `${item?.last_name ?? ''} ${item?.name ?? ''} ${item?.middle_name ?? ''}`,
@@ -48,7 +46,6 @@ export const createTaskFilters = (appApi) => ({
         isAsync: true,
         asyncSearch: async (query) => {
           const response = await appApi.getEmployees(query);
-          const data = response;
           return response.map((item) => ({
             value: item?.id,
             label: `${item?.last_name ?? ''} ${item?.name ?? ''} ${item?.middle_name ?? ''}`,

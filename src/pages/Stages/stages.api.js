@@ -8,19 +8,12 @@ import {
 } from '../../shared/http';
 import mocks from './stages.mocks';
 import useStore from '../../hooks/useStore';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { getQueryParam } from '../../utils/window.utils';
-import {
-  mapServiceDataToBackend,
-  mapServiceFromApi,
-} from '../Services/services.mapper';
 import { mapStageDataToBackend, mapStageFromApi } from './stages.mapper';
 import useServiceApi from '../Services/services.api';
 import servicesApi from '../Services/services.api';
-import { stageStatusTypes } from './stages.types';
-import { format } from 'date-fns';
 import { useParams } from 'react-router';
-import { formatDateToBackend } from '../../utils/formate.date';
 
 let blob = new Blob([], { type: 'application/pdf' });
 let fakeFile = blob;
@@ -28,7 +21,6 @@ let fakeFile = blob;
 mockHttp.onGet('/stages').reply(200, mocks.createStages());
 mockHttp.onPost('/stages').reply(200, mocks.createStages());
 mockHttp.onGet('/stages/templates').reply(200, mocks.createTemplateTypes());
-// mockHttp.onGet('/stages/types').reply(200, mocks.createStageTypes())
 mockHttp.onGet(/\/stages\/\d+/).reply((config) => {
   // Разделяем URL по "/"
   const urlParts = config.url.split('/');
@@ -43,7 +35,6 @@ mockHttp.onGet(/\/stages\/\d+/).reply((config) => {
   if (stage) {
     return [200, stage];
   } else {
-    console.log(`Stage with id ${stageId} not found`);
     return [404, { message: 'Stage not found' }];
   }
 });
@@ -169,10 +160,6 @@ const useStageApi = () => {
       .then(handleHttpResponse)
       .then(() => serviceApi.getServiceById(serviceId))
       .catch(handleShowError);
-  };
-
-  const postFile = (blobFile, fileName) => {
-    const form = new FormData();
   };
 
   const deleteStage = (id) => {

@@ -1,11 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import ResponsibleInput from '../../../../../../../../../../shared/Input/ResponsibleInput';
+import React from 'react';
 import TextInput from '../../../../../../../../../../shared/TextInput';
-import styles from '../../../../../../../../../Services/components/ServicesTable/components/EditModal/Modal.module.sass';
-import {
-  formatDate,
-  formatDateWithOnlyDigits,
-} from '../../../../../../../../../../utils/formate.date';
+import styles
+  from '../../../../../../../../../Services/components/ServicesTable/components/EditModal/Modal.module.sass';
 import { convertToHours } from '../../../../../../../../../../utils/format.time';
 import Switch from '../../../../../../../../../../shared/Switch';
 import Dropdown from '../../../../../../../../../../shared/Dropdown/Default';
@@ -17,32 +13,24 @@ import LabeledParagraph from '../../../../../../../../../../shared/LabeledParagr
 import cn from 'classnames';
 
 const Index = ({
-  data: {
-    auditors: initialAuditors,
-    executors: initialExecutors,
-    responsibles: initialResponsibles,
-    creator,
-    type,
-    taskLinked,
-    deadline,
-    deadlineTime,
-    actualTime,
-    cost,
-  },
-  showInLk,
-  showInReport,
-  isEditMode,
-  types,
-  handleChange,
-  handleAdd,
-  className,
-}) => {
-  const [mappedAuditors, setMappedAuditors] = useState([]);
-  const [mappedExecutors, setMappedExecutors] = useState([]);
-  const [mappedResponsibles, setMappedResponsibles] = useState([]);
+                 data: {
+                   auditors: initialAuditors,
+                   executors: initialExecutors,
+                   responsibles: initialResponsibles,
+                   type,
+                   taskLinked,
+                   deadline,
+                   deadlineTime,
+                   actualTime,
+                   cost,
+                 },
+                 showInLk,
+                 showInReport,
+                 types,
+                 handleChange,
+                 className,
+               }) => {
   const { members } = useMembers();
-  console.log(creator, 'creator');
-  console.log(showInLk, 'showInLk');
   const renderLabelForSelector = (source) =>
     `${source?.surname ?? ''} ${source?.name ?? ''} ${source?.middleName ?? ''}`;
 
@@ -59,10 +47,6 @@ const Index = ({
       <Dropdown
         required={true}
         name={'type'}
-        // value={selectedService}
-        // setValue={handleServiceChange}
-        // options={serviceOptions}
-        // label="Услуга"
         renderOption={(opt) => tasksTypesRu[opt]}
         label={'Тип задачи'}
         options={types}
@@ -71,28 +55,16 @@ const Index = ({
         renderValue={(value) => tasksTypesRu[value]}
         className={styles.dropdown}
       />
-        <div className={` ${styles.addZIndex} ${styles.relative}`}>
+      <div className={` ${styles.addZIndex} ${styles.relative}`}>
         <Calendar
           onChange={(data) => handleChange('deadline', data)}
           label={'Дедлайн'}
           name={'deadline'}
           value={deadline}
-          // value={formatDateWithOnlyDigits(deadline)}
           readonly={true}
-          className={cn(styles.input,styles.addZIndex)}
+          className={cn(styles.input, styles.addZIndex)}
         />
-        </div>
-        {/*{creator && (*/}
-        {/*    <div className={styles.lowZIndex} >*/}
-        {/*        <Dropdown*/}
-        {/*            className={cn(styles.input)}*/}
-        {/*            label={'Создатель'}*/}
-        {/*            value={renderLabelForSelector(creator)}*/}
-        {/*            disabled={true}*/}
-        {/*        />*/}
-        {/*    </div>*/}
-        {/*)}*/}
-
+      </div>
 
       <ValuesSelector
         onChange={(e) => {
@@ -100,8 +72,8 @@ const Index = ({
             'responsibles',
             e.length
               ? members.filter((member) =>
-                  e.some((option) => option.value === member.id),
-                )
+                e.some((option) => option.value === member.id),
+              )
               : [],
           );
         }}
@@ -114,9 +86,9 @@ const Index = ({
         value={
           initialResponsibles && initialResponsibles[0]
             ? initialResponsibles.map((el) => ({
-                value: el?.id ?? null,
-                label: renderLabelForSelector(el),
-              }))
+              value: el?.id ?? null,
+              label: renderLabelForSelector(el),
+            }))
             : []
         }
       />
@@ -126,8 +98,8 @@ const Index = ({
             'auditors',
             e.length
               ? members.filter((member) =>
-                  e.some((option) => option.value === member.id),
-                )
+                e.some((option) => option.value === member.id),
+              )
               : [],
           )
         }
@@ -140,9 +112,9 @@ const Index = ({
         value={
           initialAuditors
             ? initialAuditors.map((el) => ({
-                value: el.id,
-                label: renderLabelForSelector(el),
-              }))
+              value: el.id,
+              label: renderLabelForSelector(el),
+            }))
             : []
         }
       />
@@ -151,7 +123,6 @@ const Index = ({
         name={'deadlineTime'}
         type={'number'}
         value={convertToHours(deadlineTime)}
-        // disabled={isEditMode}
         onChange={({ target }) => handleChange(target.name, target.value)}
         className={styles.input}
       />
@@ -161,15 +132,7 @@ const Index = ({
         label={'Фактическое время, ч'}
         text={convertToHours(actualTime) || 'Не указано'}
       />
-      {/*<TextInput*/}
-      {/*    disabled={true}*/}
 
-      {/*    label={'Стоимость задачи'}*/}
-      {/*    name={'actualTime'}*/}
-      {/*    // onChange={({ target }) => handleChange(target.name, target.value)}*/}
-      {/*    value={cost}*/}
-      {/*    className={styles.input}*/}
-      {/*/>*/}
       <LabeledParagraph
         labelClass={styles.label}
         label={'Стоимость задачи'}
@@ -182,8 +145,8 @@ const Index = ({
             'executors',
             e.length
               ? members.filter((member) =>
-                  e.some((option) => option.value === member.id),
-                )
+                e.some((option) => option.value === member.id),
+              )
               : [],
           )
         }
@@ -198,9 +161,9 @@ const Index = ({
         value={
           initialExecutors
             ? initialExecutors.map((el) => ({
-                value: el.id,
-                label: `${el?.surname ?? ''} ${el?.name ?? ''} ${el?.middleName ?? ''}`,
-              }))
+              value: el.id,
+              label: `${el?.surname ?? ''} ${el?.name ?? ''} ${el?.middleName ?? ''}`,
+            }))
             : []
         }
       />

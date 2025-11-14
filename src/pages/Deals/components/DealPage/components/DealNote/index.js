@@ -3,22 +3,14 @@ import { handleInfo } from '../../../../../../utils/snackbar';
 import Card from '../../../../../../shared/Card';
 import styles from '../../../../../Clients/components/ClientPage/Contacts/Contacts.module.sass';
 import Title from '../../../../../../shared/Title';
-import MultiInputContacts from '../../../../../Clients/components/ClientPage/Contacts/Inputs/MultiInput.component';
-import RequisitesComponent from '../../../../../Clients/components/ClientPage/Contacts/Inputs/Requisites.component';
 import CardInput from '../../../../../../shared/Input/Card';
 
 const DealNote = ({ data, onChange, onSubmit, onReset }) => {
   const defaultActions = (path, success, info, copy = 'Элемент скопирован') => {
-    // console.log(properties,'smile')
     return {
       copy: (text) => {
-        navigator.clipboard.writeText(text).then((r) => handleInfo(copy));
+        navigator.clipboard.writeText(text).then(() => handleInfo(copy));
       },
-      // delete: ({ name }) => {
-      //   onRemove(name);
-      //   // setLength((prev) => ({...prev,[middleProp]:prev[middleProp]-1}))
-      //   handleError('Элемент удален');
-      // },
       edit: ({ name, value }) => onChange(name, value),
       submit: () => {
         onSubmit(path, success);

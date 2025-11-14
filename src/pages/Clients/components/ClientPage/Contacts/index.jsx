@@ -1,44 +1,16 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import CardInput from '../../../../../shared/Input/Card';
-import {
-  handleError,
-  handleInfo,
-  handleSubmit,
-} from '../../../../../utils/snackbar';
-import Title from '../../../../../shared/Title';
+import React from 'react';
+import { handleInfo } from '../../../../../utils/snackbar';
 import Card from '../../../../../shared/Card';
 import styles from './Contacts.module.sass';
 import RequisitesCard from './Requisites';
 import MultiInputContacts from './Inputs/MultiInput.component';
-import {useCallsContext} from "../../../../../providers/CallsProvider";
 
-const ClientsContacts = ({
-  contactData,
-  client,
-  onRemove,
-  onChange,
-  onSubmit,
-  onReset,
-  onAdd,
-}) => {
-    const { setSelectedPhone,openCallModal } = useCallsContext();
+const ClientsContacts = ({ contactData, client, onChange, onSubmit, onReset, onAdd }) => {
   const defaultActions = (path, success, info, copy = 'Элемент скопирован') => {
-    // console.log(properties,'smile')
     return {
       copy: (text) => {
-        navigator.clipboard.writeText(text).then((r) => handleInfo(copy));
+        navigator.clipboard.writeText(text).then(() => handleInfo(copy));
       },
-      // delete: ({ name }) => {
-      //   onRemove(name);
-      //   // setLength((prev) => ({...prev,[middleProp]:prev[middleProp]-1}))
-      //   handleError('Элемент удален');
-      // },
       edit: ({ name, value }) => {
         onChange(name, value);
       },
@@ -52,13 +24,8 @@ const ClientsContacts = ({
     };
   };
 
-    const handlePhoneClick = (phone) => {
-        openCallModal(phone);
-    };
-
   return (
     <>
-      {/* КАРТОЧКА 1: Контактные данные */}
       <Card title="Контактные данные" className={styles.card}>
         <MultiInputContacts
           onAdd={onAdd}
@@ -70,7 +37,7 @@ const ClientsContacts = ({
             defaultActions(path, 'Телефон сохранен', 'Телефон восстановлен')
           }
         />
-        
+
         <MultiInputContacts
           onAdd={onAdd}
           contactData={contactData}
@@ -82,7 +49,7 @@ const ClientsContacts = ({
             defaultActions(path, 'Адрес сохранен', 'Адрес восстановлен')
           }
         />
-        
+
         <MultiInputContacts
           onAdd={onAdd}
           contactData={contactData}
@@ -95,7 +62,6 @@ const ClientsContacts = ({
         />
       </Card>
 
-      {/* КАРТОЧКА 2: Юридические реквизиты */}
       <RequisitesCard
         contactData={contactData}
         client={client}

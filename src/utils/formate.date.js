@@ -1,11 +1,8 @@
-import {format, isToday, isTomorrow, isYesterday, parse, parseISO,isValid,isThisYear} from 'date-fns';
+import { format, isToday, isTomorrow, isYesterday, parseISO, isValid, isThisYear } from 'date-fns';
 import { ru } from 'date-fns/locale/ru';
-import {formatInTimeZone, fromZonedTime, toZonedTime} from 'date-fns-tz';
-import moment from "moment";
+import moment from 'moment';
 
 export const formatDate = (date) => {
-  console.log(date, 'date');
-
   if (!date || !isValidDate(date)) return 'Не указано';
   let formatDate = format(date, 'cccccc, dd LLL, HH:mm', { locale: ru });
   formatDate = formatDate.charAt(0).toUpperCase() + formatDate.slice(1);
@@ -16,7 +13,7 @@ export const formatDateWithoutHours = (date) => {
   if (!date || !isValidDate(date)) return '';
 
   const stringDate = date instanceof Date ? date.toISOString() : date;
-  let formatDate = format(stringDate, 'cccccc, dd LLL', { locale: ru});
+  let formatDate = format(stringDate, 'cccccc, dd LLL', { locale: ru });
   formatDate = formatDate.charAt(0).toUpperCase() + formatDate.slice(1);
   return formatDate;
 };
@@ -54,7 +51,7 @@ export const formatHours = (date) => {
 export const formatDateToBackend = (value) => {
   if (!value || !isValidDate(value)) return null;
 
-  return format(value, "yyyy-MM-dd'T'HH:mm:ss");
+  return format(value, 'yyyy-MM-dd\'T\'HH:mm:ss');
 };
 
 export const formatDateToQuery = (value) => {

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 import Table from '../../../../shared/Table';
 import Badge, { statusTypes } from '../../../../shared/Badge';
@@ -7,7 +7,6 @@ import StagesCell from './components/StagesCell';
 import { getCorrectWordForm } from '../../../../utils/format.string';
 import usePagingData from '../../../../hooks/usePagingData';
 import useServiceApi from '../../services.api';
-import useServices from '../../hooks/useServices';
 import TableLink from '../../../../shared/Table/Row/Link';
 import Tooltip from '../../../../shared/Tooltip';
 import EditModal from './components/EditModal';
@@ -35,7 +34,6 @@ const ServicesTable = observer(() => {
 
   const {
     currentPage,
-    totalPages,
     totalItems,
     paginatedData,
     itemsPerPage,
@@ -60,7 +58,6 @@ const ServicesTable = observer(() => {
   };
 
   const getActions = (data) => [
-    // { label: 'Скачать', onClick: () => console.log('Скачать') },
     { label: 'Редактировать', onClick: () => handleEdit(data) },
     {
       label: 'Удалить',
@@ -75,8 +72,6 @@ const ServicesTable = observer(() => {
         Header: 'ID',
         id: 'id',
         accessor: 'id',
-        // minWidth: '10px',
-        // width: '16px',
         Cell: ({ row }) => <span>{row.original.id}</span>,
       },
       {
@@ -92,13 +87,6 @@ const ServicesTable = observer(() => {
           />
         ),
       },
-      // {
-      //   Header: '№ договора',
-      //   id: 'contractNumber',
-      //   width: '4px',
-      //   accessor: 'contractNumber',
-      //   Cell: ({ row }) => <p>{row.original.contractNumber}</p>,
-      // },
       {
         Header: 'Менеджер',
         id: 'manager',
@@ -180,11 +168,12 @@ const ServicesTable = observer(() => {
             filter: {
               title: 'Фильтр',
               config: createServicesFilters(appApi),
-              onChange: (filters) =>{
-                handlePageChange(1)
-                return handleFilterChange(filters)
-            }
-          }}}
+              onChange: (filters) => {
+                handlePageChange(1);
+                return handleFilterChange(filters);
+              },
+            },
+          }}
           title="Услуги"
           data={paginatedData}
           columns={cols}
@@ -208,7 +197,7 @@ const ServicesTable = observer(() => {
       )}
       {serviceToDelete !== null && (
         <ConfirmationModal
-          isOpen={serviceToDelete !== null}
+          isOpen={true}
           onClose={() => setServiceToDelete(null)}
           onConfirm={() => {
             handleDelete(serviceToDelete).then(() => {

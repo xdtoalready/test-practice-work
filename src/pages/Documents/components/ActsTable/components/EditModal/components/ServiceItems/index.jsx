@@ -21,16 +21,16 @@ const ServiceItems = ({ items = [], onChange }) => {
   // Функция для получения часов и минут из quantity
   const getHoursAndMinutes = (quantity) => {
     if (!quantity || quantity === '') return { hours: '', minutes: '' };
-    
+
     const totalHours = parseFloat(quantity);
     if (isNaN(totalHours)) return { hours: '', minutes: '' };
-    
+
     const hours = Math.floor(totalHours);
     const minutes = Math.round((totalHours - hours) * 60);
-    
-    return { 
-      hours: hours.toString(), 
-      minutes: minutes.toString() 
+
+    return {
+      hours: hours.toString(),
+      minutes: minutes.toString(),
     };
   };
 
@@ -38,13 +38,13 @@ const ServiceItems = ({ items = [], onChange }) => {
   const updateQuantityFromTime = (index, hours, minutes) => {
     const hoursNum = parseInt(hours) || 0;
     const minutesNum = parseInt(minutes) || 0;
-    
+
     // Если и часы и минуты пустые, устанавливаем пустое значение
     if (!hours && !minutes) {
       handleItemChange(index, 'quantity', '');
       return;
     }
-    
+
     const totalHours = hoursNum + (minutesNum / 60);
     handleItemChange(index, 'quantity', totalHours);
   };
@@ -80,11 +80,9 @@ const ServiceItems = ({ items = [], onChange }) => {
     if (isNaN(parsedValue)) {
       parsedValue = '';
     }
-    
+
     handleItemChange(index, 'quantity', parsedValue);
   };
-
-  console.log(items);
 
   const addItem = () => {
     const newItems = [
@@ -109,8 +107,11 @@ const ServiceItems = ({ items = [], onChange }) => {
   return (
     <div className={styles.services_container}>
       {items.map((item, index) => {
-        const { hours, minutes } = item.measurementUnit === 'hours' ? getHoursAndMinutes(item.quantity) : { hours: '', minutes: '' };
-        
+        const { hours, minutes } = item.measurementUnit === 'hours' ? getHoursAndMinutes(item.quantity) : {
+          hours: '',
+          minutes: '',
+        };
+
         return (
           <div key={`${index}-${item.measurementUnit}-${forceUpdate}`} className={styles.service_item}>
             <div className={styles.service_header}>
@@ -188,7 +189,7 @@ const ServiceItems = ({ items = [], onChange }) => {
                     edited={true}
                   />
                 )}
-                
+
                 <Dropdown
                   label="Единица измерения"
                   value={measurementUnitTypesRu[item.measurementUnit]}
@@ -196,13 +197,7 @@ const ServiceItems = ({ items = [], onChange }) => {
                     const newMeasurementUnit = Object.keys(measurementUnitTypesRu).find(
                       (key) => measurementUnitTypesRu[key] === value,
                     );
-                    
-                    console.log('Переключение единицы измерения:', {
-                      from: item.measurementUnit,
-                      to: newMeasurementUnit,
-                      currentQuantity: item.quantity,
-                      index
-                    });
+
                     if (newMeasurementUnit === item.measurementUnit) return;
                     const newItems = items.map((existingItem, idx) => {
                       if (idx !== index) return existingItem;
@@ -210,20 +205,16 @@ const ServiceItems = ({ items = [], onChange }) => {
                       if (newMeasurementUnit === 'pcs') {
                         const currentQuantity = parseFloat(existingItem.quantity) || 0;
                         updatedQuantity = Math.round(currentQuantity);
-                        console.log(`Смена на штуки: ${existingItem.quantity} -> ${updatedQuantity}`);
                       } else if (newMeasurementUnit === 'hours') {
-                        const currentQuantity = parseFloat(existingItem.quantity) || 0;
-                        updatedQuantity = currentQuantity;
-                        console.log(`Смена на часы: ${existingItem.quantity} -> ${updatedQuantity}`);
+                        updatedQuantity = parseFloat(existingItem.quantity) || 0;
                       }
-                      
+
                       return {
                         ...existingItem,
                         measurementUnit: newMeasurementUnit,
                         quantity: updatedQuantity,
                       };
                     });
-                    console.log('Обновленные данные:', newItems[index]);
                     onChange(newItems);
                     setTimeout(() => setForceUpdate(prev => prev + 1), 0);
                   }}

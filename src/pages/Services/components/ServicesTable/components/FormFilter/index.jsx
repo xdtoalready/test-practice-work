@@ -2,13 +2,7 @@ import React, { useMemo } from 'react';
 import Dropdown from '../../../../../../shared/Dropdown/Default';
 import styles from './filter.module.sass';
 
-const Index = ({
-  data,
-  selectedService,
-  selectedManager,
-  onServiceChange,
-  onManagerChange,
-}) => {
+const Index = ({ data, selectedService, selectedManager, onServiceChange, onManagerChange }) => {
   const serviceOptions = useMemo(() => {
     const services = ['Все'];
     data?.forEach((item) => {
@@ -28,14 +22,6 @@ const Index = ({
     return managers;
   }, [data]);
 
-  console.log(
-    selectedService,
-    selectedManager,
-    serviceOptions,
-    managerOptions,
-    'opt',
-  );
-
   const handleServiceChange = (service) => {
     onServiceChange(service);
   };
@@ -51,8 +37,6 @@ const Index = ({
           setValue={handleServiceChange}
           options={serviceOptions}
           label="Услуга"
-          // renderOption={(option) => option?.name}
-          // renderValue={(value) => value?.name}
         />
       </div>
       <div>

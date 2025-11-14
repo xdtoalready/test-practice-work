@@ -1,7 +1,5 @@
-import React, {
+import {
   useCallback,
-  useEffect,
-  useLayoutEffect,
   useMemo,
   useState,
 } from 'react';
@@ -30,7 +28,6 @@ const useTasks = (id = null, status = null) => {
       console.error(error);
     } finally {
       setIsLoading(false);
-      console.log(isLoading, 'data');
     }
   }, [tasksStore, id, api]);
   useMemo(() => {
@@ -44,7 +41,6 @@ const useTasks = (id = null, status = null) => {
       return tasksStore.getTasks();
     }
   }, [id, tasksStore.tasks, api]);
-  console.log(isLoading, 'data', 'final');
 
   return { data: result, isLoading, store: tasksStore };
 };

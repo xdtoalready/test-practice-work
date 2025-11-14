@@ -12,7 +12,7 @@ import { handleInfo, handleError } from '../../../../../../utils/snackbar';
 import { http, handleHttpError } from '../../../../../../shared/http';
 import { splitHtmlIntoPages } from '../../../../../../utils/pdf-report.utils';
 
-const Reports = observer(({ company, service, stage, reports = [], onReportGenerated }) => {
+const Reports = observer(({ stage, reports = [], onReportGenerated }) => {
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isRefreshModalOpen, setIsRefreshModalOpen] = useState(false);
@@ -40,28 +40,18 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
     try {
       setIsRefreshing(true);
 
-      console.log('[Reports] Начало обновления отчёта:', selectedReport.id);
-      console.log('[Reports] Stage ID:', stage?.id);
-
       // Шаг 1: Получаем контент через prepare_tasks для stage
-      console.log('[Reports] Получаем контент через prepare_tasks...');
       const prepareResponse = await http.get(`/api/reports/${stage?.id}/prepare_tasks`);
-
       const htmlContent = prepareResponse.data?.data || prepareResponse.data || '';
-      console.log('[Reports] Получен HTML контент:', htmlContent);
 
       // Шаг 2: Разбиваем контент на страницы (с предзагрузкой изображений)
-      console.log('[Reports] Разбиваем контент на страницы...');
       const splitContent = await splitHtmlIntoPages(htmlContent);
-      console.log('[Reports] Разбитый контент:', splitContent);
 
       // Шаг 3: Отправляем на refresh (теперь POST с телом)
-      console.log('[Reports] Отправляем на refresh для report:', selectedReport.id);
       await http.post(`/api/reports/${selectedReport.id}/refresh`, {
         tasks: splitContent,
       });
 
-      console.log('[Reports] Отчёт обновлён');
       handleInfo('Отчет обновлен');
       setIsRefreshModalOpen(false);
       setSelectedReport(null);
@@ -69,7 +59,6 @@ const Reports = observer(({ company, service, stage, reports = [], onReportGener
         onReportGenerated();
       }
     } catch (error) {
-      console.error('[Reports] Ошибка при обновлении отчета:', error);
       handleHttpError(error);
       handleError('Ошибка при обновлении отчета');
       setIsRefreshModalOpen(false);

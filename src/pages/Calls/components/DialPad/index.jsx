@@ -1,4 +1,3 @@
-// src/components/DialPad/index.jsx
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import styles from './DialPad.module.sass';
 import useStore from '../../../../hooks/useStore';
@@ -7,18 +6,17 @@ import Dropdown from '../../../../shared/Dropdown/Default';
 import useAppApi from '../../../../api';
 import cn from 'classnames';
 import useClientsApi from '../../../Clients/clients.api';
-import PhoneContact from '../PhoneContact';
-import Pad from "./components/Pad";
-import Settings from "./components/Settings";
-import parsePhoneNumberFromString from "libphonenumber-js";
+import Pad from './components/Pad';
+import Settings from './components/Settings';
+import parsePhoneNumberFromString from 'libphonenumber-js';
 
-const DialPad = ({ onCallInitiated,initialPhone=null }) => {
+const DialPad = ({ onCallInitiated, initialPhone = null }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [clientData, setClientData] = useState(null);
   const [selectedPhone, setSelectedPhone] = useState('');
   const [showKeypad, setShowKeypad] = useState(false);
-  const [showSettings,setShowSettings] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
 
   const appApi = useAppApi();
   const clientsApi = useClientsApi();
@@ -39,8 +37,7 @@ const DialPad = ({ onCallInitiated,initialPhone=null }) => {
 
   const asyncSearch = useCallback(
     async (query) => {
-      const isValidPhone = validatePhoneNumber(query);
-
+      validatePhoneNumber(query);
       const response = await appApi.getCompanies(query);
       return response || [];
     },
@@ -69,15 +66,15 @@ const DialPad = ({ onCallInitiated,initialPhone=null }) => {
   };
 
   const toggleKeypad = () => {
-    setShowSettings(false)
+    setShowSettings(false);
 
     setShowKeypad((prev) => !prev);
   };
 
   const toggleSettings = () => {
-    setShowKeypad(false)
+    setShowKeypad(false);
     setShowSettings((prev) => !prev);
-  }
+  };
 
   const handleCall = async () => {
 
@@ -85,7 +82,7 @@ const DialPad = ({ onCallInitiated,initialPhone=null }) => {
     const phoneToCall = selectedPhone || phoneNumber;
     if (!phoneToCall.trim()) return;
 
-    const parsedNumber = parsePhoneNumberFromString(phoneToCall,'RU');
+    const parsedNumber = parsePhoneNumberFromString(phoneToCall, 'RU');
 
     if (!parsedNumber) return;
 
@@ -102,7 +99,7 @@ const DialPad = ({ onCallInitiated,initialPhone=null }) => {
   };
 
   // Update dropdown options when phoneNumber changes
-  const asyncSearchWithPhone = useCallback( async(query) => {
+  const asyncSearchWithPhone = useCallback(async (query) => {
 
     const updateOptions = async () => {
       if (!query) {
@@ -136,10 +133,10 @@ const DialPad = ({ onCallInitiated,initialPhone=null }) => {
 
           if (!phoneExists) {
             // setSearchResults([phoneOption, ...results]);
-            return [phoneOption, ...results]
+            return [phoneOption, ...results];
           } else {
             // setSearchResults(results);
-            return results
+            return results;
 
           }
         } else {
@@ -161,20 +158,15 @@ const DialPad = ({ onCallInitiated,initialPhone=null }) => {
             name: query,
             isDirectPhone: true,
           },
-        ]
+        ];
       } else {
         // setSearchResults([]);
-        return []
+        return [];
       }
     };
 
     return await updateOptions();
   }, []);
-  console.log(searchResults)
-  const handlePhoneSelected = (phone) => {
-    setSelectedPhone(phone);
-  };
-
   const dropDown = useMemo(
     () => (
       <Dropdown
@@ -204,7 +196,7 @@ const DialPad = ({ onCallInitiated,initialPhone=null }) => {
           }
         }}
         // options={searchResults}
-        asyncSearch={(search)=>asyncSearchWithPhone(search)}
+        asyncSearch={(search) => asyncSearchWithPhone(search)}
         renderOption={({ name, isDirectPhone }) => (
           <div>
             {isDirectPhone ? (
@@ -255,7 +247,7 @@ const DialPad = ({ onCallInitiated,initialPhone=null }) => {
               />
             </button>
           )}
-          <button onClick={toggleSettings}  className={cn(styles.controlButton, {
+          <button onClick={toggleSettings} className={cn(styles.controlButton, {
             [styles.active]: showSettings,
           })}>
             <Icon name="setting" size={24} />
@@ -263,20 +255,11 @@ const DialPad = ({ onCallInitiated,initialPhone=null }) => {
         </div>
       </div>
 
-      {/*/!* Phone Contact Selection *!/*/}
-      {/*{clientData && clientData.contactData && (*/}
-      {/*  <PhoneContact*/}
-      {/*    phoneData={clientData.contactData}*/}
-      {/*    selectedPhone={selectedPhone}*/}
-      {/*    onPhoneSelected={handlePhoneSelected}*/}
-      {/*  />*/}
-      {/*)}*/}
-
       {showKeypad && (
-        <Pad handleNumberClick={handleNumberClick}/>
+        <Pad handleNumberClick={handleNumberClick} />
       )}
       {showSettings && (
-          <Settings/>
+        <Settings />
       )}
 
       <button

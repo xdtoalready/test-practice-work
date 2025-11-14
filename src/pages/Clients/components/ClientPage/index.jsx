@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router';
 import useStore from '../../../../hooks/useStore';
 import { observer } from 'mobx-react';
@@ -12,41 +12,25 @@ import ClientActivities from './Activities';
 import ClientDescription from './Description';
 import useClientsApi from '../../clients.api';
 import ClientPersons from './Persons';
-import { deepObserve } from 'mobx-utils';
-import { reaction } from 'mobx';
 import ClientsContacts from './Contacts';
 import ClientPasswords from './Passwords';
-import ClientComments from '../../../../components/Comments';
 import CardDropdown from '../../../../shared/Dropdown/Card';
 import { AnimatePresence } from 'framer-motion';
-import {
-  opacityTransition,
-  TranslateYTransition,
-} from '../../../../utils/motion.variants';
+import { opacityTransition, TranslateYTransition } from '../../../../utils/motion.variants';
 import { motion } from 'framer-motion';
 import useClients from '../../hooks/useClients';
 import ClientTokens from './Tokens';
-import CreateModal from './Passwords/Modals/CreateModal';
 import CreatePassModal from './Passwords/Modals/CreateModal';
 import { LoadingProvider } from '../../../../providers/LoadingProvider';
-import {
-  handleError,
-  handleSubmit as handleSubmitSnackbar,
-} from '../../../../utils/snackbar';
+import { handleError, handleSubmit as handleSubmitSnackbar } from '../../../../utils/snackbar';
 import CreateClientsModal from './Persons/Modals/CreateClientsModal';
 import Comments from '../../../../components/Comments';
-import useParamSearch from '../../../../hooks/useParamSearch';
-import ClientMembers from './ClientMembers';
-import CallButton from '../../../Calls/components/CallButton';
-import CallModal from '../../../Calls/components/CallModal';
-import { CallsProvider } from '../../../../providers/CallsProvider';
-import CompanyCallsSmall from '../../../../components/CompanyCallsSmall';
 import CreateSiteModal from './Tokens/Modals';
 
 const ClientPage = observer(() => {
   let { id } = useParams();
   const { isLoading } = useClients(+id);
-  const {clientsStore:clients} = useStore()
+  const { clientsStore: clients } = useStore();
   const api = useClientsApi();
   const [dropDownClicked, setDropDownCLicked] = useState(true);
   const [passModalOpen, setPassModalOpen] = useState(false);
@@ -106,8 +90,8 @@ const ClientPage = observer(() => {
   const handleSubmitSite = async (path, siteId, submitText) => {
     try {
 
-      if (siteId!==null) {
-        await api.updateSite(client.id, siteId, { });
+      if (siteId !== null) {
+        await api.updateSite(client.id, siteId, {});
       } else {
         await api.createSite(client.id);
       }
@@ -142,9 +126,7 @@ const ClientPage = observer(() => {
   };
 
 
-  const isLkButtonDisabled = !client?.account?.can_be_activated
-
-  console.log(client?.account,isLkButtonDisabled,'account')
+  const isLkButtonDisabled = !client?.account?.can_be_activated;
 
   return (
     <motion.div
@@ -290,8 +272,5 @@ const ClientPage = observer(() => {
     </motion.div>
   );
 });
-
-// console.log('1:'+ setPassModalOpen);
-// console.log('2:'+ setPersonModalOpen);
 
 export default ClientPage;

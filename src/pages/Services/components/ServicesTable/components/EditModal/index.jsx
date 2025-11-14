@@ -12,11 +12,7 @@ import Calendar from '../../../../../../shared/Datepicker';
 import useClients from '../../../../../Clients/hooks/useClients';
 import useServices from '../../../../hooks/useServices';
 import useServiceApi from '../../../../services.api';
-import {
-  handleError,
-  handleInfo,
-  handleSubmit as handleSubmitSnackbar,
-} from '../../../../../../utils/snackbar';
+import { handleError, handleInfo, handleSubmit as handleSubmitSnackbar } from '../../../../../../utils/snackbar';
 import TextLink from '../../../../../../shared/Table/TextLink';
 import useStore from '../../../../../../hooks/useStore';
 import useAppApi from '../../../../../../api';
@@ -116,7 +112,6 @@ const EditModal = observer(({ serviceId, onClose, ...props }) => {
       onError && onError();
     }
   };
-  console.log(serviceTypes, 'serviceTypes');
 
   const serviceClient = service?.client ?? props?.client ?? null;
 
@@ -348,8 +343,7 @@ const EditModal = observer(({ serviceId, onClose, ...props }) => {
           isAsync
           asyncSearch={async (query) => {
             const response = await appApi.getCompanies(query);
-            const data = response;
-            return data.map((item) => ({
+            return response.map((item) => ({
               value: item?.id,
               label: item?.name,
             }));

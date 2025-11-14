@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 import { useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -11,11 +11,8 @@ import Title from '../../../../shared/Title';
 import CardDropdown from '../../../../shared/Dropdown/Card';
 import Comments from '../../../../components/Comments';
 import DealDescription from './components/DealDescription';
-import {
-  opacityTransition,
-  TranslateYTransition,
-} from '../../../../utils/motion.variants';
-import { DealTasks, DealsTaskWithQueryTask } from './components/DealTasks';
+import { opacityTransition, TranslateYTransition } from '../../../../utils/motion.variants';
+import { DealsTaskWithQueryTask } from './components/DealTasks';
 import DealStatus from './components/DealStatus';
 import DealInfo from './components/DealInfo';
 import { serviceTypeEnumRu } from '../../../Services/services.types';
@@ -24,26 +21,19 @@ import { handleSubmit as handleSubmitSnackbar } from '../../../../utils/snackbar
 import useStore from '../../../../hooks/useStore';
 import useTasksApi from '../../../Tasks/tasks.api';
 import DealNote from './components/DealNote';
-import ClientPersons from "../../../Clients/components/ClientPage/Persons";
-import useClientsApi from "../../../Clients/clients.api";
-import CreateClientsModal from "../../../Clients/components/ClientPage/Persons/Modals/CreateClientsModal";
-import ClientActivities from "../../../Clients/components/ClientPage/Activities";
-import {CallsProvider} from "../../../../providers/CallsProvider";
-import CompanyCallsSmall from "../../../../components/CompanyCallsSmall";
+import ClientPersons from '../../../Clients/components/ClientPage/Persons';
+import useClientsApi from '../../../Clients/clients.api';
+import CreateClientsModal from '../../../Clients/components/ClientPage/Persons/Modals/CreateClientsModal';
+import ClientActivities from '../../../Clients/components/ClientPage/Activities';
 
 const DealPage = observer(() => {
   const { id } = useParams();
   const { store: deals } = useDeals(+id);
   const api = useDealsApi();
-
   const clientsApi = useClientsApi();
   const { dealsStore } = useStore();
   const { tasksStore } = useStore();
   const taskApi = useTasksApi();
-  // const deal = useMemo(()=>dealsStore.getById(id),
-  //     [id,dealsStore.deals,dealsStore.drafts]
-  // )
-  //
   const deal = deals.getById(+id);
   const [dropDownClicked, setDropDownClicked] = useState(true);
   const [personModalValue, setPersonModalValue] = useState(null);
@@ -77,7 +67,6 @@ const DealPage = observer(() => {
       clientsApi
         .updateClient(deals, Number(id), clientId, submitText)
         .then(() => api.getDealById(deal.id));
-      // dealsStore.submitDraft();
     } catch (error) {
       console.error('Ошибка при сохранении:', error);
       dealsStore.resetDraft(Number(id), path);
@@ -86,12 +75,9 @@ const DealPage = observer(() => {
 
   useEffect(() => {
     return () => {
-      console.log('unmount');
-
       dealsStore.setCurrentDeal(null);
     };
   }, []);
-  console.log(dealsStore.isLoading, 'isLoading');
   return (
     <motion.div
       initial={'hidden'}
@@ -124,7 +110,7 @@ const DealPage = observer(() => {
               taskApi={taskApi}
             />
             {/*<CompanyCallsSmall calls={deal?.calls}/>*/}
-            <ClientActivities deal={deal} dealApi={api} activities={deal?.businesses} dealStore={dealsStore}  />
+            <ClientActivities deal={deal} dealApi={api} activities={deal?.businesses} dealStore={dealsStore} />
             <Comments
               onDelete={() =>
                 api
