@@ -24,6 +24,7 @@ import { createActsFilter } from '../../filters/acts.filter.conf';
 import useActsApi from '../../../Acts/acts.api';
 import EditModal from '../../../Acts/components/ActsTable/components/EditModal';
 import useAppApi from '../../../../api';
+import ActsAdaptiveCard from './components/ActsAdaptiveCard';
 
 export const formatDateForUrl = (date) => {
   return format(date, 'yyyy-MM-dd');
@@ -193,6 +194,9 @@ const ActsTable = observer(({ currentSwitcher }) => {
             data={paginatedData}
             columns={cols}
             actions={getActions}
+            cardComponent={(data) => (
+              <ActsAdaptiveCard data={data} actions={getActions} />
+            )}
             paging={{
               totalPages,
               current: currentPage,

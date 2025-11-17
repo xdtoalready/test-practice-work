@@ -1,0 +1,65 @@
+@import ../../../../../../styles/helpers
+
+.container
+  display: flex
+  flex-direction: column
+  width: 100%
+  gap: 8px
+
+.card
+  background: $n
+  padding: 16px
+  border-radius: 8px
+  display: flex
+  flex-direction: column
+  gap: 8px
+  position: relative
+
+.header
+  display: flex
+  justify-content: space-between
+  align-items: flex-start
+  gap: 12px
+
+.name
+  +body1-s
+  color: $n7
+  flex: 1
+  word-break: break-word
+
+.menuButton
+  position: relative
+  cursor: pointer
+  flex-shrink: 0
+  display: flex
+  align-items: center
+  justify-content: center
+  width: 24px
+  height: 24px
+
+.subtitle
+  +body2-s
+  color: $n4
+  margin-top: 4px
+
+.footer
+  display: flex
+  justify-content: space-between
+  align-items: center
+  margin-top: 12px
+  gap: 12px
+
+.left
+  display: flex
+  align-items: center
+  gap: 8px
+
+.right
+  display: flex
+  align-items: center
+  gap: 8px
+
+.sum
+  +body1-s
+  color: $n7
+  white-space: nowrap

@@ -1,0 +1,66 @@
+@import ../../../../../../styles/helpers
+
+.container
+  display: flex
+  flex-direction: column
+  width: 100%
+  gap: 8px
+
+.card
+  background: $n
+  padding: 16px
+  border-radius: 8px
+  display: flex
+  flex-direction: column
+  gap: 8px
+  position: relative
+
+.header
+  display: flex
+  justify-content: space-between
+  align-items: flex-start
+  gap: 12px
+
+.name
+  flex: 1
+  word-break: break-word
+
+.subtitle
+  +body2-s
+  color: $n4
+  margin-top: 4px
+
+.footer
+  display: flex
+  justify-content: space-between
+  align-items: center
+  margin-top: 12px
+  gap: 12px
+
+.left
+  display: flex
+  align-items: center
+  gap: 8px
+
+.activity
+  +caption1-m
+  color: $p3
+
+.right
+  display: flex
+  align-items: center
+  gap: 8px
+
+.info
+  display: flex
+  flex-direction: column
+  gap: 4px
+  align-items: flex-end
+
+.time
+  +body2-s
+  color: $n7
+
+.cost
+  +caption1-m
+  color: $n4

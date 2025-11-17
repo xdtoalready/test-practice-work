@@ -18,6 +18,7 @@ import { FiltersProvider } from '../../../../providers/FilterProvider';
 import { createReportsFilters } from '../../filters/reports.filter.conf';
 import { LoadingProvider } from '../../../../providers/LoadingProvider';
 import useAppApi from '../../../../api';
+import ReportsAdaptiveCard from './components/ReportsAdaptiveCard';
 
 const ReportsTable = observer(({ currentSwitcher }) => {
   const { reportsStore } = useStore();
@@ -210,6 +211,9 @@ const ReportsTable = observer(({ currentSwitcher }) => {
             data={paginatedData}
             columns={cols}
             actions={getActions}
+            cardComponent={(data) => (
+              <ReportsAdaptiveCard data={data} actions={getActions} />
+            )}
             paging={{
               totalPages,
               current: currentPage,

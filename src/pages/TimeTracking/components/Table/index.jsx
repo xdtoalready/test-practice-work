@@ -22,6 +22,7 @@ import useAppApi from '../../../../api';
 import { getQueryParam } from '../../../../utils/window.utils';
 import TableLink from '../../../../shared/Table/Row/Link';
 import { UserPermissions } from '../../../../shared/userPermissions';
+import TimeTrackingAdaptiveCard from './components/TimeTrackingAdaptiveCard';
 
 const TimeTrackingsTable = observer(() => {
   const { timeTrackingStore } = useStore();
@@ -156,6 +157,9 @@ const TimeTrackingsTable = observer(() => {
             title="Учет времени"
             data={Array.isArray(paginatedData) ? paginatedData : []}
             columns={cols}
+            cardComponent={(data) => (
+              <TimeTrackingAdaptiveCard data={data} />
+            )}
             paging={{
               totalPages,
               current: currentPage,

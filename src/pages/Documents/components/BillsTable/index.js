@@ -24,6 +24,7 @@ import { createBillsFilters } from '../../filters/bills.filter.conf';
 import { LoadingProvider } from '../../../../providers/LoadingProvider';
 import { getQueryParam } from '../../../../utils/window.utils';
 import useAppApi from '../../../../api';
+import BillsAdaptiveCard from './components/BillsAdaptiveCard';
 
 export const formatDateForUrl = (date) => {
   return format(date, 'yyyy-MM-dd');
@@ -200,6 +201,9 @@ const BillsTable = observer(({ currentSwitcher }) => {
             data={paginatedData}
             columns={cols}
             actions={getActions}
+            cardComponent={(data) => (
+              <BillsAdaptiveCard data={data} actions={getActions} />
+            )}
             paging={{
               totalPages,
               current: currentPage,

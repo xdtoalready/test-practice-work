@@ -1,24 +1,19 @@
 @import ../../../../../../styles/helpers
 .container
   display: none
-  a>div
-    border-bottom: $n3 1px solid
-  a:first-of-type>div
-    border-bottom-right-radius: 0
-    border-bottom-left-radius: 0
-  a:last-of-type>div
-    border-bottom: none
-    border-top-right-radius: 0
-    border-top-left-radius: 0
-  +d
+  +xtw
     display: flex
     flex-direction: column
     width: 100%
+    gap: 8px
+    background: transparent
 
 .card
   color: $n7
   padding: 16px
   width: 100%
+  background: $n
+  border-radius: 8px
 
 .name
 
