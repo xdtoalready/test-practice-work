@@ -110,15 +110,6 @@ const Acts = observer(({ acts, service, company, stage }) => {
         cardComponent={(data, onPagination) => (
           <AdaptiveCard data={data} onPagination={onPagination} />
         )}
-        headerActions={{
-          add: {
-            action: () => setActModalOpen(true),
-            isSmall: true,
-            cls: `${styles.button} ${styles.button_title}`,
-            type: 'primary',
-            title: 'Добавить акт',
-          },
-        }}
         title={'Акты'}
         data={data}
         columns={cols}

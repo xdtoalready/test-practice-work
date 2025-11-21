@@ -1,4 +1,3 @@
-import useServiceApi from '../../../../Services/services.api';
 import { observer } from 'mobx-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import ConfirmationModal from '../../../../../components/ConfirmationModal';
@@ -13,15 +12,11 @@ import useAppApi from '../../../../../api';
 import useActsApi from '../../../acts.api';
 import taskStyles
   from '../../../../Stages/components/StagesPage/components/StagesTable/components/EditModal/components/TaskDescriptionPart/Description.module.sass';
-
-import { handleError } from '../../../../../utils/snackbar';
-import { handleSubmit as handleSubmitSnackbar } from '../../../../../utils/snackbar';
+import { handleError, handleSubmit as handleSubmitSnackbar } from '../../../../../utils/snackbar';
 import styles from './Modal.module.sass';
 import { actStatusTypes, colorActStatusTypes } from '../../../acts.types';
 import cn from 'classnames';
 import useActs from '../../../hooks/useActs';
-import Calendar from '../../../../../shared/Datepicker';
-import useTasksApi from '../../../../Tasks/tasks.api';
 
 const EditModal = observer(({ actId, onClose, company, service, stage }) => {
   stage && useActs(actId);
@@ -30,23 +25,12 @@ const EditModal = observer(({ actId, onClose, company, service, stage }) => {
   const { appStore } = useStore();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const api = useActsApi();
-  const serviceApi = useServiceApi();
-  const taskApi = useTasksApi();
-
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [companySearchTerm, setCompanySearchTerm] = useState('');
   const [services, setServices] = useState([]);
   const [stages, setStages] = useState([]);
 
-  const [localAct, setLocalAct] = useState({
-    number: '',
-    status: actStatusTypes.unstamped,
-    items: [],
-  });
-
   const act = useMemo(() => {
-    return isEditMode ? actsStore.getById(actId) : localAct;
-  }, [isEditMode, actId, actsStore.acts, actsStore.currentAct, actsStore.drafts, localAct]);
+    return actsStore.getById(actId);
+  }, [actId, actsStore.acts, actsStore.currentAct, actsStore.drafts]);
 
   useEffect(() => {
     const loadServices = async () => {
@@ -99,42 +83,16 @@ const EditModal = observer(({ actId, onClose, company, service, stage }) => {
     loadStages();
   }, [act?.service?.id]);
 
-  useEffect(() => {
-    if (actId) {
-      setIsEditMode(true);
-    } else {
-      setIsEditMode(false);
-    }
-  }, [actId]);
-
   const handleChange = (name, value, withId = true) => {
-    if (isEditMode) {
-      actsStore.changeById(actId, name, value, withId);
-    } else {
-      setLocalAct((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
+    actsStore.changeById(actId, name, value, withId);
   };
 
   const handleSubmit = async (onError = null) => {
     if (isDeleteModalOpen) return;
 
     try {
-      if (isEditMode) {
-        await api.updateAct(actId, act, Boolean(stage?.id));
-      } else {
-        await api
-          .createAct({
-            ...localAct,
-            stage: stage ?? act?.stage,
-          }, stage?.id ?? null)
-          .then(() => service && stage && serviceApi.getServiceById(service.id));
-      }
-      handleSubmitSnackbar(
-        isEditMode ? 'Акт успешно отредактирован' : 'Акт успешно создан',
-      );
+      await api.updateAct(actId, act, Boolean(stage?.id));
+      handleSubmitSnackbar('Акт успешно отредактирован');
       actsStore.resetDraft(actId);
       onClose();
     } catch (error) {
@@ -157,10 +115,7 @@ const EditModal = observer(({ actId, onClose, company, service, stage }) => {
 
   const handleReset = () => {
     if (isDeleteModalOpen) return;
-
-    if (isEditMode) {
-      actsStore.resetDraft(actId);
-    }
+    actsStore.resetDraft(actId);
     onClose();
   };
 
@@ -192,15 +147,13 @@ const EditModal = observer(({ actId, onClose, company, service, stage }) => {
         handleClose={handleReset}
         size={'md'}
         customButtons={
-          isEditMode && (
-            <div className={styles.addButtons}>
-              <DeleteButton handleDelete={() => setIsDeleteModalOpen(true)} />
-            </div>
-          )
+          <div className={styles.addButtons}>
+            <DeleteButton handleDelete={() => setIsDeleteModalOpen(true)} />
+          </div>
         }
       >
         <div className={styles.name}>
-          {isEditMode ? 'Редактирование акта' : 'Создание акта'}
+          Редактирование акта
           <StatusDropdown
             required={true}
             name={'status'}
@@ -221,80 +174,9 @@ const EditModal = observer(({ actId, onClose, company, service, stage }) => {
             className={cn(taskStyles.input, taskStyles.textarea)}
             label={'Номер акта'}
           />
-          {/*<Calendar*/}
-          {/*  required={true}*/}
-          {/*  name={'date'}*/}
-          {/*  label={'Дата акта'}*/}
-          {/*  value={act?.date}*/}
-          {/*  onChange={(date) => handleChange('date', date)}*/}
-          {/*/>*/}
         </div>
 
-        {!stage && !isEditMode && (<ValuesSelector
-            name={`stage`}
-            placeholder={'Привязать к...'}
-            onChange={(e) => {
-              if (e.length) {
-                const selected = e[0];
-                const r = {
-                  id: selected.value,
-                  name: selected.name,
-                  title: selected.name,
-                  type: selected.type,
-                };
-                if (r.type === 'stage' && isEditMode) {
-                  handleChange(`stage`, r);
-                }
-                handleChange(`stage`, r);
-              } else {
-                handleChange(`stage`, null);
-              }
-            }}
-            isMulti={false}
-            label="Привязать к этапу:"
-            isAsync={true}
-            isSearchable={true}
-            asyncSearch={async (query) => {
-              if (query.length < 4) return [];
-              const response = await taskApi.searchTaskable(query);
-              const results = [];
-
-              // if (response?.deals) {
-              //   results.push(
-              //     ...response.deals.map((item) => ({
-              //       value: item.id,
-              //       label: `Сделка: ${item.name}`,
-              //       type: 'deal',
-              //       name: item.name,
-              //     })),
-              //   );
-              // }
-              if (response?.stages) {
-                results.push(
-                  ...response.stages.map((item) => ({
-                    value: item.id,
-                    label: `${item.name}`,
-                    type: 'stage',
-                    name: item.name,
-                  })),
-                );
-              }
-
-              return results;
-            }}
-            value={
-              act.stage
-                ? {
-                  value: act.stage.id,
-                  label: ` ${act.stage.name}`,
-                  type: act.stage.type,
-                }
-                : null
-            }
-          />
-        )}
-
-        {isEditMode && !company &&
+        {!company &&
           <ValuesSelector
             required={true}
             name={'company'}
@@ -315,8 +197,7 @@ const EditModal = observer(({ actId, onClose, company, service, stage }) => {
             isAsync
             asyncSearch={async (query) => {
               const response = await appApi.getCompanies(query);
-              const data = response;
-              return data.map((item) => ({
+              return response.map((item) => ({
                 value: item?.id,
                 label: item?.name,
               }));

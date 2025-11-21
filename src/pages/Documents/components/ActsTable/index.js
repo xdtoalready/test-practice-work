@@ -1,10 +1,6 @@
 import { observer } from 'mobx-react';
 
-import React, {
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import usePagingData from '../../../../hooks/usePagingData';
 import TableLink from '../../../../shared/Table/Row/Link';
 import useStore from '../../../../hooks/useStore';
@@ -166,14 +162,9 @@ const ActsTable = observer(({ currentSwitcher }) => {
               { key: 'act', to: '?filter=act', name: 'Акты' },
               { key: 'report', to: '?filter=report', name: 'Отчеты' },
             ]}
-
             headerActions={{
               sorting: true,
               settings: true,
-              add: {
-                action: () => setEditModalOpen(true),
-                title: 'Добавить акт',
-              },
               filter: {
                 classNameBody: styles.filter_container,
                 title: 'Фильтр',
