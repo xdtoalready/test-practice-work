@@ -17,6 +17,7 @@ export const mapServiceFromApi = (
     title: apiService?.name, // Название услуги
     deadline: apiService?.deadline ? new Date(apiService?.deadline) : null,
     contractNumber: apiService?.contract_number, // Номер договора
+    contract: apiService?.contract ? mapContract(apiService?.contract) : null, // Договор
     client: apiService?.company
       ? {
         id: apiService?.company.id,
@@ -32,6 +33,16 @@ export const mapServiceFromApi = (
     tasks: mapTasks(stagesData?.tasks || apiService?.tasks), // Задачи
     passwords: apiPasswords ? mapPasswords(apiPasswords) : {},
     site: apiService.site ?? null,
+  };
+};
+
+// Маппинг договора
+const mapContract = (contract) => {
+  if (!contract) return null;
+  return {
+    id: contract.id,
+    number: contract.number,
+    title: contract.title || `Договор №${contract.number}`,
   };
 };
 

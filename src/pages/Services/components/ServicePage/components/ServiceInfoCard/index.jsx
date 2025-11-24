@@ -7,6 +7,7 @@ import { serviceTypeEnumRu, statusTypes, statusTypesRu } from '../../../../servi
 import ManagerCell from '../../../../../../components/ManagerCell';
 import { formatDateWithDateAndYear } from '../../../../../../utils/formate.date';
 import PasswordsDisplay from '../PasswordsDisplay';
+import ContractCard from '../ContractCard';
 
 const Index = ({ service, passwords }) => {
   return (
@@ -71,6 +72,7 @@ const Index = ({ service, passwords }) => {
       {passwords && Object.keys(passwords).length > 0 && (
         <PasswordsDisplay passwordsData={passwords} />
       )}
+      <ContractCard contract={service.contract} serviceId={service.id} />
     </div>
   );
 };
