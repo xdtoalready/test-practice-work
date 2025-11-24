@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { getToken } from '../../../shared/http';
-import { handleError, handleSuccess } from '../../../utils/snackbar';
+import { handleError, handleSubmit } from '../../../utils/snackbar';
 import { API_URL } from '../../../shared/constants';
 
 /**
@@ -48,13 +48,12 @@ const useContractsApi = () => {
         }),
       });
 
-      // Проверяем успешные статусы: 200 OK и 201 Created
-      if (!response.ok && response.status !== 201) {
+      if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
-      handleSuccess('Договор успешно создан');
+      handleSubmit('Договор успешно создан');
       return data.data;
     } catch (error) {
       console.error('Error creating contract:', error);
@@ -123,7 +122,7 @@ const useContractsApi = () => {
       }
 
       const data = await response.json();
-      handleSuccess('Договор успешно обновлен');
+      handleSubmit('Договор успешно обновлен');
       return data.data;
     } catch (error) {
       console.error('Error updating contract:', error);
@@ -151,12 +150,11 @@ const useContractsApi = () => {
         },
       });
 
-      // Проверяем успешные статусы: 200 OK, 204 No Content
-      if (!response.ok && response.status !== 204) {
+      if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      handleSuccess('Договор успешно удален');
+      handleSubmit('Договор успешно удален');
       return true;
     } catch (error) {
       console.error('Error deleting contract:', error);
