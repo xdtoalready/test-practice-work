@@ -48,7 +48,8 @@ const useContractsApi = () => {
         }),
       });
 
-      if (!response.ok) {
+      // Проверяем успешные статусы: 200 OK и 201 Created
+      if (!response.ok && response.status !== 201) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
@@ -150,7 +151,8 @@ const useContractsApi = () => {
         },
       });
 
-      if (!response.ok) {
+      // Проверяем успешные статусы: 200 OK, 204 No Content
+      if (!response.ok && response.status !== 204) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 

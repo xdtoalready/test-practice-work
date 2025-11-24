@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Card from '../../../../../../shared/Card';
 import Button from '../../../../../../shared/Button';
-import Icon from '../../../../../../shared/Icon';
 import styles from './ContractCard.module.sass';
 import ContractModal from '../ContractModal';
 import ConfirmationModal from '../../../../../../components/ConfirmationModal';
@@ -67,28 +66,24 @@ const ContractCard = ({ contract, serviceId }) => {
                 onClick={handleView}
                 type={'secondary'}
                 name={'Просмотр'}
-                after={<Icon size={20} name={'search'} />}
                 classname={styles.actionButton}
               />
               <Button
                 onClick={handleDownload}
                 type={'secondary'}
                 name={'Скачать'}
-                after={<Icon size={20} name={'download'} />}
                 classname={styles.actionButton}
               />
               <Button
                 onClick={() => setIsEditModalOpen(true)}
                 type={'secondary'}
                 name={'Редактировать'}
-                after={<Icon size={20} name={'edit'} />}
                 classname={styles.actionButton}
               />
               <Button
                 onClick={() => setIsDeleteModalOpen(true)}
                 type={'secondary'}
                 name={'Удалить'}
-                after={<Icon size={20} name={'close'} />}
                 classname={styles.deleteButton}
               />
             </div>
