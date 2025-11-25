@@ -72,7 +72,9 @@ const Index = ({ service, passwords }) => {
       {passwords && Object.keys(passwords).length > 0 && (
         <PasswordsDisplay passwordsData={passwords} />
       )}
-      <ContractCard contract={service.contract} serviceId={service.id} />
+      {service.contractModule && (
+        <ContractCard contract={service.contract} serviceId={service.id} />
+      )}
     </div>
   );
 };

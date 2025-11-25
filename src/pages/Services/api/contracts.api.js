@@ -46,7 +46,7 @@ const useContractsApi = () => {
         body: JSON.stringify({
           number,
           service_id: serviceId,
-          legal_id: legalEntityId,
+          legal_entity_id: legalEntityId,
         }),
       });
 
@@ -117,7 +117,7 @@ const useContractsApi = () => {
         },
         body: JSON.stringify({
           number,
-          legal_id: legalEntityId,
+          legal_entity_id: legalEntityId,
         }),
       });
 
