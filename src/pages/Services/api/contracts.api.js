@@ -29,8 +29,9 @@ const useContractsApi = () => {
    * Создание договора
    * @param {string} number - Номер договора
    * @param {number} serviceId - ID услуги
+   * @param {number} legalEntityId - ID юридического лица
    */
-  const createContract = async (number, serviceId) => {
+  const createContract = async (number, serviceId, legalEntityId) => {
     try {
       setIsLoading(true);
       const token = getToken();
@@ -45,6 +46,7 @@ const useContractsApi = () => {
         body: JSON.stringify({
           number,
           service_id: serviceId,
+          legal_id: legalEntityId,
         }),
       });
 
@@ -99,8 +101,9 @@ const useContractsApi = () => {
    * Обновление договора
    * @param {number} contractId - ID договора
    * @param {string} number - Новый номер договора
+   * @param {number} legalEntityId - ID юридического лица
    */
-  const updateContract = async (contractId, number) => {
+  const updateContract = async (contractId, number, legalEntityId) => {
     try {
       setIsLoading(true);
       const token = getToken();
@@ -114,6 +117,7 @@ const useContractsApi = () => {
         },
         body: JSON.stringify({
           number,
+          legal_id: legalEntityId,
         }),
       });
 
