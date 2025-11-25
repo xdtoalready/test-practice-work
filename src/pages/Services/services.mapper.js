@@ -43,6 +43,7 @@ const mapContract = (contract) => {
     id: contract.id,
     number: contract.number,
     title: contract.title || `Договор №${contract.number}`,
+    legalEntityId: contract.legal_entity_id || contract.legal_id || null,
   };
 };
 
