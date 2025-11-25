@@ -18,6 +18,7 @@ export const mapServiceFromApi = (
     deadline: apiService?.deadline ? new Date(apiService?.deadline) : null,
     contractNumber: apiService?.contract_number, // Номер договора
     contract: apiService?.contract ? mapContract(apiService?.contract) : null, // Договор
+    contractModule: apiService?.contract_module ?? false, // Показывать ли модуль договоров
     client: apiService?.company
       ? {
         id: apiService?.company.id,
