@@ -20,7 +20,7 @@ const ContractModal = ({ contract, serviceId, onClose, onSuccess, isEdit = false
 
   useEffect(() => {
     if (isEdit && contract) {
-      setNumber(contract.number || '');
+      setNumber(contract.number ? String(contract.number) : '');
       setSum(contract.sum ? String(contract.sum) : '');
       // Если есть legalEntityId в contract, найдем соответствующее юр лицо
       if (contract.legalEntityId) {
