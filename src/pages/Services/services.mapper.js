@@ -43,6 +43,7 @@ const mapContract = (contract) => {
   return {
     id: contract.id,
     number: contract.number,
+    sum: contract.sum || 0,
     title: contract.title || `Договор №${contract.number}`,
     legalEntityId: contract.legal_entity_id || contract.legal_id || null,
   };

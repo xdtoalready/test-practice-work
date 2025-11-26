@@ -14,12 +14,14 @@ const legalEntities = [
 
 const ContractModal = ({ contract, serviceId, onClose, onSuccess, isEdit = false }) => {
   const [number, setNumber] = useState('');
+  const [sum, setSum] = useState('');
   const [legalEntity, setLegalEntity] = useState(null);
   const api = useContractsApi();
 
   useEffect(() => {
     if (isEdit && contract) {
       setNumber(contract.number || '');
+      setSum(contract.sum ? String(contract.sum) : '');
       // Если есть legalEntityId в contract, найдем соответствующее юр лицо
       if (contract.legalEntityId) {
         const foundEntity = legalEntities.find(e => e.id === contract.legalEntityId);
@@ -28,12 +30,31 @@ const ContractModal = ({ contract, serviceId, onClose, onSuccess, isEdit = false
     }
   }, [contract, isEdit]);
 
+  // Обработчик изменения номера договора (только цифры, максимум 4 символа)
+  const handleNumberChange = (e) => {
+    const value = e.target.value;
+    // Разрешаем только цифры и максимум 4 символа
+    if (/^\d{0,4}$/.test(value)) {
+      setNumber(value);
+    }
+  };
+
+  // Обработчик изменения суммы (только положительные числа)
+  const handleSumChange = (e) => {
+    const value = e.target.value;
+    // Разрешаем только цифры
+    if (value === '' || /^\d+$/.test(value)) {
+      setSum(value);
+    }
+  };
+
   const handleSubmit = async () => {
     try {
+      const sumNumber = parseInt(sum, 10);
       if (isEdit && contract?.id) {
-        await api.updateContract(contract.id, number, legalEntity?.id);
+        await api.updateContract(contract.id, number, sumNumber, legalEntity?.id);
       } else {
-        await api.createContract(number, serviceId, legalEntity?.id);
+        await api.createContract(number, serviceId, sumNumber, legalEntity?.id);
       }
 
       if (onSuccess) {
@@ -60,7 +81,7 @@ const ContractModal = ({ contract, serviceId, onClose, onSuccess, isEdit = false
       title={isEdit ? 'Редактирование договора' : 'Создание договора'}
       submitButtonText={isEdit ? 'Сохранить' : 'Создать'}
       isLoading={api.isLoading}
-      disableSubmit={api.isLoading || !number.trim() || !legalEntity}
+      disableSubmit={api.isLoading || !number.trim() || !sum.trim() || parseInt(sum) <= 0 || !legalEntity}
     >
       <div className={styles.modal_content}>
         <Dropdown
@@ -76,12 +97,22 @@ const ContractModal = ({ contract, serviceId, onClose, onSuccess, isEdit = false
         />
         <TextInput
           required={true}
-          onChange={({ target }) => setNumber(target.value)}
+          onChange={handleNumberChange}
           name={'number'}
           value={number}
-          placeholder={'Введите номер договора'}
+          placeholder={'Введите номер договора (4 цифры)'}
           label={'Номер договора'}
           className={styles.input}
+        />
+        <TextInput
+          required={true}
+          onChange={handleSumChange}
+          name={'sum'}
+          value={sum}
+          placeholder={'Введите сумму договора'}
+          label={'Сумма'}
+          className={styles.input}
+          type={'number'}
         />
       </div>
     </FormValidatedModal>
