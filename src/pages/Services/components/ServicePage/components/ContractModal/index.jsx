@@ -27,7 +27,7 @@ const ContractModal = ({ contract, serviceId, onClose, onSuccess, isEdit = false
     if (isEdit && contract) {
       setNumber(contract.number ? String(contract.number) : '');
       setSum(contract.sum ? String(contract.sum) : '');
-      setClientContactPhone(contract.clientContactPhone || '');
+      setClientContactPhone(contract.clientContactPhone || '+7 ');
       setClientContactEmail(contract.clientContactEmail || '');
       setDirector(contract.director || '');
       setSigner(contract.signer || '');
@@ -37,6 +37,9 @@ const ContractModal = ({ contract, serviceId, onClose, onSuccess, isEdit = false
         const foundEntity = legalEntities.find(e => e.id === contract.legalEntityId);
         setLegalEntity(foundEntity || null);
       }
+    } else if (!isEdit) {
+      // При создании нового договора инициализируем телефон с +7
+      setClientContactPhone('+7 ');
     }
   }, [contract, isEdit]);
 
@@ -105,7 +108,7 @@ const ContractModal = ({ contract, serviceId, onClose, onSuccess, isEdit = false
       title={isEdit ? 'Редактирование договора' : 'Создание договора'}
       submitButtonText={isEdit ? 'Сохранить' : 'Создать'}
       isLoading={api.isLoading}
-      disableSubmit={api.isLoading || !number.trim() || !sum.trim() || parseInt(sum) <= 0 || !legalEntity || !clientContactPhone.trim() || !clientContactEmail.trim()}
+      disableSubmit={api.isLoading || !number.trim() || !sum.trim() || parseInt(sum) <= 0 || !legalEntity || clientContactPhone.length < 18 || !clientContactEmail.trim()}
     >
       <div className={styles.modal_content}>
         <Dropdown
@@ -143,9 +146,10 @@ const ContractModal = ({ contract, serviceId, onClose, onSuccess, isEdit = false
           onChange={(e) => setClientContactPhone(e.target.value)}
           name={'clientContactPhone'}
           value={clientContactPhone}
-          placeholder={'Введите контактный телефон'}
+          placeholder={'+7 (___) ___-__-__'}
           label={'Контактный телефон'}
           className={styles.input}
+          type={'phone'}
         />
         <TextInput
           required={true}

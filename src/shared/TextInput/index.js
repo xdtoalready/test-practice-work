@@ -119,6 +119,40 @@ const TextInput = forwardRef(
       return formattedValue;
     };
 
+    const formatPhoneValue = (inputValue) => {
+      if (!inputValue) return '+7 ';
+      // Убираем все нецифровые символы
+      const cleaned = inputValue.replace(/\D/g, '');
+
+      // Если введена 7 или 8 в начале, заменяем на 7
+      let digits = cleaned;
+      if (digits.startsWith('8')) {
+        digits = '7' + digits.slice(1);
+      } else if (!digits.startsWith('7')) {
+        digits = '7' + digits;
+      }
+
+      // Ограничиваем до 11 цифр (7 + 10 цифр номера)
+      digits = digits.slice(0, 11);
+
+      // Форматируем: +7 (XXX) XXX-XX-XX
+      let formatted = '+7 ';
+      if (digits.length > 1) {
+        formatted += '(' + digits.slice(1, 4);
+      }
+      if (digits.length >= 5) {
+        formatted += ') ' + digits.slice(4, 7);
+      }
+      if (digits.length >= 8) {
+        formatted += '-' + digits.slice(7, 9);
+      }
+      if (digits.length >= 10) {
+        formatted += '-' + digits.slice(9, 11);
+      }
+
+      return formatted;
+    };
+
     const handleBlur = (e) => {
       setIsTouched(true);
       if (isInForm) {
@@ -155,6 +189,17 @@ const TextInput = forwardRef(
             },
           });
         }
+      }
+      // Обработка для phone типа
+      if (props.type === 'phone') {
+        const formattedValue = formatPhoneValue(rawValue);
+        handleChange({
+          target: {
+            ...e.target,
+            value: formattedValue,
+          },
+        });
+        return;
       }
       // Обработка для money типа
       if (props.type === 'money') {
