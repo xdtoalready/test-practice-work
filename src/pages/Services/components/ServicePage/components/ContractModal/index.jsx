@@ -16,12 +16,22 @@ const ContractModal = ({ contract, serviceId, onClose, onSuccess, isEdit = false
   const [number, setNumber] = useState('');
   const [sum, setSum] = useState('');
   const [legalEntity, setLegalEntity] = useState(null);
+  const [clientContactPhone, setClientContactPhone] = useState('');
+  const [clientContactEmail, setClientContactEmail] = useState('');
+  const [director, setDirector] = useState('');
+  const [signer, setSigner] = useState('');
+  const [signerTitle, setSignerTitle] = useState('');
   const api = useContractsApi();
 
   useEffect(() => {
     if (isEdit && contract) {
       setNumber(contract.number ? String(contract.number) : '');
       setSum(contract.sum ? String(contract.sum) : '');
+      setClientContactPhone(contract.clientContactPhone || '');
+      setClientContactEmail(contract.clientContactEmail || '');
+      setDirector(contract.director || '');
+      setSigner(contract.signer || '');
+      setSignerTitle(contract.signerTitle || '');
       // Если есть legalEntityId в contract, найдем соответствующее юр лицо
       if (contract.legalEntityId) {
         const foundEntity = legalEntities.find(e => e.id === contract.legalEntityId);
@@ -51,10 +61,21 @@ const ContractModal = ({ contract, serviceId, onClose, onSuccess, isEdit = false
   const handleSubmit = async () => {
     try {
       const sumNumber = parseInt(sum, 10);
+      const contractData = {
+        number,
+        sum: sumNumber,
+        legalEntityId: legalEntity?.id,
+        clientContactPhone,
+        clientContactEmail,
+        director,
+        signer,
+        signerTitle,
+      };
+
       if (isEdit && contract?.id) {
-        await api.updateContract(contract.id, number, sumNumber, legalEntity?.id);
+        await api.updateContract(contract.id, contractData);
       } else {
-        await api.createContract(number, serviceId, sumNumber, legalEntity?.id);
+        await api.createContract(serviceId, contractData);
       }
 
       if (onSuccess) {
@@ -73,6 +94,9 @@ const ContractModal = ({ contract, serviceId, onClose, onSuccess, isEdit = false
     }
   };
 
+  // Проверяем, является ли юр. лицо типом "LEGAL" (ООО, АО и т.д.) а не ИП
+  const isLegalEntity = legalEntity && !legalEntity.name.startsWith('ИП');
+
   return (
     <FormValidatedModal
       handleSubmit={handleSubmit}
@@ -81,7 +105,7 @@ const ContractModal = ({ contract, serviceId, onClose, onSuccess, isEdit = false
       title={isEdit ? 'Редактирование договора' : 'Создание договора'}
       submitButtonText={isEdit ? 'Сохранить' : 'Создать'}
       isLoading={api.isLoading}
-      disableSubmit={api.isLoading || !number.trim() || !sum.trim() || parseInt(sum) <= 0 || !legalEntity}
+      disableSubmit={api.isLoading || !number.trim() || !sum.trim() || parseInt(sum) <= 0 || !legalEntity || !clientContactPhone.trim() || !clientContactEmail.trim()}
     >
       <div className={styles.modal_content}>
         <Dropdown
@@ -114,6 +138,53 @@ const ContractModal = ({ contract, serviceId, onClose, onSuccess, isEdit = false
           className={styles.input}
           type={'number'}
         />
+        <TextInput
+          required={true}
+          onChange={(e) => setClientContactPhone(e.target.value)}
+          name={'clientContactPhone'}
+          value={clientContactPhone}
+          placeholder={'Введите контактный телефон'}
+          label={'Контактный телефон'}
+          className={styles.input}
+        />
+        <TextInput
+          required={true}
+          onChange={(e) => setClientContactEmail(e.target.value)}
+          name={'clientContactEmail'}
+          value={clientContactEmail}
+          placeholder={'Введите контактный e-mail'}
+          label={'Контактный e-mail'}
+          className={styles.input}
+          type={'email'}
+        />
+        {isLegalEntity && (
+          <>
+            <TextInput
+              onChange={(e) => setDirector(e.target.value)}
+              name={'director'}
+              value={director}
+              placeholder={'Введите ФИО директора'}
+              label={'ФИО директора'}
+              className={styles.input}
+            />
+            <TextInput
+              onChange={(e) => setSigner(e.target.value)}
+              name={'signer'}
+              value={signer}
+              placeholder={'Введите ФИО подписанта'}
+              label={'ФИО подписанта'}
+              className={styles.input}
+            />
+            <TextInput
+              onChange={(e) => setSignerTitle(e.target.value)}
+              name={'signerTitle'}
+              value={signerTitle}
+              placeholder={'Введите должность подписанта'}
+              label={'Должность подписанта'}
+              className={styles.input}
+            />
+          </>
+        )}
       </div>
     </FormValidatedModal>
   );

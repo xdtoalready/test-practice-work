@@ -46,6 +46,11 @@ const mapContract = (contract) => {
     sum: contract.sum || 0,
     title: contract.title || `Договор №${contract.number}`,
     legalEntityId: contract.legal_entity_id || contract.legal_id || null,
+    clientContactPhone: contract.client_contact_phone || '',
+    clientContactEmail: contract.client_contact_email || '',
+    director: contract.director || '',
+    signer: contract.signer || '',
+    signerTitle: contract.signer_title || '',
   };
 };
 
