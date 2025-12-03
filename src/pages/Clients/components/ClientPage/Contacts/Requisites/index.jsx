@@ -71,30 +71,6 @@ const RequisitesCard = ({ contactData, client, onActions }) => {
             'Факт. адрес восстановлен'
           )}
         />
-
-        <CardInput
-          label="Подписант"
-          name="signer"
-          value={client?.signer || ''}
-          placeholder="ФИО подписанта"
-          actions={onActions(
-            'signer',
-            'Подписант сохранен',
-            'Подписант восстановлен'
-          )}
-        />
-
-        <CardInput
-          label="Директор"
-          name="director"
-          value={client?.director || ''}
-          placeholder="ФИО директора"
-          actions={onActions(
-            'director',
-            'Директор сохранен',
-            'Директор восстановлен'
-          )}
-        />
       </div>
 
       {/* 2️⃣ Банковские реквизиты */}

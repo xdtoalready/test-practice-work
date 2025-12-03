@@ -27,12 +27,10 @@ const useContractsApi = () => {
 
   /**
    * Создание договора
-   * @param {string} number - Номер договора
    * @param {number} serviceId - ID услуги
-   * @param {number} sum - Сумма договора
-   * @param {number} legalEntityId - ID юридического лица
+   * @param {object} contractData - Данные договора
    */
-  const createContract = async (number, serviceId, sum, legalEntityId) => {
+  const createContract = async (serviceId, contractData) => {
     try {
       setIsLoading(true);
       const token = getToken();
@@ -45,10 +43,15 @@ const useContractsApi = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          number,
+          number: contractData.number,
           service_id: serviceId,
-          sum,
-          legal_entity_id: legalEntityId,
+          sum: contractData.sum,
+          legal_entity_id: contractData.legalEntityId,
+          client_contact_phone: contractData.clientContactPhone,
+          client_contact_email: contractData.clientContactEmail,
+          director: contractData.director || undefined,
+          signer: contractData.signer || undefined,
+          signer_title: contractData.signerTitle || undefined,
         }),
       });
 
@@ -102,11 +105,9 @@ const useContractsApi = () => {
   /**
    * Обновление договора
    * @param {number} contractId - ID договора
-   * @param {string} number - Новый номер договора
-   * @param {number} sum - Сумма договора
-   * @param {number} legalEntityId - ID юридического лица
+   * @param {object} contractData - Данные договора
    */
-  const updateContract = async (contractId, number, sum, legalEntityId) => {
+  const updateContract = async (contractId, contractData) => {
     try {
       setIsLoading(true);
       const token = getToken();
@@ -119,9 +120,14 @@ const useContractsApi = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          number,
-          sum,
-          legal_entity_id: legalEntityId,
+          number: contractData.number,
+          sum: contractData.sum,
+          legal_entity_id: contractData.legalEntityId,
+          client_contact_phone: contractData.clientContactPhone,
+          client_contact_email: contractData.clientContactEmail,
+          director: contractData.director || undefined,
+          signer: contractData.signer || undefined,
+          signer_title: contractData.signerTitle || undefined,
         }),
       });
 
