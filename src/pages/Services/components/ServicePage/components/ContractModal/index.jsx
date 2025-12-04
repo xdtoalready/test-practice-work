@@ -12,7 +12,7 @@ const legalEntities = [
   { id: 3, name: 'ООО "СМ-РЕКЛАМА"' },
 ];
 
-const ContractModal = ({ contract, serviceId, onClose, onSuccess, isEdit = false }) => {
+const ContractModal = ({ contract, serviceId, clientLegalType, onClose, onSuccess, isEdit = false }) => {
   const [number, setNumber] = useState('');
   const [sum, setSum] = useState('');
   const [legalEntity, setLegalEntity] = useState(null);
@@ -97,8 +97,9 @@ const ContractModal = ({ contract, serviceId, onClose, onSuccess, isEdit = false
     }
   };
 
-  // Проверяем, является ли юр. лицо типом "LEGAL" (ООО, АО и т.д.) а не ИП
-  const isLegalEntity = legalEntity && !legalEntity.name.startsWith('ИП');
+  // Проверяем, является ли клиент юридическим лицом (LEGAL) а не индивидуальным предпринимателем (INDIVIDUAL)
+  // Показываем поля director, signer, signer_title только для LEGAL
+  const isLegalEntity = clientLegalType === 'LEGAL';
 
   return (
     <FormValidatedModal

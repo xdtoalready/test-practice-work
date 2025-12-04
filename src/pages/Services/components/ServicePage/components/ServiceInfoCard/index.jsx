@@ -73,7 +73,11 @@ const Index = ({ service, passwords }) => {
         <PasswordsDisplay passwordsData={passwords} />
       )}
       {service.contractModule && (
-        <ContractCard contract={service.contract} serviceId={service.id} />
+        <ContractCard
+          contract={service.contract}
+          serviceId={service.id}
+          clientLegalType={service.client?.legalType}
+        />
       )}
     </div>
   );
