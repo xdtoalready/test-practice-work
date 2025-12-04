@@ -23,6 +23,7 @@ export const mapServiceFromApi = (
       ? {
         id: apiService?.company.id,
         title: apiService?.company.name,
+        legalType: apiService?.company.legal_type,
       }
       : null,
     type: apiService?.type,
