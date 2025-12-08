@@ -43,9 +43,7 @@ const mapContract = (contract) => {
   if (!contract) return null;
   return {
     id: contract.id,
-    number: contract.number,
     sum: contract.sum || 0,
-    title: contract.title || `Договор №${contract.number}`,
     legalEntityId: contract.legal_entity_id || contract.legal_id || null,
     clientContactPhone: contract.client_contact_phone || '',
     clientContactEmail: contract.client_contact_email || '',

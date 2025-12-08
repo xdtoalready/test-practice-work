@@ -59,7 +59,7 @@ const ContractCard = ({ contract, serviceId, clientLegalType }) => {
         ) : (
           <div className={styles.contractInfo}>
             <div className={styles.contractTitle}>
-              {contract.title || `Договор №${contract.number}`}
+              {`Договор №${contract.id}`}
             </div>
             <div className={styles.actions}>
               <Button
