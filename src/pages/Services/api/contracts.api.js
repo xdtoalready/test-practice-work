@@ -43,7 +43,6 @@ const useContractsApi = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          number: contractData.number,
           service_id: serviceId,
           sum: contractData.sum,
           legal_entity_id: contractData.legalEntityId,
@@ -120,7 +119,6 @@ const useContractsApi = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          number: contractData.number,
           sum: contractData.sum,
           legal_entity_id: contractData.legalEntityId,
           client_contact_phone: contractData.clientContactPhone,

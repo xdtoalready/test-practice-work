@@ -13,7 +13,6 @@ const legalEntities = [
 ];
 
 const ContractModal = ({ contract, serviceId, clientLegalType, onClose, onSuccess, isEdit = false }) => {
-  const [number, setNumber] = useState('');
   const [sum, setSum] = useState('');
   const [legalEntity, setLegalEntity] = useState(null);
   const [clientContactPhone, setClientContactPhone] = useState('');
@@ -25,7 +24,6 @@ const ContractModal = ({ contract, serviceId, clientLegalType, onClose, onSucces
 
   useEffect(() => {
     if (isEdit && contract) {
-      setNumber(contract.number ? String(contract.number) : '');
       setSum(contract.sum ? String(contract.sum) : '');
       setClientContactPhone(contract.clientContactPhone || '+7 ');
       setClientContactEmail(contract.clientContactEmail || '');
@@ -43,15 +41,6 @@ const ContractModal = ({ contract, serviceId, clientLegalType, onClose, onSucces
     }
   }, [contract, isEdit]);
 
-  // Обработчик изменения номера договора (только цифры, максимум 4 символа)
-  const handleNumberChange = (e) => {
-    const value = e.target.value;
-    // Разрешаем только цифры и максимум 4 символа
-    if (/^\d{0,4}$/.test(value)) {
-      setNumber(value);
-    }
-  };
-
   // Обработчик изменения суммы (только положительные числа)
   const handleSumChange = (e) => {
     const value = e.target.value;
@@ -65,7 +54,6 @@ const ContractModal = ({ contract, serviceId, clientLegalType, onClose, onSucces
     try {
       const sumNumber = parseInt(sum, 10);
       const contractData = {
-        number,
         sum: sumNumber,
         legalEntityId: legalEntity?.id,
         clientContactPhone,
@@ -109,7 +97,7 @@ const ContractModal = ({ contract, serviceId, clientLegalType, onClose, onSucces
       title={isEdit ? 'Редактирование договора' : 'Создание договора'}
       submitButtonText={isEdit ? 'Сохранить' : 'Создать'}
       isLoading={api.isLoading}
-      disableSubmit={api.isLoading || !number.trim() || !sum.trim() || parseInt(sum) <= 0 || !legalEntity || clientContactPhone.length < 18 || !clientContactEmail.trim()}
+      disableSubmit={api.isLoading || !sum.trim() || parseInt(sum) <= 0 || !legalEntity || clientContactPhone.length < 18 || !clientContactEmail.trim()}
     >
       <div className={styles.modal_content}>
         <Dropdown
@@ -122,15 +110,6 @@ const ContractModal = ({ contract, serviceId, clientLegalType, onClose, onSucces
           renderValue={(val) => val.name}
           renderOption={(opt) => opt.name}
           options={legalEntities}
-        />
-        <TextInput
-          required={true}
-          onChange={handleNumberChange}
-          name={'number'}
-          value={number}
-          placeholder={'Введите номер договора (4 цифры)'}
-          label={'Номер договора'}
-          className={styles.input}
         />
         <TextInput
           required={true}
