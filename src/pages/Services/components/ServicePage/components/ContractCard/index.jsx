@@ -7,7 +7,7 @@ import ConfirmationModal from '../../../../../../components/ConfirmationModal';
 import useContractsApi from '../../../../api/contracts.api';
 import useServiceApi from '../../../../services.api';
 
-const ContractCard = ({ contract, serviceId, clientLegalType }) => {
+const ContractCard = ({ contract, serviceId, clientLegalType, serviceType }) => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -95,6 +95,7 @@ const ContractCard = ({ contract, serviceId, clientLegalType }) => {
         <ContractModal
           serviceId={serviceId}
           clientLegalType={clientLegalType}
+          serviceType={serviceType}
           onClose={() => setIsCreateModalOpen(false)}
           onSuccess={handleCreateSuccess}
           isEdit={false}
@@ -106,6 +107,7 @@ const ContractCard = ({ contract, serviceId, clientLegalType }) => {
           contract={contract}
           serviceId={serviceId}
           clientLegalType={clientLegalType}
+          serviceType={serviceType}
           onClose={() => setIsEditModalOpen(false)}
           onSuccess={handleEditSuccess}
           isEdit={true}

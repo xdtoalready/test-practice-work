@@ -77,6 +77,7 @@ const Index = ({ service, passwords }) => {
           contract={service.contract}
           serviceId={service.id}
           clientLegalType={service.client?.legalType}
+          serviceType={service.type}
         />
       )}
     </div>

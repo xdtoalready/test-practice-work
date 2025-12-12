@@ -50,6 +50,12 @@ const mapContract = (contract) => {
     director: contract.director || '',
     signer: contract.signer || '',
     signerTitle: contract.signer_title || '',
+    task1: contract.task_1 || '',
+    task2: contract.task_2 || '',
+    task3: contract.task_3 || '',
+    task4: contract.task_4 || '',
+    task5: contract.task_5 || '',
+    task6: contract.task_6 || '',
   };
 };
 
