@@ -187,7 +187,7 @@ const ContractModal = ({ contract, serviceId, clientLegalType, serviceType, onCl
           type={'number'}
         />
         {isDevelopment && (
-          <>
+          <div className={styles.sum_row}>
             <TextInput
               required={true}
               onChange={handleSum1Change}
@@ -195,7 +195,6 @@ const ContractModal = ({ contract, serviceId, clientLegalType, serviceType, onCl
               value={sum1}
               placeholder={'Введите сумму 1-го платежа'}
               label={'Сумма 1-го платежа'}
-              className={styles.input}
               type={'number'}
             />
             <TextInput
@@ -205,7 +204,6 @@ const ContractModal = ({ contract, serviceId, clientLegalType, serviceType, onCl
               value={sum2}
               placeholder={'Введите сумму 2-го платежа'}
               label={'Сумма 2-го платежа'}
-              className={styles.input}
               type={'number'}
             />
             <TextInput
@@ -215,10 +213,9 @@ const ContractModal = ({ contract, serviceId, clientLegalType, serviceType, onCl
               value={sum3}
               placeholder={'Введите сумму 3-го платежа'}
               label={'Сумма 3-го платежа'}
-              className={styles.input}
               type={'number'}
             />
-          </>
+          </div>
         )}
         <TextInput
           required={true}
