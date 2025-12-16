@@ -26,6 +26,9 @@ const ContractModal = ({ contract, serviceId, clientLegalType, serviceType, onCl
   const [task4, setTask4] = useState('');
   const [task5, setTask5] = useState('');
   const [task6, setTask6] = useState('');
+  const [sum1, setSum1] = useState('');
+  const [sum2, setSum2] = useState('');
+  const [sum3, setSum3] = useState('');
   const api = useContractsApi();
 
   useEffect(() => {
@@ -42,6 +45,9 @@ const ContractModal = ({ contract, serviceId, clientLegalType, serviceType, onCl
       setTask4(contract.task4 || '');
       setTask5(contract.task5 || '');
       setTask6(contract.task6 || '');
+      setSum1(contract.sum1 ? String(contract.sum1) : '');
+      setSum2(contract.sum2 ? String(contract.sum2) : '');
+      setSum3(contract.sum3 ? String(contract.sum3) : '');
       // Если есть legalEntityId в contract, найдем соответствующее юр лицо
       if (contract.legalEntityId) {
         const foundEntity = legalEntities.find(e => e.id === contract.legalEntityId);
@@ -62,6 +68,28 @@ const ContractModal = ({ contract, serviceId, clientLegalType, serviceType, onCl
     }
   };
 
+  // Обработчики изменения сумм платежей (только положительные числа)
+  const handleSum1Change = (e) => {
+    const value = e.target.value;
+    if (value === '' || /^\d+$/.test(value)) {
+      setSum1(value);
+    }
+  };
+
+  const handleSum2Change = (e) => {
+    const value = e.target.value;
+    if (value === '' || /^\d+$/.test(value)) {
+      setSum2(value);
+    }
+  };
+
+  const handleSum3Change = (e) => {
+    const value = e.target.value;
+    if (value === '' || /^\d+$/.test(value)) {
+      setSum3(value);
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       const sumNumber = parseInt(sum, 10);
@@ -79,6 +107,9 @@ const ContractModal = ({ contract, serviceId, clientLegalType, serviceType, onCl
         task4: task4 || '',
         task5: task5 || '',
         task6: task6 || '',
+        sum1: sum1 ? parseInt(sum1, 10) : 0,
+        sum2: sum2 ? parseInt(sum2, 10) : 0,
+        sum3: sum3 ? parseInt(sum3, 10) : 0,
       };
 
       if (isEdit && contract?.id) {
@@ -116,6 +147,13 @@ const ContractModal = ({ contract, serviceId, clientLegalType, serviceType, onCl
   // Проверка обязательных полей для development
   const developmentFieldsValid = !isDevelopment || (task1.trim() && task2.trim() && task3.trim() && task4.trim() && task5.trim() && task6.trim());
 
+  // Проверка суммы платежей для development (sum1 + sum2 + sum3 = sum)
+  const sum1Number = sum1 ? parseInt(sum1, 10) : 0;
+  const sum2Number = sum2 ? parseInt(sum2, 10) : 0;
+  const sum3Number = sum3 ? parseInt(sum3, 10) : 0;
+  const sumNumber = sum ? parseInt(sum, 10) : 0;
+  const developmentSumsValid = !isDevelopment || (sum1Number + sum2Number + sum3Number === sumNumber && sum1.trim() && sum2.trim() && sum3.trim());
+
   return (
     <FormValidatedModal
       handleSubmit={handleSubmit}
@@ -124,7 +162,7 @@ const ContractModal = ({ contract, serviceId, clientLegalType, serviceType, onCl
       title={isEdit ? 'Редактирование договора' : 'Создание договора'}
       submitButtonText={isEdit ? 'Сохранить' : 'Создать'}
       isLoading={api.isLoading}
-      disableSubmit={api.isLoading || !sum.trim() || parseInt(sum) <= 0 || !legalEntity || clientContactPhone.length < 18 || !clientContactEmail.trim() || !legalFieldsValid || !developmentFieldsValid}
+      disableSubmit={api.isLoading || !sum.trim() || parseInt(sum) <= 0 || !legalEntity || clientContactPhone.length < 18 || !clientContactEmail.trim() || !legalFieldsValid || !developmentFieldsValid || !developmentSumsValid}
     >
       <div className={styles.modal_content}>
         <Dropdown
@@ -148,6 +186,40 @@ const ContractModal = ({ contract, serviceId, clientLegalType, serviceType, onCl
           className={styles.input}
           type={'number'}
         />
+        {isDevelopment && (
+          <>
+            <TextInput
+              required={true}
+              onChange={handleSum1Change}
+              name={'sum1'}
+              value={sum1}
+              placeholder={'Введите сумму 1-го платежа'}
+              label={'Сумма 1-го платежа'}
+              className={styles.input}
+              type={'number'}
+            />
+            <TextInput
+              required={true}
+              onChange={handleSum2Change}
+              name={'sum2'}
+              value={sum2}
+              placeholder={'Введите сумму 2-го платежа'}
+              label={'Сумма 2-го платежа'}
+              className={styles.input}
+              type={'number'}
+            />
+            <TextInput
+              required={true}
+              onChange={handleSum3Change}
+              name={'sum3'}
+              value={sum3}
+              placeholder={'Введите сумму 3-го платежа'}
+              label={'Сумма 3-го платежа'}
+              className={styles.input}
+              type={'number'}
+            />
+          </>
+        )}
         <TextInput
           required={true}
           onChange={(e) => setClientContactPhone(e.target.value)}
@@ -209,7 +281,7 @@ const ContractModal = ({ contract, serviceId, clientLegalType, serviceType, onCl
               placeholder={'Введите задачу 1'}
               label={'Задача 1'}
               className={styles.input}
-              type={'editor'}
+              type={'textarea'}
             />
             <TextInput
               required={true}
@@ -219,7 +291,7 @@ const ContractModal = ({ contract, serviceId, clientLegalType, serviceType, onCl
               placeholder={'Введите задачу 2'}
               label={'Задача 2'}
               className={styles.input}
-              type={'editor'}
+              type={'textarea'}
             />
             <TextInput
               required={true}
@@ -229,7 +301,7 @@ const ContractModal = ({ contract, serviceId, clientLegalType, serviceType, onCl
               placeholder={'Введите задачу 3'}
               label={'Задача 3'}
               className={styles.input}
-              type={'editor'}
+              type={'textarea'}
             />
             <TextInput
               required={true}
@@ -239,7 +311,7 @@ const ContractModal = ({ contract, serviceId, clientLegalType, serviceType, onCl
               placeholder={'Введите задачу 4'}
               label={'Задача 4'}
               className={styles.input}
-              type={'editor'}
+              type={'textarea'}
             />
             <TextInput
               required={true}
@@ -249,7 +321,7 @@ const ContractModal = ({ contract, serviceId, clientLegalType, serviceType, onCl
               placeholder={'Введите задачу 5'}
               label={'Задача 5'}
               className={styles.input}
-              type={'editor'}
+              type={'textarea'}
             />
             <TextInput
               required={true}
@@ -259,7 +331,7 @@ const ContractModal = ({ contract, serviceId, clientLegalType, serviceType, onCl
               placeholder={'Введите задачу 6'}
               label={'Задача 6'}
               className={styles.input}
-              type={'editor'}
+              type={'textarea'}
             />
           </>
         )}
