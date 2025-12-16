@@ -56,6 +56,9 @@ const mapContract = (contract) => {
     task4: contract.task_4 || '',
     task5: contract.task_5 || '',
     task6: contract.task_6 || '',
+    sum1: contract.sum_1 || 0,
+    sum2: contract.sum_2 || 0,
+    sum3: contract.sum_3 || 0,
   };
 };
 

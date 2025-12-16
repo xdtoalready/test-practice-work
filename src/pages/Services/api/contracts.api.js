@@ -57,6 +57,9 @@ const useContractsApi = () => {
           task_4: contractData.task4,
           task_5: contractData.task5,
           task_6: contractData.task6,
+          sum_1: contractData.sum1,
+          sum_2: contractData.sum2,
+          sum_3: contractData.sum3,
         }),
       });
 
@@ -138,6 +141,9 @@ const useContractsApi = () => {
           task_4: contractData.task4,
           task_5: contractData.task5,
           task_6: contractData.task6,
+          sum_1: contractData.sum1,
+          sum_2: contractData.sum2,
+          sum_3: contractData.sum3,
         }),
       });
 
