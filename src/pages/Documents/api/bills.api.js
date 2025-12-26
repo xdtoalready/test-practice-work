@@ -127,10 +127,18 @@ const useBillsApi = () => {
       'signed_date',
     ];
 
-    let dataToUpdate = mapBillDataToBackend(
-      billsStore.drafts[billId],
-      billsStore.changedProps,
-    );
+    // Если updateData передан напрямую (для act_signed), используем его
+    let dataToUpdate;
+    if (updateData && typeof updateData === 'object' && !Array.isArray(updateData)) {
+      console.log('📤 Direct update data received:', updateData);
+      dataToUpdate = updateData;
+    } else {
+      // Иначе берем из store (старый механизм)
+      dataToUpdate = mapBillDataToBackend(
+        billsStore.drafts[billId],
+        billsStore.changedProps,
+      );
+    }
 
     if (dataToUpdate.bill_items) {
       const allowedItemFields = [
@@ -152,12 +160,27 @@ const useBillsApi = () => {
 
     const sanitizedData = sanitizeObjectForBackend(dataToUpdate, allowedFields);
 
+    console.log('🔄 API Request Details:');
+    console.log('  Endpoint:', `/api/bills/${billId}`);
+    console.log('  Method:', 'PATCH');
+    console.log('  Bill ID:', billId);
+    console.log('  Data before sanitize:', dataToUpdate);
+    console.log('  Data after sanitize:', sanitizedData);
+    console.log('  Full URL:', `${window.location.origin}/api/bills/${billId}`);
+
     return http
       .patch(`/api/bills/${billId}`, sanitizedData)
-      .then(handleHttpResponse)
+      .then((response) => {
+        console.log('✅ API Response:', response);
+        return handleHttpResponse(response);
+      })
       .then(() => {
         if (!stageMode) return getBills(page, from, to);
         return serviceApi.getServiceById(id, true);
+      })
+      .catch((error) => {
+        console.error('❌ API Error:', error);
+        throw error;
       })
       .catch(handleHttpError)
       .finally(() => setIsLoading(false));
