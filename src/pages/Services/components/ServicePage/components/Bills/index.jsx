@@ -10,7 +10,7 @@ import Icon from '../../../../../../shared/Icon';
 import cn from 'classnames';
 import EditModal from '../../../../../Documents/components/BillsTable/components/EditModal';
 import { observer } from 'mobx-react';
-import StatusDropdown from '../../../../../../components/StatusDropdown';
+import Badge from '../../../../../../shared/Badge';
 import { colorActStatusTypes } from '../../../../../Acts/acts.types';
 import useBillsApi from '../../../../../Documents/api/bills.api';
 
@@ -20,25 +20,27 @@ const Bills = observer(({ bills, service, company, stage }) => {
   const { updateBill } = useBillsApi();
 
   // Обработчик изменения статуса акта
-  const handleActStatusChange = (billId, newStatus) => {
-    const currentBill = bills.find(b => b.id === billId);
-    if (!currentBill) return;
-
-    const actSigned = newStatus.key === 'stamped';
-    const signedDate = actSigned ? new Date().toISOString().split('T')[0] : null;
-
-    // Обновляем счет с новыми данными акта
-    const updatedBill = {
-      ...currentBill,
-      actSigned,
-      signedDate: actSigned ? new Date(signedDate) : null,
-    };
-
-    // Отправляем обновление на сервер
+  const handleActStatusChange = (billId, isSigned) => {
+    // Отправляем обновление на сервер с 1/0 вместо true/false
     updateBill(billId, {
-      act_signed: actSigned,
-      signed_date: signedDate,
+      act_signed: isSigned ? 1 : 0,
     }, true);
+  };
+
+  // Actions для строк актов
+  const getActActions = (data) => {
+    if (!data.isAct) return null;
+
+    return [
+      {
+        label: 'Подписан',
+        onClick: () => handleActStatusChange(data.billId, true),
+      },
+      {
+        label: 'Не подписан',
+        onClick: () => handleActStatusChange(data.billId, false),
+      },
+    ];
   };
 
   const cols = React.useMemo(
@@ -152,13 +154,10 @@ const Bills = observer(({ bills, service, company, stage }) => {
 
           if (isAct) {
             const currentStatus = data.actSigned ? 'stamped' : 'unstamped';
-            const statusValue = colorActStatusTypes[currentStatus];
-
             return (
-              <StatusDropdown
-                statuses={colorActStatusTypes}
-                value={statusValue}
-                onChange={(newStatus) => handleActStatusChange(data.billId, newStatus)}
+              <Badge
+                status={currentStatus}
+                statusType={colorActStatusTypes}
               />
             );
           }
@@ -239,6 +238,7 @@ const Bills = observer(({ bills, service, company, stage }) => {
         title={'Счета'}
         data={data}
         columns={cols}
+        actions={getActActions}
         getRowProps={(row) => ({
           className: row.original.isAct ? styles.act_row : '',
         })}
