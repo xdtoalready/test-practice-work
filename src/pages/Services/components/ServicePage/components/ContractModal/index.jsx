@@ -275,8 +275,8 @@ const ContractModal = ({ contract, serviceId, clientLegalType, serviceType, onCl
               onChange={(e) => setTask1(e.target.value)}
               name={'task1'}
               value={task1}
-              placeholder={'Введите задачу 1'}
-              label={'Задача 1'}
+              placeholder={'Тип сайта, продукт и целевая аудитория сайта'}
+              label={'Тип сайта, продукт и целевая аудитория сайта'}
               className={styles.input}
               type={'textarea'}
             />
@@ -285,8 +285,8 @@ const ContractModal = ({ contract, serviceId, clientLegalType, serviceType, onCl
               onChange={(e) => setTask2(e.target.value)}
               name={'task2'}
               value={task2}
-              placeholder={'Введите задачу 2'}
-              label={'Задача 2'}
+              placeholder={'Структура страниц сайта'}
+              label={'Структура страниц сайта'}
               className={styles.input}
               type={'textarea'}
             />
@@ -295,8 +295,8 @@ const ContractModal = ({ contract, serviceId, clientLegalType, serviceType, onCl
               onChange={(e) => setTask3(e.target.value)}
               name={'task3'}
               value={task3}
-              placeholder={'Введите задачу 3'}
-              label={'Задача 3'}
+              placeholder={'Особенности оформления сайта'}
+              label={'Особенности оформления сайта'}
               className={styles.input}
               type={'textarea'}
             />
@@ -305,8 +305,8 @@ const ContractModal = ({ contract, serviceId, clientLegalType, serviceType, onCl
               onChange={(e) => setTask4(e.target.value)}
               name={'task4'}
               value={task4}
-              placeholder={'Введите задачу 4'}
-              label={'Задача 4'}
+              placeholder={'Особенности программного функционала сайта'}
+              label={'Особенности программного функционала сайта'}
               className={styles.input}
               type={'textarea'}
             />
@@ -315,8 +315,8 @@ const ContractModal = ({ contract, serviceId, clientLegalType, serviceType, onCl
               onChange={(e) => setTask5(e.target.value)}
               name={'task5'}
               value={task5}
-              placeholder={'Введите задачу 5'}
-              label={'Задача 5'}
+              placeholder={'Особенности наполнения сайта'}
+              label={'Особенности наполнения сайта'}
               className={styles.input}
               type={'textarea'}
             />
@@ -325,8 +325,8 @@ const ContractModal = ({ contract, serviceId, clientLegalType, serviceType, onCl
               onChange={(e) => setTask6(e.target.value)}
               name={'task6'}
               value={task6}
-              placeholder={'Введите задачу 6'}
-              label={'Задача 6'}
+              placeholder={'Этапы разработки сайта'}
+              label={'Этапы разработки сайта'}
               className={styles.input}
               type={'textarea'}
             />
