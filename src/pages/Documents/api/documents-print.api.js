@@ -361,6 +361,91 @@ const useDocumentsPrintApi = () => {
     }
   };
 
+  /**
+   * Просмотр акта через billId (новый эндпоинт)
+   * @param {number} billId - ID счета
+   * @param {boolean} stamp - С печатью или без (true/false)
+   */
+  const viewActByBillId = async (billId, stamp = true) => {
+    try {
+      setIsLoading(true);
+      const token = getToken();
+      const stampParam = stamp ? 1 : 0;
+      const url = `${API_URL}/api/bills/${billId}/print_act?stamp=${stampParam}`;
+
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      // Открываем PDF в новой вкладке
+      window.open(blobUrl, '_blank');
+
+      // Очищаем blob URL после небольшой задержки
+      setTimeout(() => {
+        window.URL.revokeObjectURL(blobUrl);
+      }, 100);
+    } catch (error) {
+      console.error('Error viewing act PDF by billId:', error);
+      handleError('Ошибка при просмотре акта');
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  /**
+   * Скачать PDF акта через billId (новый эндпоинт)
+   * @param {number} billId - ID счета
+   * @param {boolean} stamp - С печатью или без (true/false)
+   */
+  const downloadActByBillId = async (billId, stamp = true) => {
+    try {
+      setIsLoading(true);
+      const token = getToken();
+      const stampParam = stamp ? 1 : 0;
+      const url = `${API_URL}/api/bills/${billId}/download_act?stamp=${stampParam}`;
+
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Извлечение имени файла из кастомного заголовка X-Filename
+      const xFilename = response.headers.get('X-Filename');
+      const filename = extractFilenameFromXHeader(xFilename) || `act_bill_${billId}.pdf`;
+
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error('Error downloading act PDF by billId:', error);
+      handleError('Ошибка при скачивании акта');
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     viewBillPdf,
     viewActPdf,
@@ -371,6 +456,8 @@ const useDocumentsPrintApi = () => {
     downloadBillPdf,
     downloadActPdf,
     downloadReportPdf,
+    viewActByBillId,
+    downloadActByBillId,
     isLoading,
   };
 };
