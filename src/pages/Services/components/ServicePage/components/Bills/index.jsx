@@ -13,11 +13,13 @@ import { observer } from 'mobx-react';
 import StatusDropdown from '../../../../../../components/StatusDropdown';
 import { colorActStatusTypes } from '../../../../../Acts/acts.types';
 import useBillsApi from '../../../../../Documents/api/bills.api';
+import useDocumentsPrintApi from '../../../../../Documents/api/documents-print.api';
 
 const Bills = observer(({ bills, service, company, stage }) => {
   const [billModalOpen, setBillModalOpen] = useState(false);
   const [billData, setBillData] = useState(null);
   const { updateBill } = useBillsApi();
+  const documentsPrintApi = useDocumentsPrintApi();
 
   // Обработчик изменения статуса акта
   const handleActStatusChange = (billId, newStatus) => {
@@ -80,7 +82,7 @@ const Bills = observer(({ bills, service, company, stage }) => {
           if (isAct) {
             return (
               <Button
-                onClick={() => window.open(`/api/bills/${data.billId}/print_act?stamp=1`, '_blank')}
+                onClick={() => documentsPrintApi.viewActByBillId(data.billId, true)}
                 type={'secondary'}
                 after={<Icon size={24} name={'download'} />}
                 classname={cn(styles.button, styles.button_bills)}
@@ -111,7 +113,7 @@ const Bills = observer(({ bills, service, company, stage }) => {
           if (isAct) {
             return (
               <Button
-                onClick={() => window.open(`/api/bills/${data.billId}/download_act?stamp=0`, '_blank')}
+                onClick={() => documentsPrintApi.viewActByBillId(data.billId, false)}
                 type={'secondary'}
                 after={<Icon size={24} name={'download'} />}
                 classname={cn(styles.button, styles.button_bills)}
