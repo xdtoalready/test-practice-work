@@ -10,18 +10,55 @@ import Icon from '../../../../../../shared/Icon';
 import cn from 'classnames';
 import EditModal from '../../../../../Documents/components/BillsTable/components/EditModal';
 import { observer } from 'mobx-react';
+import StatusDropdown from '../../../../../../components/StatusDropdown';
+import { colorActStatusTypes } from '../../../../../Acts/acts.types';
+import useBillsApi from '../../../../../Documents/api/bills.api';
 
 const Bills = observer(({ bills, service, company, stage }) => {
   const [billModalOpen, setBillModalOpen] = useState(false);
   const [billData, setBillData] = useState(null);
+  const { updateBill } = useBillsApi();
+
+  // Обработчик изменения статуса акта
+  const handleActStatusChange = (billId, newStatus) => {
+    const currentBill = bills.find(b => b.id === billId);
+    if (!currentBill) return;
+
+    const actSigned = newStatus.key === 'stamped';
+    const signedDate = actSigned ? new Date().toISOString().split('T')[0] : null;
+
+    // Обновляем счет с новыми данными акта
+    const updatedBill = {
+      ...currentBill,
+      actSigned,
+      signedDate: actSigned ? new Date(signedDate) : null,
+    };
+
+    // Отправляем обновление на сервер
+    updateBill(billId, {
+      act_signed: actSigned,
+      signed_date: signedDate,
+    }, true);
+  };
+
   const cols = React.useMemo(
     () => [
       {
-        Header: '№ счета',
+        Header: '№ счета / акта',
         id: 'title',
         width: '17%',
         Cell: ({ row }) => {
           const data = row?.original;
+          const isAct = data.isAct;
+
+          if (isAct) {
+            return (
+              <div style={{ paddingLeft: '24px', fontSize: '13px', color: '#6B7280' }}>
+                Акт №{data.number}
+              </div>
+            );
+          }
+
           return (
             <TextLink
               onClick={() => {
@@ -37,11 +74,26 @@ const Bills = observer(({ bills, service, company, stage }) => {
       {
         Header: '',
         width: '30%',
-        id: 'billWithSign',
+        id: 'documentWithSign',
         Cell: ({ row }) => {
+          const data = row?.original;
+          const isAct = data.isAct;
+
+          if (isAct) {
+            return (
+              <Button
+                onClick={() => window.open(`/api/bills/${data.billId}/print_act?stamp=1`, '_blank')}
+                type={'secondary'}
+                after={<Icon size={24} name={'download'} />}
+                classname={cn(styles.button, styles.button_bills)}
+                name={'Акт с печатью'}
+              />
+            );
+          }
+
           return (
             <Button
-              onClick={() => window.open(`/documents/bills/${row?.original.id}?stamp=1`, '_blank')}
+              onClick={() => window.open(`/documents/bills/${data.id}?stamp=1`, '_blank')}
               type={'secondary'}
               after={<Icon size={24} name={'download'} />}
               classname={cn(styles.button, styles.button_bills)}
@@ -53,11 +105,26 @@ const Bills = observer(({ bills, service, company, stage }) => {
       {
         Header: '',
         width: '30%',
-        id: 'billWithoutSign',
+        id: 'documentWithoutSign',
         Cell: ({ row }) => {
+          const data = row?.original;
+          const isAct = data.isAct;
+
+          if (isAct) {
+            return (
+              <Button
+                onClick={() => window.open(`/api/bills/${data.billId}/download_act?stamp=0`, '_blank')}
+                type={'secondary'}
+                after={<Icon size={24} name={'download'} />}
+                classname={cn(styles.button, styles.button_bills)}
+                name={'Акт без печати'}
+              />
+            );
+          }
+
           return (
             <Button
-              onClick={() => window.open(`/documents/bills/${row?.original.id}?stamp=0`, '_blank')}
+              onClick={() => window.open(`/documents/bills/${data.id}?stamp=0`, '_blank')}
               type={'secondary'}
               after={<Icon size={24} name={'download'} />}
               classname={cn(styles.button, styles.button_bills)}
@@ -72,7 +139,7 @@ const Bills = observer(({ bills, service, company, stage }) => {
         id: 'sum',
         Cell: ({ row }) => {
           const data = row?.original;
-          return <p>{data.sum.toFixed(2)}</p>;
+          return <p style={{ fontSize: data.isAct ? '13px' : '14px' }}>{data.sum.toFixed(2)}</p>;
         },
       },
       {
@@ -81,6 +148,21 @@ const Bills = observer(({ bills, service, company, stage }) => {
         id: 'status',
         Cell: ({ row }) => {
           const data = row?.original;
+          const isAct = data.isAct;
+
+          if (isAct) {
+            const currentStatus = data.actSigned ? 'stamped' : 'unstamped';
+            const statusValue = colorActStatusTypes[currentStatus];
+
+            return (
+              <StatusDropdown
+                statuses={colorActStatusTypes}
+                value={statusValue}
+                onChange={(newStatus) => handleActStatusChange(data.billId, newStatus)}
+              />
+            );
+          }
+
           return (
             <ServiceBadge
               status={data.status}
@@ -90,18 +172,52 @@ const Bills = observer(({ bills, service, company, stage }) => {
         },
       },
       {
-        Header: 'Дата оплаты',
+        Header: 'Дата',
         id: 'date',
         width: '30%',
         Cell: ({ row }) => {
           const data = row?.original;
+          const isAct = data.isAct;
+
+          if (isAct) {
+            return (
+              <p style={{ fontSize: '13px' }}>
+                {data.signedDate ? formatDateWithoutHours(data.signedDate) : '—'}
+              </p>
+            );
+          }
+
           return <p>{formatDateWithoutHours(data.paymentDate)}</p>;
         },
       },
     ],
-    [],
+    [bills],
   );
-  const data = useMemo(() => bills ?? [], bills);
+
+  // Преобразуем данные: для каждого оплаченного счета с актом добавляем вложенную строку
+  const data = useMemo(() => {
+    if (!bills) return [];
+
+    const result = [];
+    bills.forEach((bill) => {
+      // Добавляем основной счет
+      result.push(bill);
+
+      // Если счет оплачен и есть акт, добавляем вложенную строку
+      if (bill.status === 'paid' && bill.act) {
+        result.push({
+          isAct: true,
+          billId: bill.id,
+          number: bill.number,
+          sum: bill.sum,
+          actSigned: bill.actSigned,
+          signedDate: bill.signedDate,
+        });
+      }
+    });
+
+    return result;
+  }, [bills]);
 
   return (
     <div className={styles.table_container}>
@@ -123,6 +239,9 @@ const Bills = observer(({ bills, service, company, stage }) => {
         title={'Счета'}
         data={data}
         columns={cols}
+        getRowProps={(row) => ({
+          className: row.original.isAct ? styles.act_row : '',
+        })}
       />
       {billModalOpen && (
         <EditModal
