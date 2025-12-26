@@ -4,7 +4,6 @@ import { loadAvatar } from '../../utils/create.utils';
 import { statusActTypes, statusTypes } from './services.types';
 import { formatDateToBackend } from '../../utils/formate.date';
 import { mapPasswords } from '../Clients/clients.mapper';
-import { actStatusTypes } from '../Acts/acts.types';
 
 // Маппинг данных сервиса с бэкенда
 export const mapServiceFromApi = (
@@ -115,7 +114,6 @@ const mapStages = (stages) => {
       },
       taskCount: stage?.task_count,
       bills: stage?.bills ? mapBill(stage?.bills ?? []) : null,
-      acts: stage?.acts ? mapAct(stage?.acts ?? []) : null,
       payedDate: new Date(2024, 12, 12),
       startDate: new Date(stage.start),
       endDate: stage.deadline ? new Date(stage.deadline) : null,
@@ -149,22 +147,6 @@ const mapStages = (stages) => {
   };
 };
 
-const mapAct = (acts) => {
-  return acts.map((act) => ({
-    id: act?.id,
-    number: act?.number,
-    sum: act?.sum,
-    items: act?.items.map((item) => ({
-      id: item.id,
-      name: item.name,
-      price: item.price,
-      quantity: item.quantity,
-      measurementUnit: item.measurement_unit,
-    })),
-    status: act?.signed ? actStatusTypes.stamped : actStatusTypes.unstamped,
-  }));
-};
-
 const mapBill = (bills) => {
   return bills.map((bill) => ({
     id: bill?.id,
@@ -190,6 +172,10 @@ const mapBill = (bills) => {
     })),
     sum: bill?.sum,
     status: bill?.status,
+    // Новые поля для акта
+    act: bill?.act ?? false,
+    actSigned: bill?.act_signed ?? false,
+    signedDate: bill?.signed_date ? new Date(bill?.signed_date) : null,
   }));
 };
 

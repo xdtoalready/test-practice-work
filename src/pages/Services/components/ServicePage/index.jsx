@@ -28,7 +28,6 @@ import ServiceInfoCard from './components/ServiceInfoCard';
 import EditStage from '../../../../components/EditStage';
 import { LoadingProvider } from '../../../../providers/LoadingProvider';
 import { usePermissions } from '../../../../providers/PermissionProvider';
-import Acts from './components/Acts';
 
 const withDocuments = false;
 
@@ -119,17 +118,6 @@ const ServicePage = observer(() => {
                       service={{ id: service?.id, name: service?.title }}
                       stage={{ id: el.id, name: el.title }}
                       bills={el.bills ?? []}
-                    />
-                  }
-                  {
-                    <Acts
-                      company={{
-                        ...service?.client,
-                        name: service?.client?.title,
-                      }}
-                      service={{ id: service?.id, name: service?.title }}
-                      stage={{ id: el.id, name: el.title }}
-                      acts={el.acts ?? []}
                     />
                   }
                 </Card>

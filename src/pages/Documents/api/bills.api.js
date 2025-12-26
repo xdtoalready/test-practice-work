@@ -123,6 +123,8 @@ const useBillsApi = () => {
       'stage_id',
       'status',
       'bill_items',
+      'act_signed',
+      'signed_date',
     ];
 
     let dataToUpdate = mapBillDataToBackend(
