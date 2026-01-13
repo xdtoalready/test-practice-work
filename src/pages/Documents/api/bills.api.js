@@ -127,13 +127,23 @@ const useBillsApi = () => {
       'signed_date',
     ];
 
-    // Если updateData передан напрямую (для act_signed), используем его
+    // Проверяем, является ли это обновлением только act_signed
+    // (для обновления статуса акта из Services)
+    const isActSignedUpdate =
+      updateData &&
+      typeof updateData === 'object' &&
+      !Array.isArray(updateData) &&
+      Object.keys(updateData).length <= 2 && // максимум 2 поля: act_signed и signed_date
+      updateData.hasOwnProperty('act_signed');
+
     let dataToUpdate;
-    if (updateData && typeof updateData === 'object' && !Array.isArray(updateData)) {
-      console.log('📤 Direct update data received:', updateData);
+    if (isActSignedUpdate) {
+      // Прямая передача для act_signed
+      console.log('📤 Act signed update:', updateData);
       dataToUpdate = updateData;
     } else {
-      // Иначе берем из store (старый механизм)
+      // Обычное обновление - берем из store
+      console.log('📤 Regular bill update from store');
       dataToUpdate = mapBillDataToBackend(
         billsStore.drafts[billId],
         billsStore.changedProps,
