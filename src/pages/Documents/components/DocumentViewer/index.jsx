@@ -36,6 +36,9 @@ const DocumentViewer = () => {
           case 'acts':
             blob = await documentsPrintApi.getActPdfBlob(id, stamp);
             break;
+          case 'bill-acts':
+            blob = await documentsPrintApi.getBillActPdfBlob(id, stamp);
+            break;
           case 'reports':
             blob = await documentsPrintApi.getReportPdfBlob(id);
             break;

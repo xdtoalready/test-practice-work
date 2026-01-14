@@ -13,13 +13,11 @@ import StatusDropdown from '../../../../../../components/StatusDropdown';
 import { colorActStatusTypes } from '../../../../../Acts/acts.types';
 import { colorBillStatusTypes } from '../../../../../Documents/types/bills.types';
 import useBillsApi from '../../../../../Documents/api/bills.api';
-import useDocumentsPrintApi from '../../../../../Documents/api/documents-print.api';
 
 const Bills = observer(({ bills, service, company, stage }) => {
   const [billModalOpen, setBillModalOpen] = useState(false);
   const [billData, setBillData] = useState(null);
   const { updateBill } = useBillsApi();
-  const documentsPrintApi = useDocumentsPrintApi();
 
   const handleActStatusChange = (billId, newStatus) => {
     const actSigned = newStatus.key === 'stamped' ? 1 : 0;
@@ -71,7 +69,7 @@ const Bills = observer(({ bills, service, company, stage }) => {
           if (isAct) {
             return (
               <Button
-                onClick={() => documentsPrintApi.viewActByBillId(data.billId, true)}
+                onClick={() => window.open(`/documents/bill-acts/${data.billId}?stamp=1`, '_blank')}
                 type={'secondary'}
                 after={<Icon size={24} name={'download'} />}
                 classname={cn(styles.button, styles.button_bills)}
@@ -102,7 +100,7 @@ const Bills = observer(({ bills, service, company, stage }) => {
           if (isAct) {
             return (
               <Button
-                onClick={() => documentsPrintApi.viewActByBillId(data.billId, false)}
+                onClick={() => window.open(`/documents/bill-acts/${data.billId}?stamp=0`, '_blank')}
                 type={'secondary'}
                 after={<Icon size={24} name={'download'} />}
                 classname={cn(styles.button, styles.button_bills)}
