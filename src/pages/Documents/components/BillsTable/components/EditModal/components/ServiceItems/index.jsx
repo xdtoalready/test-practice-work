@@ -134,7 +134,7 @@ const ServiceItems = ({ items = [], onChange }) => {
                 />
 
                 <TextInput
-                  label="Цена без НДС"
+                  label="Цена с учетом НДС"
                   placeholder="Цена услуги"
                   name={'price'}
                   value={item.price}

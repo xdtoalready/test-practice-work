@@ -1,5 +1,3 @@
-// billsApi.js
-
 import useStore from '../../../hooks/useStore';
 import {
   getPageTypeFromUrl,
@@ -57,7 +55,7 @@ const useBillsApi = () => {
       .get('api/documents', {
         params: {
           ...paramsData,
-          ...sanitizeFiltersData, // Добавляем параметры фильтрации
+          ...sanitizeFiltersData,
         },
       })
       .then(handleHttpResponse)
@@ -127,8 +125,6 @@ const useBillsApi = () => {
       'signed_date',
     ];
 
-    // Проверяем, является ли это обновлением только act_signed
-    // (для обновления статуса акта из Services)
     const isActSignedUpdate =
       updateData &&
       typeof updateData === 'object' &&
@@ -138,12 +134,8 @@ const useBillsApi = () => {
 
     let dataToUpdate;
     if (isActSignedUpdate) {
-      // Прямая передача для act_signed
-      console.log('📤 Act signed update:', updateData);
       dataToUpdate = updateData;
     } else {
-      // Обычное обновление - берем из store
-      console.log('📤 Regular bill update from store');
       dataToUpdate = mapBillDataToBackend(
         billsStore.drafts[billId],
         billsStore.changedProps,
@@ -170,18 +162,9 @@ const useBillsApi = () => {
 
     const sanitizedData = sanitizeObjectForBackend(dataToUpdate, allowedFields);
 
-    console.log('🔄 API Request Details:');
-    console.log('  Endpoint:', `/api/bills/${billId}`);
-    console.log('  Method:', 'PATCH');
-    console.log('  Bill ID:', billId);
-    console.log('  Data before sanitize:', dataToUpdate);
-    console.log('  Data after sanitize:', sanitizedData);
-    console.log('  Full URL:', `${window.location.origin}/api/bills/${billId}`);
-
     return http
       .patch(`/api/bills/${billId}`, sanitizedData)
       .then((response) => {
-        console.log('✅ API Response:', response);
         return handleHttpResponse(response);
       })
       .then(() => {
@@ -189,7 +172,6 @@ const useBillsApi = () => {
         return serviceApi.getServiceById(id, true);
       })
       .catch((error) => {
-        console.error('❌ API Error:', error);
         throw error;
       })
       .catch(handleHttpError)
