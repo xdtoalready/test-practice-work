@@ -125,15 +125,15 @@ const useBillsApi = () => {
       'signed_date',
     ];
 
-    const isActSignedUpdate =
+    const isDirectUpdate =
       updateData &&
       typeof updateData === 'object' &&
       !Array.isArray(updateData) &&
-      Object.keys(updateData).length <= 2 && // максимум 2 поля: act_signed и signed_date
-      updateData.hasOwnProperty('act_signed');
+      Object.keys(updateData).length <= 2 &&
+      (updateData.hasOwnProperty('act_signed') || updateData.hasOwnProperty('status'));
 
     let dataToUpdate;
-    if (isActSignedUpdate) {
+    if (isDirectUpdate) {
       dataToUpdate = updateData;
     } else {
       dataToUpdate = mapBillDataToBackend(
