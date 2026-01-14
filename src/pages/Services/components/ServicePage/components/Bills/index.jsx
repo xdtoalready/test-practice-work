@@ -144,7 +144,7 @@ const Bills = observer(({ bills, service, company, stage }) => {
             const statusValue = colorActStatusTypes[currentStatus];
 
             return (
-              <div style={{ position: 'relative', zIndex: 100 }}>
+              <div style={{ position: 'relative' }}>
                 <StatusDropdown
                   statuses={colorActStatusTypes}
                   value={statusValue}
@@ -156,7 +156,7 @@ const Bills = observer(({ bills, service, company, stage }) => {
 
           const billStatusValue = colorBillStatusTypes[data.status];
           return (
-            <div style={{ position: 'relative', zIndex: 100 }}>
+            <div style={{ position: 'relative' }}>
               <StatusDropdown
                 statuses={colorBillStatusTypes}
                 value={billStatusValue}
@@ -189,16 +189,12 @@ const Bills = observer(({ bills, service, company, stage }) => {
     [bills],
   );
 
-  // Преобразуем данные: для каждого оплаченного счета с актом добавляем вложенную строку
   const data = useMemo(() => {
     if (!bills) return [];
 
     const result = [];
     bills.forEach((bill) => {
-      // Добавляем основной счет
       result.push(bill);
-
-      // Если счет оплачен и есть акт, добавляем вложенную строку
       if (bill.status === 'paid' && bill.act) {
         result.push({
           isAct: true,
