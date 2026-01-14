@@ -144,7 +144,7 @@ const Bills = observer(({ bills, service, company, stage }) => {
             const statusValue = colorActStatusTypes[currentStatus];
 
             return (
-              <div style={{ position: 'relative', zIndex: 1 }}>
+              <div style={{ position: 'relative', zIndex: 100 }}>
                 <StatusDropdown
                   statuses={colorActStatusTypes}
                   value={statusValue}
@@ -156,7 +156,7 @@ const Bills = observer(({ bills, service, company, stage }) => {
 
           const billStatusValue = colorBillStatusTypes[data.status];
           return (
-            <div style={{ position: 'relative', zIndex: 1 }}>
+            <div style={{ position: 'relative', zIndex: 100 }}>
               <StatusDropdown
                 statuses={colorBillStatusTypes}
                 value={billStatusValue}
