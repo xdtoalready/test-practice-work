@@ -2,7 +2,6 @@ import styles from './Bills.module.sass';
 import { formatDateWithoutHours } from '../../../../../../utils/formate.date';
 import React, { useMemo, useState } from 'react';
 import TextLink from '../../../../../../shared/Table/TextLink';
-import ServiceBadge, { serviceStatuses } from '../Statuses';
 import Table from '../../../../../../shared/Table';
 import AdaptiveCard from '../../../../../Clients/components/ClientPage/Deals/AdaptiveCard';
 import Button from '../../../../../../shared/Button';
@@ -12,6 +11,7 @@ import EditModal from '../../../../../Documents/components/BillsTable/components
 import { observer } from 'mobx-react';
 import StatusDropdown from '../../../../../../components/StatusDropdown';
 import { colorActStatusTypes } from '../../../../../Acts/acts.types';
+import { colorBillStatusTypes } from '../../../../../Documents/types/bills.types';
 import useBillsApi from '../../../../../Documents/api/bills.api';
 import useDocumentsPrintApi from '../../../../../Documents/api/documents-print.api';
 
@@ -21,24 +21,13 @@ const Bills = observer(({ bills, service, company, stage }) => {
   const { updateBill } = useBillsApi();
   const documentsPrintApi = useDocumentsPrintApi();
 
-  // Обработчик изменения статуса акта
   const handleActStatusChange = (billId, newStatus) => {
     const actSigned = newStatus.key === 'stamped' ? 1 : 0;
+    updateBill(billId, { act_signed: actSigned }, true);
+  };
 
-    console.log('=== ACT STATUS CHANGE ===');
-    console.log('Bill ID:', billId);
-    console.log('New Status Key:', newStatus.key);
-    console.log('Act Signed Value (1/0):', actSigned);
-    console.log('Sending to API:', { act_signed: actSigned });
-
-    // Отправляем обновление на сервер с 1/0 вместо true/false
-    updateBill(billId, {
-      act_signed: actSigned,
-    }, true).then(() => {
-      console.log('✅ Update successful');
-    }).catch((error) => {
-      console.error('❌ Update failed:', error);
-    });
+  const handleBillStatusChange = (billId, newStatus) => {
+    updateBill(billId, { status: newStatus.key }, true);
   };
 
   const cols = React.useMemo(
@@ -165,11 +154,15 @@ const Bills = observer(({ bills, service, company, stage }) => {
             );
           }
 
+          const billStatusValue = colorBillStatusTypes[data.status];
           return (
-            <ServiceBadge
-              status={data.status}
-              statusType={serviceStatuses.bill}
-            />
+            <div style={{ position: 'relative', zIndex: 1 }}>
+              <StatusDropdown
+                statuses={colorBillStatusTypes}
+                value={billStatusValue}
+                onChange={(newStatus) => handleBillStatusChange(data.id, newStatus)}
+              />
+            </div>
           );
         },
       },
