@@ -29,10 +29,18 @@ const SeoAnalyzerModal = ({ isOpen, onClose }) => {
       const response = await fetch(
         `https://serp.lead-bro.ru/api/v1/regions/search?q=${encodeURIComponent(query)}&limit=10`
       );
+
+      if (!response.ok) {
+        console.error('Ошибка поиска регионов: HTTP', response.status);
+        return;
+      }
+
       const data = await response.json();
-      setRegionSuggestions(data);
+      setRegionSuggestions(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Ошибка поиска регионов:', error);
+      // Не показываем ошибку пользователю, просто логируем
+      setRegionSuggestions([]);
     }
   };
 
@@ -189,11 +197,11 @@ const SeoAnalyzerModal = ({ isOpen, onClose }) => {
                         className={styles.suggestion}
                         onClick={() => {
                           setRegionId(region.id);
-                          setRegionQuery(region.name);
+                          setRegionQuery(region.title);
                           setRegionSuggestions([]);
                         }}
                       >
-                        {region.name} ({region.type})
+                        {region.title}
                       </div>
                     ))}
                   </div>
@@ -201,13 +209,13 @@ const SeoAnalyzerModal = ({ isOpen, onClose }) => {
               </div>
 
               <div className={styles.field}>
-                <label className={styles.label}>URL конкурента (опционально)</label>
+                <label className={styles.label}>URL своей страницы (опционально)</label>
                 <input
                   type="text"
                   className={styles.input}
                   value={targetUrl}
                   onChange={(e) => setTargetUrl(e.target.value)}
-                  placeholder="https://example.com"
+                  placeholder="https://your-site.com"
                   disabled={isProcessing}
                 />
               </div>
