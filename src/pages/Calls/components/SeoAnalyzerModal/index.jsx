@@ -7,6 +7,7 @@ import { handleShowError, handleSubmit } from '../../../../utils/snackbar';
 const SeoAnalyzerModal = ({ isOpen, onClose }) => {
   const modalRef = useRef(null);
   const [keyword, setKeyword] = useState('');
+  const [taskName, setTaskName] = useState('');
   const [regionId, setRegionId] = useState(213); // Москва по умолчанию
   const [regionQuery, setRegionQuery] = useState('');
   const [regionSuggestions, setRegionSuggestions] = useState([]);
@@ -18,6 +19,59 @@ const SeoAnalyzerModal = ({ isOpen, onClose }) => {
   const [taskId, setTaskId] = useState(null);
   const [results, setResults] = useState(null);
   const pollingIntervalRef = useRef(null);
+
+  // Состояние для правой панели
+  const [rightPanelView, setRightPanelView] = useState('list'); // 'list' | 'detail'
+  const [tasksList, setTasksList] = useState([]);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [tasksPage, setTasksPage] = useState(1);
+  const [tasksTotal, setTasksTotal] = useState(0);
+  const [isLoadingTasks, setIsLoadingTasks] = useState(false);
+
+  // Загрузка списка отчётов
+  const loadTasksList = async (page = 1) => {
+    setIsLoadingTasks(true);
+    try {
+      const response = await fetch(
+        `https://serp.lead-bro.ru/api/v1/tasks?page=${page}&per_page=10&status=completed`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setTasksList(data.items || []);
+        setTasksTotal(data.total || 0);
+        setTasksPage(page);
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки списка отчётов:', error);
+    } finally {
+      setIsLoadingTasks(false);
+    }
+  };
+
+  // Загрузка деталей отчёта
+  const loadTaskDetail = async (taskId) => {
+    setIsLoadingTasks(true);
+    try {
+      const response = await fetch(`https://serp.lead-bro.ru/api/v1/tasks/${taskId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setSelectedTask(data);
+        setRightPanelView('detail');
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки деталей отчёта:', error);
+      handleShowError('Ошибка загрузки отчёта');
+    } finally {
+      setIsLoadingTasks(false);
+    }
+  };
+
+  // Загружаем список при открытии модального окна
+  useEffect(() => {
+    if (isOpen) {
+      loadTasksList(1);
+    }
+  }, [isOpen]);
 
   // Поиск регионов
   const searchRegions = async (query) => {
@@ -72,6 +126,7 @@ const SeoAnalyzerModal = ({ isOpen, onClose }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           task_id: newTaskId,
+          task_name: taskName.trim() || undefined,
           keyword: keyword.trim(),
           region_id: regionId,
           target_url: targetUrl.trim() || undefined,
@@ -112,6 +167,8 @@ const SeoAnalyzerModal = ({ isOpen, onClose }) => {
           setIsProcessing(false);
           clearInterval(pollingIntervalRef.current);
           handleSubmit('Анализ завершен!');
+          // Обновляем список отчётов после завершения анализа
+          loadTasksList(tasksPage);
         } else if (data.status === 'failed') {
           setIsProcessing(false);
           clearInterval(pollingIntervalRef.current);
@@ -164,20 +221,35 @@ const SeoAnalyzerModal = ({ isOpen, onClose }) => {
           </button>
         </div>
 
-        <div className={styles.content}>
-          {!isProcessing && !results && (
-            <>
-              <div className={styles.field}>
-                <label className={styles.label}>Ключевое слово *</label>
-                <input
-                  type="text"
-                  className={styles.input}
-                  value={keyword}
-                  onChange={(e) => setKeyword(e.target.value)}
-                  placeholder="купить автомобиль"
-                  disabled={isProcessing}
-                />
-              </div>
+        <div className={styles.mainContainer}>
+          {/* Левая панель - форма создания отчёта */}
+          <div className={styles.leftPanel}>
+            <div className={styles.content}>
+              {!isProcessing && !results && (
+                <>
+                  <div className={styles.field}>
+                    <label className={styles.label}>Название отчёта</label>
+                    <input
+                      type="text"
+                      className={styles.input}
+                      value={taskName}
+                      onChange={(e) => setTaskName(e.target.value)}
+                      placeholder="Анализ займов в Москве"
+                      disabled={isProcessing}
+                    />
+                  </div>
+
+                  <div className={styles.field}>
+                    <label className={styles.label}>Ключевое слово *</label>
+                    <input
+                      type="text"
+                      className={styles.input}
+                      value={keyword}
+                      onChange={(e) => setKeyword(e.target.value)}
+                      placeholder="купить автомобиль"
+                      disabled={isProcessing}
+                    />
+                  </div>
 
               <div className={styles.field}>
                 <label className={styles.label}>Регион</label>
@@ -189,9 +261,9 @@ const SeoAnalyzerModal = ({ isOpen, onClose }) => {
                   placeholder="Москва"
                   disabled={isProcessing}
                 />
-                {regionSuggestions.length > 0 && (
+                {regionSuggestions.filter(r => r.id !== regionId).length > 0 && (
                   <div className={styles.suggestions}>
-                    {regionSuggestions.map((region) => (
+                    {regionSuggestions.filter(r => r.id !== regionId).map((region) => (
                       <div
                         key={region.id}
                         className={styles.suggestion}
@@ -307,13 +379,213 @@ const SeoAnalyzerModal = ({ isOpen, onClose }) => {
                   setResults(null);
                   setProgress(0);
                   setTaskId(null);
+                  setKeyword('');
+                  setTaskName('');
+                  setTargetUrl('');
                 }}
               >
                 Новый анализ
               </button>
             </div>
           )}
+            </div>
+          </div>
+
+          {/* Правая панель - история отчётов */}
+          <div className={styles.rightPanel}>
+            {rightPanelView === 'list' ? (
+              <TaskListPanel
+                tasks={tasksList}
+                isLoading={isLoadingTasks}
+                onTaskClick={loadTaskDetail}
+                page={tasksPage}
+                total={tasksTotal}
+                onPageChange={loadTasksList}
+              />
+            ) : (
+              <TaskDetailPanel
+                task={selectedTask}
+                isLoading={isLoadingTasks}
+                onBack={() => setRightPanelView('list')}
+                onDownload={downloadReport}
+              />
+            )}
+          </div>
         </div>
+      </div>
+    </div>
+  );
+};
+
+// Компонент списка отчётов
+const TaskListPanel = ({ tasks, isLoading, onTaskClick, page, total, onPageChange }) => {
+  const perPage = 10;
+  const totalPages = Math.ceil(total / perPage);
+
+  if (isLoading && tasks.length === 0) {
+    return (
+      <div className={styles.rightContent}>
+        <div className={styles.rightHeader}>
+          <h4 className={styles.rightTitle}>История отчётов</h4>
+        </div>
+        <div className={styles.loadingContainer}>
+          <div className={styles.loadingText}>Загрузка...</div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.rightContent}>
+      <div className={styles.rightHeader}>
+        <h4 className={styles.rightTitle}>История отчётов</h4>
+      </div>
+
+      {tasks.length === 0 ? (
+        <div className={styles.emptyState}>
+          <p className={styles.emptyText}>Нет сохранённых отчётов</p>
+        </div>
+      ) : (
+        <>
+          <div className={styles.tasksList}>
+            {tasks.map((task) => (
+              <div key={task.task_id} className={styles.taskCard} onClick={() => onTaskClick(task.task_id)}>
+                <div className={styles.taskCardHeader}>
+                  <h5 className={styles.taskCardTitle}>
+                    {task.task_name || task.keyword}
+                  </h5>
+                  <span className={styles.taskCardDate}>
+                    {new Date(task.created_at).toLocaleDateString('ru-RU')}
+                  </span>
+                </div>
+                <div className={styles.taskCardInfo}>
+                  <span className={styles.taskCardKeyword}>{task.keyword}</span>
+                  <span className={styles.taskCardRegion}>{task.region_name}</span>
+                </div>
+                {task.total_entities > 0 && (
+                  <div className={styles.taskCardStats}>
+                    {task.total_entities} сущностей из {task.total_sources} сайтов
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {totalPages > 1 && (
+            <div className={styles.pagination}>
+              <button
+                className={styles.paginationButton}
+                onClick={() => onPageChange(page - 1)}
+                disabled={page === 1}
+              >
+                &larr;
+              </button>
+              <span className={styles.paginationInfo}>
+                {page} / {totalPages}
+              </span>
+              <button
+                className={styles.paginationButton}
+                onClick={() => onPageChange(page + 1)}
+                disabled={page === totalPages}
+              >
+                &rarr;
+              </button>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+};
+
+// Компонент деталей отчёта
+const TaskDetailPanel = ({ task, isLoading, onBack, onDownload }) => {
+  if (isLoading || !task) {
+    return (
+      <div className={styles.rightContent}>
+        <div className={styles.loadingContainer}>
+          <div className={styles.loadingText}>Загрузка...</div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.rightContent}>
+      <div className={styles.rightHeader}>
+        <button className={styles.backButton} onClick={onBack}>
+          <Icon name="arrow-left" size={16} />
+          <span>Назад</span>
+        </button>
+      </div>
+
+      <div className={styles.taskDetail}>
+        <h4 className={styles.detailTitle}>{task.task_name || task.keyword}</h4>
+
+        <div className={styles.detailSection}>
+          <div className={styles.detailRow}>
+            <span className={styles.detailLabel}>Ключевое слово:</span>
+            <span className={styles.detailValue}>{task.keyword}</span>
+          </div>
+          <div className={styles.detailRow}>
+            <span className={styles.detailLabel}>Регион:</span>
+            <span className={styles.detailValue}>{task.region_name}</span>
+          </div>
+          <div className={styles.detailRow}>
+            <span className={styles.detailLabel}>Поисковик:</span>
+            <span className={styles.detailValue}>
+              {task.engine === 'yandex' ? 'Яндекс' : 'Google'}
+            </span>
+          </div>
+          <div className={styles.detailRow}>
+            <span className={styles.detailLabel}>Глубина:</span>
+            <span className={styles.detailValue}>{task.depth}</span>
+          </div>
+          <div className={styles.detailRow}>
+            <span className={styles.detailLabel}>Дата создания:</span>
+            <span className={styles.detailValue}>
+              {new Date(task.created_at).toLocaleString('ru-RU')}
+            </span>
+          </div>
+        </div>
+
+        {task.results && (
+          <div className={styles.detailSection}>
+            <h5 className={styles.detailSectionTitle}>Результаты</h5>
+            <div className={styles.detailStats}>
+              <div className={styles.detailStat}>
+                <span className={styles.detailStatLabel}>Всего сущностей:</span>
+                <span className={styles.detailStatValue}>{task.results.total_entities}</span>
+              </div>
+              <div className={styles.detailStat}>
+                <span className={styles.detailStatLabel}>Источников:</span>
+                <span className={styles.detailStatValue}>{task.results.total_sources}</span>
+              </div>
+              <div className={styles.detailStat}>
+                <span className={styles.detailStatLabel}>Универсальные:</span>
+                <span className={styles.detailStatValue}>{task.results.universal_entities}</span>
+              </div>
+              <div className={styles.detailStat}>
+                <span className={styles.detailStatLabel}>Частые:</span>
+                <span className={styles.detailStatValue}>{task.results.common_entities}</span>
+              </div>
+              <div className={styles.detailStat}>
+                <span className={styles.detailStatLabel}>Редкие:</span>
+                <span className={styles.detailStatValue}>{task.results.rare_entities}</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <button
+          className={styles.downloadButton}
+          onClick={() => {
+            const url = `https://serp.lead-bro.ru/api/v1/download/${task.task_id}`;
+            window.open(url, '_blank');
+          }}
+        >
+          Скачать Excel отчет
+        </button>
       </div>
     </div>
   );
