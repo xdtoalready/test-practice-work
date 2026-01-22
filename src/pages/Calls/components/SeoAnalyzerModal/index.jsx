@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styles from './SeoAnalyzerModal.module.sass';
 import Icon from '../../../../shared/Icon';
-import { handleShowError, handleSubmit } from '../../../../utils/snackbar';
+import { handleError, handleSubmit } from '../../../../utils/snackbar';
 
 const SeoAnalyzerModal = ({ isOpen, onClose }) => {
   const modalRef = useRef(null);
@@ -60,7 +60,7 @@ const SeoAnalyzerModal = ({ isOpen, onClose }) => {
       }
     } catch (error) {
       console.error('Ошибка загрузки деталей отчёта:', error);
-      handleShowError('Ошибка загрузки отчёта');
+      handleError('Ошибка загрузки отчёта');
     } finally {
       setIsLoadingTasks(false);
     }
@@ -110,7 +110,7 @@ const SeoAnalyzerModal = ({ isOpen, onClose }) => {
   // Запуск анализа
   const startAnalysis = async () => {
     if (!keyword.trim()) {
-      handleShowError('Введите ключевое слово');
+      handleError('Введите ключевое слово');
       return;
     }
 
@@ -147,7 +147,7 @@ const SeoAnalyzerModal = ({ isOpen, onClose }) => {
         throw new Error(data.detail || 'Ошибка запуска анализа');
       }
     } catch (error) {
-      handleShowError(error.message);
+      handleError(error.message);
       setIsProcessing(false);
     }
   };
@@ -172,7 +172,7 @@ const SeoAnalyzerModal = ({ isOpen, onClose }) => {
         } else if (data.status === 'failed') {
           setIsProcessing(false);
           clearInterval(pollingIntervalRef.current);
-          handleShowError(data.error || 'Анализ завершился с ошибкой');
+          handleError(data.error || 'Анализ завершился с ошибкой');
         }
       } catch (error) {
         console.error('Ошибка проверки статуса:', error);
