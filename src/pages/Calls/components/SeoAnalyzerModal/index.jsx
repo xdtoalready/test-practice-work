@@ -472,7 +472,6 @@ const SeoAnalyzerModal = ({ isOpen, onClose }) => {
           onConfirm={() => handleDeleteTask(taskToDelete)}
           label="Вы уверены, что хотите удалить этот отчёт?"
         />
-        </div>
       </div>
     </div>
   );
