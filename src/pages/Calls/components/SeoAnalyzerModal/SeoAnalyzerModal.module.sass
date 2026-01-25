@@ -327,8 +327,10 @@
   border-radius: 12px
   padding: 16px
   margin-bottom: 12px
-  cursor: pointer
   transition: all 0.2s ease
+  display: flex
+  align-items: flex-start
+  gap: 12px
 
   &:hover
     border-color: $p4
@@ -340,6 +342,10 @@
 
     &:hover
       border-color: $p4
+
+.taskCardContent
+  flex: 1
+  cursor: pointer
 
 .taskCardHeader
   display: flex
@@ -388,6 +394,35 @@
   +dark
     color: $n3
     border-color: $n5
+
+// Кнопка удаления в списке (иконка)
+.deleteIconButton
+  display: flex
+  align-items: center
+  justify-content: center
+  width: 32px
+  height: 32px
+  background: none
+  border: 1px solid $n3
+  border-radius: 8px
+  cursor: pointer
+  transition: all 0.2s ease
+  flex-shrink: 0
+  color: $n5
+
+  &:hover
+    background-color: $p3
+    border-color: $p3
+    color: $n
+
+  +dark
+    border-color: $n5
+    color: $n3
+
+    &:hover
+      background-color: $p3
+      border-color: $p3
+      color: $n
 
 // Детали отчёта
 .taskDetail
@@ -462,6 +497,41 @@
   +body1-m
   font-weight: 600
   color: $p4
+
+// Кнопки действий в деталях
+.detailActions
+  display: flex
+  flex-direction: column
+  gap: 12px
+  margin-top: 24px
+
+.deleteButton
+  display: flex
+  align-items: center
+  justify-content: center
+  gap: 8px
+  width: 100%
+  padding: 12px 24px
+  background-color: transparent
+  border: 1px solid $p3
+  border-radius: 12px
+  cursor: pointer
+  transition: all 0.2s ease
+  +body1-m
+  font-weight: 600
+  color: $p3
+
+  &:hover
+    background-color: $p3
+    color: $n
+
+  +dark
+    border-color: $p3
+    color: $p3
+
+    &:hover
+      background-color: $p3
+      color: $n
 
 // Пагинация
 .pagination

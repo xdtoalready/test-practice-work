@@ -3,9 +3,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import styles from './SeoAnalyzerModal.module.sass';
 import Icon from '../../../../shared/Icon';
 import { handleError, handleSubmit } from '../../../../utils/snackbar';
+import useUser from '../../../../hooks/useUser';
+import ConfirmationModal from '../../../../components/ConfirmationModal';
 
 const SeoAnalyzerModal = ({ isOpen, onClose }) => {
   const modalRef = useRef(null);
+  const { user } = useUser();
   const [keyword, setKeyword] = useState('');
   const [taskName, setTaskName] = useState('');
   const [regionId, setRegionId] = useState(213); // Москва по умолчанию
@@ -28,12 +31,18 @@ const SeoAnalyzerModal = ({ isOpen, onClose }) => {
   const [tasksTotal, setTasksTotal] = useState(0);
   const [isLoadingTasks, setIsLoadingTasks] = useState(false);
 
+  // Состояние для удаления
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState(null);
+
   // Загрузка списка отчётов
   const loadTasksList = async (page = 1) => {
+    if (!user?.user_id) return;
+
     setIsLoadingTasks(true);
     try {
       const response = await fetch(
-        `https://serp.lead-bro.ru/api/v1/tasks?page=${page}&per_page=10&status=completed`
+        `https://serp.lead-bro.ru/api/v1/tasks?page=${page}&per_page=10&status=completed&created_by=${user.user_id}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -68,10 +77,47 @@ const SeoAnalyzerModal = ({ isOpen, onClose }) => {
 
   // Загружаем список при открытии модального окна
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && user?.user_id) {
       loadTasksList(1);
     }
-  }, [isOpen]);
+  }, [isOpen, user?.user_id]);
+
+  // Удаление задачи
+  const handleDeleteTask = async (taskId) => {
+    try {
+      const response = await fetch(`https://serp.lead-bro.ru/api/v1/tasks/${taskId}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        handleSubmit('Отчёт успешно удалён');
+
+        // Если удаляем из деталей - вернуться к списку
+        if (rightPanelView === 'detail') {
+          setRightPanelView('list');
+          setSelectedTask(null);
+        }
+
+        // Обновляем список отчётов
+        loadTasksList(tasksPage);
+      } else {
+        const data = await response.json();
+        throw new Error(data.message || 'Ошибка удаления отчёта');
+      }
+    } catch (error) {
+      console.error('Ошибка удаления отчёта:', error);
+      handleError(error.message || 'Не удалось удалить отчёт');
+    } finally {
+      setIsDeleteModalOpen(false);
+      setTaskToDelete(null);
+    }
+  };
+
+  // Открытие модального окна подтверждения удаления
+  const confirmDelete = (taskId) => {
+    setTaskToDelete(taskId);
+    setIsDeleteModalOpen(true);
+  };
 
   // Поиск регионов
   const searchRegions = async (query) => {
@@ -130,6 +176,7 @@ const SeoAnalyzerModal = ({ isOpen, onClose }) => {
           keyword: keyword.trim(),
           region_id: regionId,
           target_url: targetUrl.trim() || undefined,
+          created_by: user?.user_id,
           settings: {
             depth: depth,
             engine: engine,
@@ -398,6 +445,7 @@ const SeoAnalyzerModal = ({ isOpen, onClose }) => {
                 tasks={tasksList}
                 isLoading={isLoadingTasks}
                 onTaskClick={loadTaskDetail}
+                onDelete={confirmDelete}
                 page={tasksPage}
                 total={tasksTotal}
                 onPageChange={loadTasksList}
@@ -408,9 +456,22 @@ const SeoAnalyzerModal = ({ isOpen, onClose }) => {
                 isLoading={isLoadingTasks}
                 onBack={() => setRightPanelView('list')}
                 onDownload={downloadReport}
+                onDelete={confirmDelete}
               />
             )}
           </div>
+        </div>
+
+        {/* Модальное окно подтверждения удаления */}
+        <ConfirmationModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => {
+            setIsDeleteModalOpen(false);
+            setTaskToDelete(null);
+          }}
+          onConfirm={() => handleDeleteTask(taskToDelete)}
+          label="Вы уверены, что хотите удалить этот отчёт?"
+        />
         </div>
       </div>
     </div>
@@ -418,7 +479,7 @@ const SeoAnalyzerModal = ({ isOpen, onClose }) => {
 };
 
 // Компонент списка отчётов
-const TaskListPanel = ({ tasks, isLoading, onTaskClick, page, total, onPageChange }) => {
+const TaskListPanel = ({ tasks, isLoading, onTaskClick, onDelete, page, total, onPageChange }) => {
   const perPage = 10;
   const totalPages = Math.ceil(total / perPage);
 
@@ -449,24 +510,38 @@ const TaskListPanel = ({ tasks, isLoading, onTaskClick, page, total, onPageChang
         <>
           <div className={styles.tasksList}>
             {tasks.map((task) => (
-              <div key={task.task_id} className={styles.taskCard} onClick={() => onTaskClick(task.task_id)}>
-                <div className={styles.taskCardHeader}>
-                  <h5 className={styles.taskCardTitle}>
-                    {task.task_name || task.keyword}
-                  </h5>
-                  <span className={styles.taskCardDate}>
-                    {new Date(task.created_at).toLocaleDateString('ru-RU')}
-                  </span>
-                </div>
-                <div className={styles.taskCardInfo}>
-                  <span className={styles.taskCardKeyword}>{task.keyword}</span>
-                  <span className={styles.taskCardRegion}>{task.region_name}</span>
-                </div>
-                {task.total_entities > 0 && (
-                  <div className={styles.taskCardStats}>
-                    {task.total_entities} сущностей из {task.total_sources} сайтов
+              <div key={task.task_id} className={styles.taskCard}>
+                <div onClick={() => onTaskClick(task.task_id)} className={styles.taskCardContent}>
+                  <div className={styles.taskCardHeader}>
+                    <div>
+                      <h5 className={styles.taskCardTitle}>
+                        {task.task_name || task.keyword}
+                      </h5>
+                      <span className={styles.taskCardDate}>
+                        {new Date(task.created_at).toLocaleDateString('ru-RU')}
+                      </span>
+                    </div>
                   </div>
-                )}
+                  <div className={styles.taskCardInfo}>
+                    <span className={styles.taskCardKeyword}>{task.keyword}</span>
+                    <span className={styles.taskCardRegion}>{task.region_name}</span>
+                  </div>
+                  {task.total_entities > 0 && (
+                    <div className={styles.taskCardStats}>
+                      {task.total_entities} сущностей из {task.total_sources} сайтов
+                    </div>
+                  )}
+                </div>
+                <button
+                  className={styles.deleteIconButton}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(task.task_id);
+                  }}
+                  title="Удалить отчёт"
+                >
+                  <Icon name="trash" size={16} />
+                </button>
               </div>
             ))}
           </div>
@@ -499,7 +574,7 @@ const TaskListPanel = ({ tasks, isLoading, onTaskClick, page, total, onPageChang
 };
 
 // Компонент деталей отчёта
-const TaskDetailPanel = ({ task, isLoading, onBack, onDownload }) => {
+const TaskDetailPanel = ({ task, isLoading, onBack, onDownload, onDelete }) => {
   if (isLoading || !task) {
     return (
       <div className={styles.rightContent}>
@@ -577,15 +652,25 @@ const TaskDetailPanel = ({ task, isLoading, onBack, onDownload }) => {
           </div>
         )}
 
-        <button
-          className={styles.downloadButton}
-          onClick={() => {
-            const url = `https://serp.lead-bro.ru/api/v1/download/${task.task_id}`;
-            window.open(url, '_blank');
-          }}
-        >
-          Скачать Excel отчет
-        </button>
+        <div className={styles.detailActions}>
+          <button
+            className={styles.downloadButton}
+            onClick={() => {
+              const url = `https://serp.lead-bro.ru/api/v1/download/${task.task_id}`;
+              window.open(url, '_blank');
+            }}
+          >
+            Скачать Excel отчет
+          </button>
+
+          <button
+            className={styles.deleteButton}
+            onClick={() => onDelete(task.task_id)}
+          >
+            <Icon name="trash" size={16} />
+            <span>Удалить отчёт</span>
+          </button>
+        </div>
       </div>
     </div>
   );
