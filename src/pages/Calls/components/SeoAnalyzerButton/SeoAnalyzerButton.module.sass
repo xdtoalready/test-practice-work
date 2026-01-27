@@ -1,0 +1,21 @@
+@import "../../../../styles/helpers"
+
+.seoButtonContainer
+  position: fixed
+  left: 40px
+  bottom: 0px
+  z-index: 10
+
+.seoButton
+  width: 40px
+  height: 40px
+  background-color: $p4
+  display: flex
+  align-items: center
+  justify-content: center
+  cursor: pointer
+  transition: background-color 0.3s ease
+  border: none
+
+  &:hover
+    background-color: darken($p4, 10%)

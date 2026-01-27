@@ -1,0 +1,621 @@
+@import "../../../../styles/helpers"
+
+.modalOverlay
+  position: fixed
+  bottom: 80px
+  left: 80px
+  display: flex
+  align-items: flex-start
+  justify-content: flex-start
+  z-index: 10
+  animation: fadeIn 0.3s ease-out
+
+.modal
+  background-color: $n1
+  width: 900px
+  max-width: 90vw
+  max-height: 80vh
+  display: flex
+  flex-direction: column
+  border-radius: 16px
+  overflow: hidden
+  box-shadow: 2px 8px 32px rgba(0, 0, 0, 0.15)
+  animation: slideIn 0.3s ease-out
+  +dark
+    background-color: $n7
+
+.header
+  display: flex
+  justify-content: space-between
+  align-items: center
+  padding: 16px 20px
+  border-bottom: 1px solid $n3
+  +dark
+    border-color: $n6
+
+.title
+  +title2
+  color: $n7
+  margin: 0
+  +dark
+    color: $n1
+
+.closeButton
+  width: 32px
+  height: 32px
+  border-radius: 50%
+  display: flex
+  align-items: center
+  justify-content: center
+  background: none
+  border: none
+  cursor: pointer
+  color: $n4
+  transition: all 0.2s ease
+
+  &:hover
+    background-color: $n2
+    color: $n7
+    +dark
+      background-color: $n6
+      color: $n1
+
+.content
+  flex: 1
+  overflow-y: auto
+  padding: 20px
+
+.field
+  margin-bottom: 16px
+  position: relative
+
+.label
+  display: block
+  +caption1
+  color: $n5
+  margin-bottom: 8px
+  +dark
+    color: $n3
+
+.input
+  width: 100%
+  padding: 10px 12px
+  border: 1px solid $n3
+  border-radius: 8px
+  +body1-m
+  color: $n7
+  background-color: $n
+  transition: border-color 0.2s ease
+
+  &:focus
+    outline: none
+    border-color: $p4
+
+  &:disabled
+    background-color: $n2
+    color: $n4
+    cursor: not-allowed
+
+  +dark
+    background-color: $n6
+    border-color: $n6
+    color: $n1
+
+    &:focus
+      border-color: $p4
+
+.row
+  display: flex
+  gap: 12px
+
+  .field
+    flex: 1
+
+.suggestions
+  position: absolute
+  top: 100%
+  left: 0
+  right: 0
+  background-color: $n
+  border: 1px solid $n3
+  border-radius: 8px
+  margin-top: 4px
+  max-height: 200px
+  overflow-y: auto
+  z-index: 100
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)
+  +dark
+    background-color: $n6
+    border-color: $n5
+
+.suggestion
+  padding: 10px 12px
+  cursor: pointer
+  +body1-m
+  color: $n7
+  transition: background-color 0.2s ease
+
+  &:hover
+    background-color: $n2
+    +dark
+      background-color: $n5
+
+  +dark
+    color: $n1
+
+.startButton
+  width: 100%
+  padding: 12px
+  background-color: $p4
+  color: $n
+  border: none
+  border-radius: 8px
+  +body1-m
+  cursor: pointer
+  transition: background-color 0.3s ease
+  margin-top: 8px
+
+  &:hover
+    background-color: darken($p4, 10%)
+
+  &:disabled
+    background-color: $n3
+    cursor: not-allowed
+
+.progressContainer
+  text-align: center
+  padding: 20px 0
+
+.progressLabel
+  +body1-m
+  color: $n5
+  margin-bottom: 16px
+  +dark
+    color: $n3
+
+.progressBar
+  width: 100%
+  height: 8px
+  background-color: $n2
+  border-radius: 4px
+  overflow: hidden
+  margin-bottom: 12px
+  +dark
+    background-color: $n6
+
+.progressFill
+  height: 100%
+  background-color: $p4
+  transition: width 0.3s ease
+  border-radius: 4px
+
+.progressPercent
+  +title2
+  color: $p4
+
+.results
+  padding: 10px 0
+
+.resultsTitle
+  +title2
+  color: $n7
+  margin-bottom: 16px
+  +dark
+    color: $n1
+
+.stat
+  display: flex
+  justify-content: space-between
+  align-items: center
+  padding: 12px 0
+  border-bottom: 1px solid $n2
+  +dark
+    border-color: $n6
+
+  &:last-of-type
+    border-bottom: none
+
+.statLabel
+  +body1-m
+  color: $n5
+  +dark
+    color: $n3
+
+.statValue
+  +body1-m
+  font-weight: 600
+  color: $n7
+  +dark
+    color: $n1
+
+.downloadButton
+  width: 100%
+  padding: 12px
+  background-color: $p2
+  color: $n
+  border: none
+  border-radius: 8px
+  +body1-m
+  cursor: pointer
+  transition: background-color 0.3s ease
+  margin-top: 20px
+
+  &:hover
+    background-color: darken($p2, 10%)
+
+.newAnalysisButton
+  width: 100%
+  padding: 12px
+  background-color: transparent
+  color: $p4
+  border: 1px solid $p4
+  border-radius: 8px
+  +body1-m
+  cursor: pointer
+  transition: all 0.3s ease
+  margin-top: 12px
+
+  &:hover
+    background-color: rgba($p4, 0.1)
+
+// Контейнер с двумя панелями
+.mainContainer
+  display: flex
+  flex: 1
+  overflow: hidden
+
+// Левая панель - форма создания
+.leftPanel
+  width: 450px
+  border-right: 1px solid $n3
+  display: flex
+  flex-direction: column
+  +dark
+    border-color: $n6
+
+// Правая панель - история
+.rightPanel
+  flex: 1
+  display: flex
+  flex-direction: column
+  overflow: hidden
+
+.rightContent
+  flex: 1
+  display: flex
+  flex-direction: column
+  overflow: hidden
+
+.rightHeader
+  padding: 16px 20px
+  border-bottom: 1px solid $n3
+  +dark
+    border-color: $n6
+
+.rightTitle
+  +title2
+  color: $n7
+  margin: 0
+  +dark
+    color: $n1
+
+// Кнопка "Назад"
+.backButton
+  display: flex
+  align-items: center
+  gap: 8px
+  background: none
+  border: none
+  cursor: pointer
+  color: $p4
+  +body1-m
+  padding: 0
+  transition: opacity 0.2s ease
+
+  &:hover
+    opacity: 0.7
+
+// Список отчётов
+.tasksList
+  flex: 1
+  overflow-y: auto
+  padding: 16px
+
+.taskCard
+  background-color: $n
+  border: 1px solid $n3
+  border-radius: 12px
+  padding: 16px
+  margin-bottom: 12px
+  transition: all 0.2s ease
+  display: flex
+  align-items: flex-start
+  gap: 12px
+
+  &:hover
+    border-color: $p4
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1)
+
+  +dark
+    background-color: $n6
+    border-color: $n5
+
+    &:hover
+      border-color: $p4
+
+.taskCardContent
+  flex: 1
+  cursor: pointer
+
+.taskCardHeader
+  display: flex
+  justify-content: space-between
+  align-items: flex-start
+  margin-bottom: 8px
+
+.taskCardTitle
+  +body1-m
+  font-weight: 600
+  color: $n7
+  margin: 0
+  flex: 1
+  +dark
+    color: $n1
+
+.taskCardDate
+  +caption1
+  color: $n5
+  +dark
+    color: $n3
+
+.taskCardInfo
+  display: flex
+  flex-direction: column
+  gap: 4px
+  margin-bottom: 8px
+
+.taskCardKeyword
+  +body2-s
+  color: $n6
+  +dark
+    color: $n2
+
+.taskCardRegion
+  +caption1
+  color: $n5
+  +dark
+    color: $n3
+
+.taskCardStats
+  +caption1
+  color: $n5
+  padding-top: 8px
+  border-top: 1px solid $n2
+  +dark
+    color: $n3
+    border-color: $n5
+
+// Кнопка удаления в списке (иконка)
+.deleteIconButton
+  display: flex
+  align-items: center
+  justify-content: center
+  width: 32px
+  height: 32px
+  background: none
+  border: 1px solid $n3
+  border-radius: 8px
+  cursor: pointer
+  transition: all 0.2s ease
+  flex-shrink: 0
+  color: $n5
+
+  &:hover
+    background-color: $p3
+    border-color: $p3
+    color: $n
+
+  +dark
+    border-color: $n5
+    color: $n3
+
+    &:hover
+      background-color: $p3
+      border-color: $p3
+      color: $n
+
+// Детали отчёта
+.taskDetail
+  flex: 1
+  overflow-y: auto
+  padding: 20px
+
+.detailTitle
+  +title2
+  color: $n7
+  margin: 0 0 20px 0
+  +dark
+    color: $n1
+
+.detailSection
+  margin-bottom: 24px
+
+.detailSectionTitle
+  +title2
+  color: $n7
+  margin: 0 0 12px 0
+  +dark
+    color: $n1
+
+.detailRow
+  display: flex
+  justify-content: space-between
+  padding: 10px 0
+  border-bottom: 1px solid $n2
+  +dark
+    border-color: $n6
+
+  &:last-child
+    border-bottom: none
+
+.detailLabel
+  +body1-m
+  color: $n5
+  +dark
+    color: $n3
+
+.detailValue
+  +body1-m
+  font-weight: 600
+  color: $n7
+  text-align: right
+  +dark
+    color: $n1
+
+.detailStats
+  display: flex
+  flex-direction: column
+  gap: 8px
+
+.detailStat
+  display: flex
+  justify-content: space-between
+  align-items: center
+  padding: 12px
+  background-color: $n
+  border-radius: 8px
+  +dark
+    background-color: $n6
+
+.detailStatLabel
+  +body1-m
+  color: $n5
+  +dark
+    color: $n3
+
+.detailStatValue
+  +body1-m
+  font-weight: 600
+  color: $p4
+
+// Кнопки действий в деталях
+.detailActions
+  display: flex
+  flex-direction: column
+  gap: 12px
+  margin-top: 24px
+
+.deleteButton
+  display: flex
+  align-items: center
+  justify-content: center
+  gap: 8px
+  width: 100%
+  padding: 12px 24px
+  background-color: transparent
+  border: 1px solid $p3
+  border-radius: 12px
+  cursor: pointer
+  transition: all 0.2s ease
+  +body1-m
+  font-weight: 600
+  color: $p3
+
+  &:hover
+    background-color: $p3
+    color: $n
+
+  +dark
+    border-color: $p3
+    color: $p3
+
+    &:hover
+      background-color: $p3
+      color: $n
+
+// Пагинация
+.pagination
+  display: flex
+  align-items: center
+  justify-content: center
+  gap: 16px
+  padding: 16px
+  border-top: 1px solid $n3
+  +dark
+    border-color: $n6
+
+.paginationButton
+  width: 32px
+  height: 32px
+  display: flex
+  align-items: center
+  justify-content: center
+  background-color: $n
+  border: 1px solid $n3
+  border-radius: 8px
+  cursor: pointer
+  transition: all 0.2s ease
+  +body1-m
+  color: $n7
+
+  &:hover:not(:disabled)
+    background-color: $p4
+    border-color: $p4
+    color: $n
+
+  &:disabled
+    opacity: 0.5
+    cursor: not-allowed
+
+  +dark
+    background-color: $n6
+    border-color: $n5
+    color: $n1
+
+.paginationInfo
+  +body1-m
+  color: $n5
+  +dark
+    color: $n3
+
+// Состояния загрузки и пустоты
+.loadingContainer
+  flex: 1
+  display: flex
+  align-items: center
+  justify-content: center
+  padding: 40px
+
+.loadingText
+  +body1-m
+  color: $n5
+  +dark
+    color: $n3
+
+.emptyState
+  flex: 1
+  display: flex
+  align-items: center
+  justify-content: center
+  padding: 40px
+
+.emptyText
+  +body1-m
+  color: $n5
+  text-align: center
+  +dark
+    color: $n3
+
+@keyframes fadeIn
+  from
+    opacity: 0
+  to
+    opacity: 1
+
+@keyframes slideIn
+  from
+    transform: translateY(20px)
+    opacity: 0
+  to
+    transform: translateY(0)
+    opacity: 1
