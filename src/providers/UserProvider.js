@@ -20,6 +20,7 @@ const mapUser = (userApi) => {
     lastName: userApi.last_name,
     image: loadAvatar(userApi?.avatar),
     role: userApi.position?.name,
+    positionId: userApi.position?.id,
     email: userApi.email,
     user_id: userApi.user_id,
     phone: userApi.phone || null,

@@ -23,22 +23,15 @@ export const CallsProvider = ({ children,withHistory=true,entity=null,entityId=n
     const { user } = useUser();
     const canSeeCallsModal = useMemo(()=>hasPermission(UserPermissions.ACCESS_ALL_CALLS),[permissions]);
 
-    // Проверка доступа к SEO анализатору по должности
+    // Проверка доступа к SEO анализатору по должности (по ID)
     const canSeeSeoAnalyzer = useMemo(() => {
-        if (!user?.role) return false;
-        // Список должностей с доступом к SEO анализатору
-        const allowedPositions = [
-            'Руководитель отдела продвижения',
-            'SEO специалист',
-            'Директор',
-            'Генеральный директор',
-            'Руководитель',
-            'Администратор', 
-            'Бухгалтер',
-        ];
-        return allowedPositions.some(position =>
-            user.role.toLowerCase().includes(position.toLowerCase())
-        );
+        if (!user?.positionId) return false;
+        // Список ID должностей с доступом к SEO анализатору:
+        // 16 - Руководитель отдела продвижения
+        // 11 - SEO специалист
+        // 2 - Директор
+        const allowedPositionIds = [16, 11, 2];
+        return allowedPositionIds.includes(user.positionId);
     }, [user]);
 
 
