@@ -10,14 +10,11 @@ import CreateReportModal from '../Report/components/CreateReportModal';
 import ConfirmationModal from '../../../../../../components/ConfirmationModal';
 import { handleInfo, handleError } from '../../../../../../utils/snackbar';
 import { http, handleHttpError } from '../../../../../../shared/http';
-import { splitHtmlIntoPages } from '../../../../../../utils/pdf-report.utils';
 
 const Reports = observer(({ stage, reports = [], onReportGenerated }) => {
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isRefreshModalOpen, setIsRefreshModalOpen] = useState(false);
   const [selectedReport, setSelectedReport] = useState(null);
-  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleDeleteReport = async () => {
     try {
@@ -33,37 +30,6 @@ const Reports = observer(({ stage, reports = [], onReportGenerated }) => {
       handleHttpError(error);
       handleError('Ошибка при удалении отчета');
       setIsDeleteModalOpen(false);
-    }
-  };
-
-  const handleRefreshReport = async () => {
-    try {
-      setIsRefreshing(true);
-
-      // Шаг 1: Получаем контент через prepare_tasks для stage
-      const prepareResponse = await http.get(`/api/reports/${stage?.id}/prepare_tasks`);
-      const htmlContent = prepareResponse.data?.data || prepareResponse.data || '';
-
-      // Шаг 2: Разбиваем контент на страницы (с предзагрузкой изображений)
-      const splitContent = await splitHtmlIntoPages(htmlContent);
-
-      // Шаг 3: Отправляем на refresh (теперь POST с телом)
-      await http.post(`/api/reports/${selectedReport.id}/refresh`, {
-        tasks: splitContent,
-      });
-
-      handleInfo('Отчет обновлен');
-      setIsRefreshModalOpen(false);
-      setSelectedReport(null);
-      if (onReportGenerated) {
-        onReportGenerated();
-      }
-    } catch (error) {
-      handleHttpError(error);
-      handleError('Ошибка при обновлении отчета');
-      setIsRefreshModalOpen(false);
-    } finally {
-      setIsRefreshing(false);
     }
   };
 
@@ -106,15 +72,15 @@ const Reports = observer(({ stage, reports = [], onReportGenerated }) => {
         },
       },
       {
-        Header: 'Скачать',
+        Header: 'Просмотр',
         width: '20%',
-        id: 'download',
+        id: 'view',
         Cell: ({ row }) => {
           return (
             <Button
-              onClick={() => window.open(`/documents/reports/${row?.original.id}`, '_blank')}
+              onClick={() => window.open(`/reports/${row?.original.id}`, '_blank')}
               type={'secondary'}
-              after={<Icon size={24} name={'download'} />}
+              after={<Icon size={24} name={'eye'} />}
               classname={cn(styles.button, styles.button_bills)}
               name={'Просмотр отчета'}
             />
@@ -160,43 +126,8 @@ const Reports = observer(({ stage, reports = [], onReportGenerated }) => {
           );
         },
       },
-      {
-        Header: 'Обновить',
-        width: '10%',
-        id: 'refresh',
-        Cell: ({ row }) => {
-          const data = row?.original;
-          const isDisabled = isRefreshing && selectedReport?.id === data.id;
-          return (
-            <div
-              onClick={() => {
-                if (!isRefreshing) {
-                  setSelectedReport(data);
-                  setIsRefreshModalOpen(true);
-                }
-              }}
-              style={{
-                cursor: isDisabled ? 'not-allowed' : 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '24px',
-                height: '24px',
-                backgroundColor: isDisabled ? '#ccc' : '#FF6A55',
-                color: 'white',
-                padding: '0',
-                borderRadius: '50%',
-                opacity: isDisabled ? 0.6 : 1,
-                pointerEvents: isRefreshing ? 'none' : 'auto',
-              }}
-            >
-              <Icon size={12} name={'refresh'} fill={'#FFF'} />
-            </div>
-          );
-        },
-      },
     ],
-    [isRefreshing, selectedReport],
+    [],
   );
 
   const data = useMemo(() => reports ?? [], [reports]);
@@ -240,20 +171,6 @@ const Reports = observer(({ stage, reports = [], onReportGenerated }) => {
           }}
           onConfirm={handleDeleteReport}
           label="Вы уверены, что хотите удалить отчет?"
-        />
-      )}
-      {isRefreshModalOpen && (
-        <ConfirmationModal
-          isOpen={isRefreshModalOpen}
-          onClose={() => {
-            if (!isRefreshing) {
-              setIsRefreshModalOpen(false);
-              setSelectedReport(null);
-            }
-          }}
-          onConfirm={handleRefreshReport}
-          label={isRefreshing ? 'Разбиваем на страницы...' : 'Вы действительно хотите обновить отчет?'}
-          disabled={isRefreshing}
         />
       )}
     </div>

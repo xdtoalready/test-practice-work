@@ -6,7 +6,6 @@ import React, {
 import usePagingData from '../../../../hooks/usePagingData';
 import useStore from '../../../../hooks/useStore';
 import useReportsApi from '../../api/reports.api';
-import useDocumentsPrintApi from '../../api/documents-print.api';
 import Table from '../../../../shared/Table';
 import Badge, { statusTypes } from '../../../../shared/Badge';
 import styles from './Table.module.sass';
@@ -23,7 +22,6 @@ const ReportsTable = observer(({ currentSwitcher }) => {
   const { reportsStore } = useStore();
   const api = useReportsApi();
   const appApi = useAppApi();
-  const documentsPrintApi = useDocumentsPrintApi();
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [reportToDelete, setReportToDelete] = useState(null);
 
@@ -51,14 +49,6 @@ const ReportsTable = observer(({ currentSwitcher }) => {
     }
   };
 
-  const handleDownload = async (reportId) => {
-    try {
-      await documentsPrintApi.downloadReportPdf(reportId);
-    } catch (error) {
-      handleError('Ошибка при скачивании отчета');
-    }
-  };
-
   const handleAgree = async (id) => {
     try {
       await api.agreeReport(id);
@@ -70,14 +60,13 @@ const ReportsTable = observer(({ currentSwitcher }) => {
 
   const getActions = (data) => {
     const actions = [
-      { label: 'Просмотр', onClick: () => window.open(`/documents/reports/${data.id}`, '_blank') },
-      { label: 'Скачать', onClick: () => handleDownload(data.id) },
+      { label: 'Просмотр', onClick: () => window.open(`/reports/${data.id}`, '_blank') },
       { label: 'Удалить', onClick: () => setReportToDelete(data.id), disabled: data.id === 0 },
     ];
 
-    // Добавляем действие "Согласовать" между "Скачать" и "Удалить" если can_be_agreed = true
+    // Добавляем действие "Согласовать" перед "Удалить" если can_be_agreed = true
     if (data.canBeAgreed) {
-      actions.splice(2, 0, {
+      actions.splice(1, 0, {
         label: 'Согласовать',
         onClick: () => handleAgree(data.id),
       });
