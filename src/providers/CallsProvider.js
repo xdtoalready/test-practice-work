@@ -34,6 +34,7 @@ export const CallsProvider = ({ children,withHistory=true,entity=null,entityId=n
             'Генеральный директор',
             'Руководитель',
             'Администратор', 
+            'Бухгалтер',
         ];
         return allowedPositions.some(position =>
             user.role.toLowerCase().includes(position.toLowerCase())
