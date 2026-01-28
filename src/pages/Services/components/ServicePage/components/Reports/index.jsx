@@ -80,7 +80,7 @@ const Reports = observer(({ stage, reports = [], onReportGenerated }) => {
             <Button
               onClick={() => window.open(`/reports/${row?.original.id}`, '_blank')}
               type={'secondary'}
-              after={<Icon size={24} name={'eye'} />}
+              after={<Icon size={24} name={'eye'} viewBox="0 0 24 24" />}
               classname={cn(styles.button, styles.button_bills)}
               name={'Просмотр отчета'}
             />
