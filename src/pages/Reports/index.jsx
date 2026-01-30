@@ -16,6 +16,22 @@ const ReportViewer = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Отключаем адаптивность для страницы просмотра отчетов
+  useEffect(() => {
+    const viewport = document.querySelector('meta[name="viewport"]');
+    const originalContent = viewport?.getAttribute('content');
+
+    if (viewport) {
+      viewport.setAttribute('content', 'width=1200');
+    }
+
+    return () => {
+      if (viewport && originalContent) {
+        viewport.setAttribute('content', originalContent);
+      }
+    };
+  }, []);
+
   useEffect(() => {
     const loadReport = async () => {
       try {
